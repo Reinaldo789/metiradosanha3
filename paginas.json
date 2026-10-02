@@ -1,0 +1,166 @@
+[
+  {
+    "titulo": "Sistema Elétrico",
+    "slug": "sistema-eletrico",
+    "itens": [
+      {
+        "titulo": "Fusíveis e Lâmpadas",
+        "slug": "fusiveis-e-lampadas"
+      },
+      {
+        "titulo": "Luz de Farol e Posição",
+        "slug": "luz-de-farol-e-posicao"
+      },
+      {
+        "titulo": "Luz de Stea e Alerta",
+        "slug": "luz-de-stea-e-alerta"
+      },
+      {
+        "titulo": "Limpador de Parabrisa",
+        "slug": "limpador-de-parabrisa"
+      },
+      {
+        "titulo": "Painel de Instrumentos",
+        "slug": "painel-de-instrumentos"
+      },
+      {
+        "titulo": "Luz e Pressão de Óleo",
+        "slug": "luz-e-pressao-de-oleo"
+      },
+      {
+        "titulo": "Luzes de Diagnóstico",
+        "slug": "luzes-de-diagnostico"
+      },
+      {
+        "titulo": "Motor de Partida",
+        "slug": "motor-de-partida"
+      },
+      {
+        "titulo": "Alternador",
+        "slug": "alternador"
+      }
+    ],
+    "icone": "⚡",
+    "descricao": "Fusíveis, iluminação, partida e carga: diagnóstico de toda a parte elétrica do veículo."
+  },
+  {
+    "titulo": "Alimentação de Combustível",
+    "slug": "alimentacao-de-combustivel",
+    "itens": [
+      {
+        "titulo": "Linha Combustível",
+        "slug": "linha-combustivel"
+      },
+      {
+        "titulo": "Tanque, Filtro, Mang.",
+        "slug": "tanque-filtro-mang"
+      },
+      {
+        "titulo": "Bomba Elétrica",
+        "slug": "bomba-eletrica"
+      },
+      {
+        "titulo": "Bomba Engrenagem",
+        "slug": "bomba-engrenagem"
+      },
+      {
+        "titulo": "Válvula KUV",
+        "slug": "valvula-kuv"
+      },
+      {
+        "titulo": "Bomba Alta Pressão",
+        "slug": "bomba-alta-pressao"
+      },
+      {
+        "titulo": "Tubo Rail",
+        "slug": "tubo-rail"
+      }
+    ],
+    "icone": "⛽",
+    "descricao": "Do tanque ao rail: bombas, válvulas e linhas que levam o combustível ao motor."
+  },
+  {
+    "titulo": "Sensores e Atuadores",
+    "slug": "sensores-e-atuadores",
+    "itens": [
+      {
+        "titulo": "Sensor Rotação",
+        "slug": "sensor-rotacao"
+      },
+      {
+        "titulo": "Sensor Fase",
+        "slug": "sensor-fase"
+      },
+      {
+        "titulo": "Sensor Pres. Adm",
+        "slug": "sensor-pres-adm"
+      },
+      {
+        "titulo": "Sensor Temp. ECM",
+        "slug": "sensor-temp-ecm"
+      },
+      {
+        "titulo": "Sensor Pres. Rail",
+        "slug": "sensor-pres-rail"
+      },
+      {
+        "titulo": "Válvula MProp",
+        "slug": "valvula-mprop"
+      },
+      {
+        "titulo": "Pedal Acelerador",
+        "slug": "pedal-acelerador"
+      },
+      {
+        "titulo": "Modulador Turbina",
+        "slug": "modulador-turbina"
+      },
+      {
+        "titulo": "Bicos Injetores",
+        "slug": "bicos-injetores"
+      },
+      {
+        "titulo": "Lâmpada Painel",
+        "slug": "lampada-painel"
+      }
+    ],
+    "icone": "📡",
+    "descricao": "Sensores, válvulas e bicos que a injeção eletrônica usa para controlar o motor."
+  },
+  {
+    "titulo": "Motor e Chassi",
+    "slug": "motor-e-chassi",
+    "itens": [
+      {
+        "titulo": "Arrefecimento",
+        "slug": "arrefecimento"
+      },
+      {
+        "titulo": "Lubrificação",
+        "slug": "lubrificacao"
+      },
+      {
+        "titulo": "Bomba de Água",
+        "slug": "bomba-de-agua"
+      },
+      {
+        "titulo": "Trocador de Calor",
+        "slug": "trocador-de-calor"
+      },
+      {
+        "titulo": "Válvula Termostática",
+        "slug": "valvula-termostatica"
+      },
+      {
+        "titulo": "Sistema de Direção",
+        "slug": "sistema-de-direcao"
+      },
+      {
+        "titulo": "Sistemas de Freios",
+        "slug": "sistemas-de-freios"
+      }
+    ],
+    "icone": "🔧",
+    "descricao": "Arrefecimento, lubrificação, direção e freios: a parte mecânica do veículo."
+  }
+]
