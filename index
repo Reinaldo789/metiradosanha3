@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagramas Elétricos - Agrale Marruá AM21</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #1e1e2e;
+    color: #e0e0e0;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* --- BOTÃO HAMBURGUER --- */
+  .btn-menu {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1001;
+    background: #89b4fa;
+    color: #1e1e2e;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(137,180,250,0.3);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .btn-menu:hover { background: #b4befe; transform: scale(1.05); }
+  .btn-menu:active { transform: scale(0.95); }
+
+  /* --- OVERLAY --- */
+  .overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+  }
+  .overlay.ativo { opacity: 1; visibility: visible; }
+
+  /* --- MENU LATERAL --- */
+  nav {
+    position: fixed;
+    top: 0; left: 0;
+    width: 300px;
+    height: 100vh;
+    background: #181825;
+    padding: 70px 10px 20px 10px;
+    overflow-y: auto;
+    border-right: 2px solid #313244;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+    transform: translateX(0);
+  }
+  
+  nav.fechado { transform: translateX(-100%); }
+
+  nav h2 {
+    font-size: 13px;
+    color: #89b4fa;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    padding-left: 10px;
+    letter-spacing: 1px;
+    position: sticky;
+    top: -70px;
+    background: #181825;
+    padding-top: 15px;
+    padding-bottom: 10px;
+    z-index: 1;
+  }
+  
+  nav a {
+    display: block;
+    color: #cdd6f4;
+    text-decoration: none;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    margin-bottom: 2px;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+  }
+  
+  nav a:hover { background: #313244; color: #89b4fa; border-left-color: #89b4fa; }
+  nav a .pg { color: #6c7086; font-size: 10px; margin-left: 5px; }
+
+  /* --- CONTEÚDO PRINCIPAL --- */
+  main {
+    padding: 30px 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+    transition: margin-left 0.3s;
+    padding-top: 70px;
+  }
+
+  @media (min-width: 1024px) {
+    body.menu-aberto main { margin-left: 300px; }
+    body.menu-aberto .btn-menu { left: 315px; }
+  }
+
+  h1 {
+    color: #89b4fa;
+    font-size: 22px;
+    margin-bottom: 5px;
+    border-bottom: 2px solid #313244;
+    padding-bottom: 10px;
+  }
+  
+  .sub { color: #a6adc8; font-size: 12px; margin-bottom: 30px; }
+
+  /* --- CARTÃO DO COMPONENTE --- */
+  .componente {
+    background: #181825;
+    border: 1px solid #313244;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+    page-break-inside: avoid;
+    overflow: hidden;
+  }
+  
+  .componente h2 {
+    color: #f9e2af;
+    font-size: 16px;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .componente .ref {
+    font-size: 11px;
+    color: #6c7086;
+    margin-bottom: 15px;
+    display: block;
+  }
+
+  /* --- WRAPPER DA TABELA --- */
+  .tabela-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-top: 10px;
+    border-radius: 6px;
+  }
+
+  /* --- TABELAS --- */
+  .tabela-pinagem {
+    width: 100%;
+    min-width: 650px;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  
+  .tabela-pinagem th {
+    background: #313244;
+    color: #89b4fa;
+    padding: 8px 10px;
+    text-align: left;
+    border: 1px solid #45475a;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  
+  .tabela-pinagem td {
+    padding: 8px 10px;
+    border: 1px solid #45475a;
+    color: #cdd6f4;
+    vertical-align: middle;
+  }
+  
+  .tabela-pinagem tr:nth-child(even) { background: #1e1e2e; }
+
+  .pino {
+    display: inline-block;
+    background: #45475a;
+    color: #f9e2af;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Consolas', monospace;
+    font-weight: bold;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .fio {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Consolas', monospace;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  
+  .fio-cor {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    display: inline-block;
+    border: 1px solid #666;
+    flex-shrink: 0;
+  }
+
+  .destino { color: #94e2d5; font-weight: 600; white-space: nowrap; }
+
+  .conexao-critica { background: #2a1a1a; border-left: 3px solid #f38ba8; }
+  .conexao-critica td { color: #f38ba8 !important; }
+
+  .comportamento {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .com { background: #f9e2af; color: #1e1e2e; }
+  .na  { background: #a6e3a1; color: #1e1e2e; }
+  .nf  { background: #f38ba8; color: #1e1e2e; }
+
+  .descricao-acao {
+    background: #1e1e2e;
+    border-left: 3px solid #89b4fa;
+    padding: 12px 15px;
+    margin-top: 15px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #cdd6f4;
+    line-height: 1.6;
+  }
+  .descricao-acao strong { color: #89b4fa; }
+
+  .tabela-posicoes {
+    width: 100%;
+    min-width: 400px;
+    border-collapse: collapse;
+    font-size: 11px;
+    margin-top: 10px;
+    background: #1a1a2e;
+  }
+  .tabela-posicoes th {
+    background: #3a2a1a;
+    color: #f9e2af;
+    padding: 6px 8px;
+    border: 1px solid #45475a;
+  }
+  .tabela-posicoes td {
+    padding: 6px 8px;
+    border: 1px solid #45475a;
+    color: #cdd6f4;
+  }
+
+  .destaque {
+    margin-top: 20px;
+    padding: 15px;
+    background: #1e1e2e;
+    border: 1px solid #45475a;
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+  .destaque table { width: 100%; min-width: 500px; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+  .destaque th, .destaque td { border: 1px solid #45475a; padding: 6px 8px; text-align: left; }
+  .destaque th { background: #313244; color: #89b4fa; }
+  .destaque td { color: #cdd6f4; }
+
+  .btn-print {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #89b4fa;
+    color: #1e1e2e;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 4px 15px rgba(137,180,250,0.3);
+    z-index: 100;
+  }
+  .btn-print:hover { background: #b4befe; }
+
+  @media (max-width: 768px) {
+    main { padding: 20px 15px; padding-top: 70px; }
+    h1 { font-size: 18px; }
+    .sub { font-size: 11px; }
+    .componente { padding: 15px 12px; }
+    .componente h2 { font-size: 14px; }
+    .btn-print { padding: 10px 14px; font-size: 12px; bottom: 15px; right: 15px; }
+    .btn-menu { width: 40px; height: 40px; font-size: 20px; top: 12px; left: 12px; }
+    nav { width: 85vw; max-width: 320px; }
+  }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 16px; }
+    .componente h2 { font-size: 13px; }
+    .tabela-pinagem { font-size: 11px; }
+    .btn-print span { display: none; }
+    .btn-print::before { content: "🖨️"; font-size: 18px; }
+  }
+
+  @media print {
+    nav, .btn-print, .btn-menu, .overlay { display: none !important; }
+    body { background: white; color: black; }
+    main { max-width: 100%; padding: 10px; margin: 0 !important; }
+    .componente { background: white; border: 1px solid #ccc; page-break-inside: avoid; }
+    .tabela-pinagem th { background: #ddd; color: #000; }
+    .tabela-pinagem td { color: #000; }
+    .pino { background: #eee; color: #000; }
+    .destino { color: #000; }
+    .descricao-acao { border-left-color: #000; }
+    .comportamento { border: 1px solid #000; }
+  }
+</style>
+</head>
+<body class="menu-aberto">
+
+<button class="btn-menu" id="btnMenu" onclick="toggleMenu()">☰</button>
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<nav id="menuLateral">
+  <h2>📑 Índice do Manual</h2>
+  <a href="#motor-partida">🔧 Motor de Partida <span class="pg">Pág. 9</span></a>
+  <a href="#alternador">⚡ Alternador <span class="pg">Pág. 9</span></a>
+  <a href="#bateria">🔋 Bateria <span class="pg">Pág. 9</span></a>
+  <a href="#interruptor-ignicao">🎛️ Interruptor Ignição <span class="pg">Pág. 9</span></a>
+  <a href="#rele-auxiliar">⚙️ Relé Auxiliar <span class="pg">Pág. 9</span></a>
+  <a href="#solenoide">🧲 Solenoide Bomba <span class="pg">Pág. 9</span></a>
+  <a href="#tomada-auxiliar">🔌 Tomada Auxiliar <span class="pg">Pág. 9</span></a>
+  <a href="#chave-geral">🔑 Chave Geral <span class="pg">Pág. 9</span></a>
+  <a href="#fusivel-7">🔶 Fusível 7 <span class="pg">Pág. 9</span></a>
+  <a href="#limpador">🌧️ Limpador e Lavador <span class="pg">Pág. 10</span></a>
+  <a href="#rele-temporizador">⏱️ Relé Temporizador Y1 <span class="pg">Pág. 10</span></a>
+  <a href="#motor-limpador">🔄 Motor do Limpador <span class="pg">Pág. 10</span></a>
+  <a href="#motor-lavador">💧 Motor do Lavador <span class="pg">Pág. 10</span></a>
+  <a href="#disciplina-luzes">💡 Disciplina de Luzes <span class="pg">Pág. 11</span></a>
+  <a href="#rele-nato">⚙️ Relé Chave NATO Y7 <span class="pg">Pág. 11</span></a>
+  <a href="#rele-freio">⚙️ Relé do Freio Y8 <span class="pg">Pág. 11</span></a>
+  <a href="#interruptor-civil-militar">🎛️ Interruptor Civil/Militar <span class="pg">Pág. 11</span></a>
+  <a href="#potenciometro">🎚️ Potenciômetro 24V <span class="pg">Pág. 11</span></a>
+  <a href="#farois">🔦 Faróis <span class="pg">Pág. 12</span></a>
+  <a href="#rele-farol-baixo">⚙️ Relé Farol Baixo Y2 <span class="pg">Pág. 12</span></a>
+  <a href="#rele-farol-alto">⚙️ Relé Farol Alto Y3 <span class="pg">Pág. 12</span></a>
+  <a href="#iluminacao">💡 Iluminação e Lanternas <span class="pg">Pág. 13</span></a>
+  <a href="#direcionais">↔️ Direcionais e Emergência <span class="pg">Pág. 14</span></a>
+  <a href="#rele-direcionais">⚙️ Relé Direcionais Y4 <span class="pg">Pág. 14</span></a>
+  <a href="#interruptor-setas">🎛️ Interruptor de Setas <span class="pg">Pág. 14</span></a>
+  <a href="#interruptor-emergencia">🚨 Interruptor Emergência <span class="pg">Pág. 14</span></a>
+  <a href="#re_freio">🛑 Ré e Freio de Serviço <span class="pg">Pág. 15</span></a>
+  <a href="#rele-freio-y9">⚙️ Relé Alimentação Freio Y9 <span class="pg">Pág. 15</span></a>
+  <a href="#interruptor-freio">🎛️ Interruptor Luz de Freio <span class="pg">Pág. 15</span></a>
+  <a href="#interruptor-re">🎛️ Interruptor Luz de Ré <span class="pg">Pág. 15</span></a>
+  <a href="#militar">🎖️ Freio e Lanternas (Militar) <span class="pg">Pág. 16</span></a>
+  <a href="#aproximacao">🔔 Farol Aprox. e Buzina <span class="pg">Pág. 17</span></a>
+  <a href="#buzina">📢 Buzina <span class="pg">Pág. 17</span></a>
+  <a href="#mapa">🗺️ Luz Mapa, Ventilador e Relé 10s <span class="pg">Pág. 18</span></a>
+  <a href="#ventilador">🌀 Ventilador <span class="pg">Pág. 18</span></a>
+  <a href="#luz-mapa">💡 Luz de Mapa <span class="pg">Pág. 18</span></a>
+  <a href="#rele-10s">⏱️ Relé 10 Segundos <span class="pg">Pág. 18</span></a>
+  <a href="#estacionamento">🅿️ Freio Estac., 4x4 e Sinalizador <span class="pg">Pág. 19</span></a>
+  <a href="#rele-check">🔍 Relé Check Control Y6 <span class="pg">Pág. 19</span></a>
+  <a href="#sinalizador">🔊 Sinalizador Sonoro <span class="pg">Pág. 19</span></a>
+  <a href="#interruptor-4x4">🔧 Interruptor 4x4 <span class="pg">Pág. 19</span></a>
+  <a href="#oleo">🛢️ Óleo / Voltímetro <span class="pg">Pág. 20</span></a>
+  <a href="#sensor-oleo">🛢️ Sensor Pressão Óleo <span class="pg">Pág. 20</span></a>
+  <a href="#tacometro">📊 Tacômetro / Temperatura <span class="pg">Pág. 21</span></a>
+  <a href="#sensor-temp">🌡️ Sensor Temperatura <span class="pg">Pág. 21</span></a>
+  <a href="#sensor-combustivel">⛽ Sensor Combustível <span class="pg">Pág. 21</span></a>
+  <a href="#tomada">🔌 Tomada Elétrica <span class="pg">Pág. 22</span></a>
+  <a href="#bornes">🔩 Bornes / Elevador <span class="pg">Pág. 23</span></a>
+  <a href="#elevador">⚡ Elevador de Tensão <span class="pg">Pág. 23</span></a>
+  <a href="#velocidade">🏁 Sinal de Velocidade <span class="pg">Pág. 24</span></a>
+  <a href="#sensor-velocidade">🏁 Sensor Velocidade Hall <span class="pg">Pág. 24</span></a>
+  <a href="#injecao">💉 Alimentação Injeção <span class="pg">Pág. 25</span></a>
+  <a href="#rele-principal">⚙️ Relé Principal Y9 <span class="pg">Pág. 25</span></a>
+  <a href="#acelerador">🎛️ Acelerador Eletrônico <span class="pg">Pág. 26</span></a>
+  <a href="#pedal">🎛️ Pedal Acelerador <span class="pg">Pág. 26</span></a>
+  <a href="#pedais">🦶 Interruptores Pedais <span class="pg">Pág. 27</span></a>
+  <a href="#interruptor-embreagem">🦶 Interruptor Embreagem <span class="pg">Pág. 27</span></a>
+  <a href="#interruptor-freio-red">🦶 Interruptor Freio Redundante <span class="pg">Pág. 27</span></a>
+  <a href="#bomba">⛽ Bomba Elétrica <span class="pg">Pág. 28</span></a>
+  <a href="#rele-bomba">⚙️ Relé Bomba Elétrica Y11 <span class="pg">Pág. 28</span></a>
+  <a href="#diagnose">🔍 Diagnose / Água Comb. <span class="pg">Pág. 29</span></a>
+  <a href="#sensor-agua">💧 Sensor Água Combustível <span class="pg">Pág. 29</span></a>
+  <a href="#conector-diagnose">🔌 Conector Diagnose <span class="pg">Pág. 29</span></a>
+  <a href="#sensores">🌡️ Sensores e Atuadores <span class="pg">Pág. 30</span></a>
+  <a href="#mprop">🎛️ Válvula MProp <span class="pg">Pág. 30</span></a>
+  <a href="#sensor-temp-ar">🌡️ Sensor Temp. Ar <span class="pg">Pág. 30</span></a>
+  <a href="#sensor-rotacao">⚙️ Sensor Rotação Motor <span class="pg">Pág. 30</span></a>
+  <a href="#valvula-vacuo">🔧 Válvula Atuadora Vácuo <span class="pg">Pág. 30</span></a>
+  <a href="#bicos">💦 Bicos Injetores <span class="pg">Pág. 31</span></a>
+  <a href="#ecu">🧠 ECU Motor EDC16 <span class="pg">Pág. 31</span></a>
+</nav>
+
+<main>
+  <h1>Diagramas Elétricos — Agrale Marruá AM21</h1>
+  <p class="sub">AM21 VTNE 3/4t — 12V Euro III MWM 4.07 TCE | Código DE 611.001 Rev.2</p>
+
+  <div style="background: #181825; border: 1px solid #313244; border-radius: 10px; padding: 15px 20px; margin-bottom: 25px;">
+    <strong style="color: #89b4fa; font-size: 13px; display: block; margin-bottom: 10px;">📖 Legenda da Coluna "Comportamento":</strong>
+    <div style="display: flex; flex-wrap: wrap; gap: 15px; font-size: 12px;">
+      <div><span class="comportamento com">COM</span> = Terminal Comum (ponto de entrada)</div>
+      <div><span class="comportamento na">NA</span> = Normalmente Aberto (fecha quando aciona)</div>
+      <div><span class="comportamento nf">NF</span> = Normalmente Fechado (abre quando aciona)</div>
+    </div>
+  </div>
+
+  <!-- ============ PÁGINA 9: MOTOR DE PARTIDA ============ -->
+  <div class="componente" id="motor-partida">
+    <h2>🔧 Motor de Partida</h2>
+    <span class="ref">📄 Página 9 do PDF | 3 Terminais (30, 50, 31)</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr class="conexao-critica"><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)6,0VM — Vermelho 6mm²</span></td><td class="destino">⚡ Alternador</td><td><span class="pino">B+</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr class="conexao-critica"><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)6,0VM — Vermelho 6mm²</span></td><td class="destino">🎛️ Interruptor de Ignição</td><td><span class="pino">30</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr class="conexao-critica"><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)6,0VM — Vermelho 6mm²</span></td><td class="destino">🔌 Tomada Auxiliar</td><td><span class="pino">+</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">50</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>A(50)2,5VD — Verde 2,5mm²</span></td><td class="destino">⚙️ Relé Auxiliar</td><td><span class="pino">87</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">31</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)2,5PT — Preto 2,5mm²</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Acionamento:</strong> Quando a chave é girada para "Partida", o terminal <strong>50</strong> recebe tensão, energizando o solenoide interno. Isso engata o pinhão no volante e conecta o terminal <strong>30</strong> (positivo) ao motor, fazendo-o girar.</div>
+  </div>
+
+  <!-- ============ ALTERNADOR ============ -->
+  <div class="componente" id="alternador">
+    <h2>⚡ Alternador</h2>
+    <span class="ref">📄 Página 9 do PDF | 6 Terminais (B+, B-, D+, W, L, S)</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr class="conexao-critica"><td><span class="pino">B+</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(12)25,0VM — Vermelho 25mm²</span></td><td class="destino">🔧 Motor de Partida</td><td><span class="pino">30</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr class="conexao-critica"><td><span class="pino">B+</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(12)25,0VM — Vermelho 25mm²</span></td><td class="destino">🎛️ Interruptor de Ignição</td><td><span class="pino">30</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">D+</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>A(61)0,75AZ — Azul 0,75mm²</span></td><td class="destino">💡 Luz Indicadora de Carga</td><td><span class="pino">+</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">W</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(520)0,75VD — Violeta</span></td><td class="destino">📊 Tacômetro</td><td><span class="pino">W</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">B-</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)2,5PT — Preto 2,5mm²</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+          <tr><td><span class="pino">L</span></td><td><span class="fio">(Não utilizado)</span></td><td class="destino">-</td><td><span class="pino">-</span></td><td>-</td></tr>
+          <tr><td><span class="pino">S</span></td><td><span class="fio">(Não utilizado)</span></td><td class="destino">-</td><td><span class="pino">-</span></td><td>-</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Com o motor desligado, a luz D+ acende. Ao ligar, o alternador gera tensão em D+, apagando a luz e enviando sinal W para o tacômetro.</div>
+  </div>
+
+  <!-- ============ BATERIA ============ -->
+  <div class="componente" id="bateria">
+    <h2>🔋 Bateria</h2>
+    <span class="ref">📄 Página 9 do PDF | 2 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)6,0VM — Vermelho</span></td><td class="destino">🔑 Chave Geral</td><td><span class="pino">1</span></td><td>Fonte de energia</td></tr>
+          <tr><td><span class="pino">-</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)2,5PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td>Referência de terra</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> A bateria fornece 12V DC para todo o sistema. O terminal positivo distribui a energia via Chave Geral, e o negativo é conectado ao chassi do veículo.</div>
+  </div>
+
+  <!-- ============ INTERRUPTOR IGNIÇÃO ============ -->
+  <div class="componente" id="interruptor-ignicao">
+    <h2>🎛️ Interruptor de Ignição/Partida</h2>
+    <span class="ref">📄 Página 9 do PDF | 3 Terminais (30, 15, 50)</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr class="conexao-critica"><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)6,0VM — Vermelho</span></td><td class="destino">⚡ Alternador</td><td><span class="pino">B+</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr class="conexao-critica"><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)6,0VM — Vermelho</span></td><td class="destino">🔧 Motor de Partida</td><td><span class="pino">30</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">15</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(15)1,0PT — Preto</span></td><td class="destino">🔶 Fusível 7</td><td><span class="pino">E7</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">50</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>A(50)2,5VD — Verde</span></td><td class="destino">⚙️ Relé Auxiliar</td><td><span class="pino">86</span></td><td><span class="comportamento na">NA</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tabela-wrapper">
+      <table class="tabela-posicoes">
+        <thead><tr><th>Posição</th><th>Terminais Conectados</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Desligado (0)</strong></td><td>Nenhum</td></tr>
+          <tr><td><strong>Ignição (I)</strong></td><td>30 → 15</td></tr>
+          <tr><td><strong>Partida (II)</strong></td><td>30 → 15 e 30 → 50</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Na posição Ignição, o terminal 30 alimenta o 15. Na posição Partida, além disso, o 30 também alimenta o 50, acionando o relé auxiliar e o motor de partida.</div>
+  </div>
+
+  <!-- ============ RELÉ AUXILIAR ============ -->
+  <div class="componente" id="rele-auxiliar">
+    <h2>⚙️ Relé Auxiliar</h2>
+    <span class="ref">📄 Página 9 do PDF | 4 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">85</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)2,5PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+          <tr><td><span class="pino">86</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>A(50)2,5VD — Verde</span></td><td class="destino">🎛️ Interruptor de Ignição</td><td><span class="pino">50</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">87</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>A(50)2,5VD — Verde</span></td><td class="destino">🔧 Motor de Partida</td><td><span class="pino">50</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)6,0VM — Vermelho</span></td><td class="destino">🔋 Bateria</td><td><span class="pino">+</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Quando a bobina (85 e 86) é energizada, o contato interno fecha, conectando 30 ao 87. Isso permite que uma corrente pequena controle a corrente alta do motor de partida.</div>
+  </div>
+
+  <!-- ============ SOLENOIDE ============ -->
+  <div class="componente" id="solenoide">
+    <h2>🧲 Solenoide da Bomba Injetora</h2>
+    <span class="ref">📄 Página 9 do PDF | 2 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(215)1,0VD — Violeta</span></td><td class="destino">🎛️ Interruptor de Ignição</td><td><span class="pino">15</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">-</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)2,5PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Quando energizado (chave na Ignição), cria campo magnético que libera a passagem de combustível. Quando desligado, a mola corta o combustível e para o motor.</div>
+  </div>
+
+  <!-- ============ TOMADA AUXILIAR ============ -->
+  <div class="componente" id="tomada-auxiliar">
+    <h2>🔌 Tomada Auxiliar Partida à Distância</h2>
+    <span class="ref">📄 Página 9 do PDF | 2 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>B(30)2,0VM — Vermelho</span></td><td class="destino">🔧 Motor de Partida</td><td><span class="pino">30</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">-</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)2,5PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Permite conectar um botão externo para dar partida no veículo à distância, enviando positivo diretamente ao terminal 50 do motor de partida.</div>
+  </div>
+
+  <!-- ============ CHAVE GERAL ============ -->
+  <div class="componente" id="chave-geral">
+    <h2>🔑 Chave Geral</h2>
+    <span class="ref">📄 Página 9 do PDF | 2 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">1</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)6,0VM — Vermelho</span></td><td class="destino">🔋 Bateria</td><td><span class="pino">+</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">2</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)6,0VM — Vermelho</span></td><td class="destino">🎛️ Interruptor de Ignição</td><td><span class="pino">30</span></td><td><span class="comportamento na">NA</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Interruptor geral de corte. Quando fechada, conecta o positivo da bateria ao sistema. Quando aberta, isola toda a alimentação.</div>
+  </div>
+
+  <!-- ============ FUSÍVEL 7 ============ -->
+  <div class="componente" id="fusivel-7">
+    <h2>🔶 Fusível 7 (7,5A)</h2>
+    <span class="ref">📄 Página 9 do PDF | 2 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">E7</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(15)1,0PT — Preto</span></td><td class="destino">🎛️ Interruptor de Ignição</td><td><span class="pino">15</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">E7</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(15)1,0PT — Preto</span></td><td class="destino">🔑 Chave Geral</td><td><span class="pino">2</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Dispositivo de proteção. Se a corrente ultrapassar 7,5A, o filamento derrete e abre o circuito, protegendo os componentes a jusante.</div>
+  </div>
+
+  <!-- ============ PÁGINA 10: LIMPADOR ============ -->
+  <div class="componente" id="limpador">
+    <h2>🌧️ Sistema do Limpador e Lavador</h2>
+    <span class="ref">📄 Página 10 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)6,0VM — Vermelho</span></td><td class="destino">🔋 Bateria</td><td><span class="pino">+</span></td><td>Fonte de energia</td></tr>
+          <tr><td><span class="pino">A4</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>A(15)2,5AM — Amarelo</span></td><td class="destino">⏱️ Relé Temporizador Y1</td><td><span class="pino">2</span></td><td><span class="comportamento na">NA</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> O sistema é alimentado pelo Fusível 1 (15A) vindo da bateria, e controlado pelo relé temporizador que recebe sinal da ignição.</div>
+  </div>
+
+  <!-- ============ RELÉ TEMPORIZADOR Y1 ============ -->
+  <div class="componente" id="rele-temporizador">
+    <h2>⏱️ Relé Temporizador Y1</h2>
+    <span class="ref">📄 Página 10 do PDF | 6 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">2</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>A(15)2,5AM — Amarelo</span></td><td class="destino">🔶 Fusível 1</td><td><span class="pino">A4</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">5</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>A(53)1,0AZ — Azul</span></td><td class="destino">🎛️ Interruptor do Limpador</td><td><span class="pino">53</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">6</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+          <tr><td><span class="pino">1</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>A(53a)1,0AZ — Azul</span></td><td class="destino">🔄 Motor do Limpador</td><td><span class="pino">53a</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">3</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(53b)1,0VD — Violeta</span></td><td class="destino">💧 Motor do Lavador</td><td><span class="pino">53b</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">4</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Quando o interruptor do limpador é acionado, a bobina do relé (2 e 6) é energizada. O contato fecha, conectando 5 (positivo) a 1 (motor) e 3 (lavador). Após o tempo programado, desliga automaticamente.</div>
+  </div>
+
+  <!-- ============ MOTOR DO LIMPADOR ============ -->
+  <div class="componente" id="motor-limpador">
+    <h2>🔄 Motor do Limpador</h2>
+    <span class="ref">📄 Página 10 do PDF | 3 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">53</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>A(53)1,0AZ — Azul</span></td><td class="destino">🎛️ Interruptor do Limpador</td><td><span class="pino">53</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">53a</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(53a)1,0PT — Preto</span></td><td class="destino">⏱️ Relé Temporizador Y1</td><td><span class="pino">1</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">31</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Motor elétrico que movimenta as escovas do limpador. Recebe positivo pelo terminal 53 e retorna pelo 53a (que vai para o relé temporizador).</div>
+  </div>
+
+  <!-- ============ MOTOR DO LAVADOR ============ -->
+  <div class="componente" id="motor-lavador">
+    <h2>💧 Motor do Lavador</h2>
+    <span class="ref">📄 Página 10 do PDF | 2 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">53b</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(53b)1,0VD — Violeta</span></td><td class="destino">⏱️ Relé Temporizador Y1</td><td><span class="pino">3</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">31</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Bomba elétrica que impulsiona o líquido do lavador para o para-brisa. Acionada pelo terminal 3 do relé temporizador.</div>
+  </div>
+
+  <!-- ============ PÁGINA 11: DISCIPLINA DE LUZES ============ -->
+  <div class="componente" id="disciplina-luzes">
+    <h2>💡 Sistema de Disciplina de Luzes</h2>
+    <span class="ref">📄 Página 11 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)6,0VM — Vermelho</span></td><td class="destino">🔋 Bateria</td><td><span class="pino">+</span></td><td>Fonte de energia</td></tr>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)2,5VM — Vermelho</span></td><td class="destino">⚙️ Relé Chave NATO Y7</td><td><span class="pino">30</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)2,5VM — Vermelho</span></td><td class="destino">⚙️ Relé do Freio Y8</td><td><span class="pino">30</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Este sistema controla o acionamento das luzes conforme a configuração Civil ou Militar, usando relés para comutar entre os modos.</div>
+  </div>
+
+  <!-- ============ RELÉ CHAVE NATO Y7 ============ -->
+  <div class="componente" id="rele-nato">
+    <h2>⚙️ Relé Chave NATO Y7</h2>
+    <span class="ref">📄 Página 11 do PDF | 4 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)2,5VM — Vermelho</span></td><td class="destino">🔋 Bateria</td><td><span class="pino">+</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">85</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(110)1,5PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+          <tr><td><span class="pino">86</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>A(555)1,0AZ — Azul</span></td><td class="destino">🎛️ Interruptor Civil/Militar</td><td><span class="pino">E</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">87</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>A(555)1,0AZ — Azul</span></td><td class="destino">🔦 Faróis (via Fusíveis)</td><td><span class="pino">-</span></td><td><span class="comportamento na">NA</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Quando o Interruptor Civil/Militar é colocado na posição Militar, a bobina é energizada e o contato fecha, ativando o circuito dos faróis militares.</div>
+  </div>
+
+  <!-- ============ RELÉ DO FREIO Y8 ============ -->
+  <div class="componente" id="rele-freio">
+    <h2>⚙️ Relé do Freio Y8</h2>
+    <span class="ref">📄 Página 11 do PDF | 4 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)2,5VM — Vermelho</span></td><td class="destino">🔋 Bateria</td><td><span class="pino">+</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">85</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(110)1,5PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+          <tr><td><span class="pino">86</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>A(656a)1,0VD — Verde</span></td><td class="destino">🎛️ Interruptor Civil/Militar</td><td><span class="pino">H</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">87</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>A(656a)1,0VD — Verde</span></td><td class="destino">🛑 Luzes de Freio</td><td><span class="pino">-</span></td><td><span class="comportamento na">NA</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Quando o Interruptor Civil/Militar é colocado na posição Civil, a bobina é energizada e o contato fecha, ativando o circuito das luzes de freio civis.</div>
+  </div>
+
+  <!-- ============ INTERRUPTOR CIVIL/MILITAR ============ -->
+  <div class="componente" id="interruptor-civil-militar">
+    <h2>🎛️ Interruptor Civil/Militar</h2>
+    <span class="ref">📄 Página 11 do PDF | 6 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">56</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span>A(656)1,0CZ — Cinza</span></td><td class="destino">🎛️ Interruptor Park/OFF</td><td><span class="pino">56</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">H</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>A(656a)1,0VD — Verde</span></td><td class="destino">⚙️ Relé do Freio Y8</td><td><span class="pino">86</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">E</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>A(555)1,0AZ — Azul</span></td><td class="destino">⚙️ Relé Chave NATO Y7</td><td><span class="pino">86</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">J</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span>A(232)1,5CZ — Cinza</span></td><td class="destino">🔦 Faróis de Aproximação</td><td><span class="pino">-</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">58</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(805)1,0VD — Violeta</span></td><td class="destino">💡 Iluminação do Painel</td><td><span class="pino">58</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">31</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(110)1,5PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tabela-wrapper">
+      <table class="tabela-posicoes">
+        <thead><tr><th>Posição</th><th>Terminais Conectados</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Civil</strong></td><td>56 → H (ativa relé de freio civil)</td></tr>
+          <tr><td><strong>Militar</strong></td><td>56 → E (ativa relé chave NATO)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Comuta o sistema entre configuração Civil (luzes civis) e Militar (luzes táticas). A posição determina qual relé é energizado.</div>
+  </div>
+
+  <!-- ============ POTENCIÔMETRO 24V ============ -->
+  <div class="componente" id="potenciometro">
+    <h2>🎚️ Potenciômetro 24V 22W</h2>
+    <span class="ref">📄 Página 11 do PDF | 3 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(842)0,75VD — Violeta</span></td><td class="destino">🎛️ Interruptor Faróis/Lanternas</td><td><span class="pino">58</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">-</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+          <tr><td><span class="pino">Reostato</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(840)0,75VD — Violeta</span></td><td class="destino">📊 Reostato Iluminação</td><td><span class="pino">-</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Permite ajustar a intensidade da iluminação do painel. Ao girar o botão, a resistência varia, alterando a tensão no reostato.</div>
+  </div>
+
+  <!-- ============ PÁGINA 12: FARÓIS ============ -->
+  <div class="componente" id="farois">
+    <h2>🔦 Sistema de Faróis</h2>
+    <span class="ref">📄 Página 12 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)6,0VM — Vermelho</span></td><td class="destino">🔋 Bateria</td><td><span class="pino">+</span></td><td>Fonte de energia</td></tr>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)2,5VM — Vermelho</span></td><td class="destino">🔶 Fusíveis 5, 6, 11, 12</td><td><span class="pino">-</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">56b</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>A(87)0,75AM — Amarelo</span></td><td class="destino">⚙️ Relé Farol Baixo Y2</td><td><span class="pino">87</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">56a</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>A(87)0,75AM — Amarelo</span></td><td class="destino">⚙️ Relé Farol Alto Y3</td><td><span class="pino">87</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">31</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> O sistema é alimentado pelos fusíveis 5/6 (farol baixo) e 11/12 (farol alto). O acionamento é feito pelo interruptor de setas e faróis, que energiza os relés correspondentes.</div>
+  </div>
+
+  <!-- ============ RELÉ FAROL BAIXO Y2 ============ -->
+  <div class="componente" id="rele-farol-baixo">
+    <h2>⚙️ Relé Farol Baixo Y2</h2>
+    <span class="ref">📄 Página 12 do PDF | 4 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)1,0VM — Vermelho</span></td><td class="destino">🔶 Fusíveis 5, 6</td><td><span class="pino">-</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">85</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+          <tr><td><span class="pino">86</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span>A(56)0,75CZ — Cinza</span></td><td class="destino">🎛️ Interruptor Setas/Faróis</td><td><span class="pino">56</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">87</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>A(87)0,75AM — Amarelo</span></td><td class="destino">🔦 Farol Baixo ESQ/DIR</td><td><span class="pino">56b</span></td><td><span class="comportamento na">NA</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Quando o interruptor é colocado na posição "Farol Baixo", a bobina é energizada e o contato fecha, conectando o positivo do fusível ao farol baixo.</div>
+  </div>
+
+  <!-- ============ RELÉ FAROL ALTO Y3 ============ -->
+  <div class="componente" id="rele-farol-alto">
+    <h2>⚙️ Relé Farol Alto Y3</h2>
+    <span class="ref">📄 Página 12 do PDF | 4 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)1,0VM — Vermelho</span></td><td class="destino">🔶 Fusíveis 11, 12</td><td><span class="pino">-</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">85</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+          <tr><td><span class="pino">86</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span>A(56)0,75CZ — Cinza</span></td><td class="destino">🎛️ Interruptor Setas/Faróis</td><td><span class="pino">56</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">87</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>A(87)0,75AM — Amarelo</span></td><td class="destino">🔦 Farol Alto ESQ/DIR</td><td><span class="pino">56a</span></td><td><span class="comportamento na">NA</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Quando o interruptor é colocado na posição "Farol Alto" (ou dá "flash"), a bobina é energizada e o contato fecha, conectando o positivo do fusível ao farol alto.</div>
+  </div>
+
+  <!-- ============ PÁGINA 13: ILUMINAÇÃO ============ -->
+  <div class="componente" id="iluminacao">
+    <h2>💡 Iluminação e Lanternas</h2>
+    <span class="ref">📄 Página 13 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">58</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span>A(58)0,75CZ/VM — Cinza/Vermelho</span></td><td class="destino">💡 Lanterna Traseira ESQ</td><td><span class="pino">58</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">58</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span>A(58)0,75CZ/VM — Cinza/Vermelho</span></td><td class="destino">💡 Lanterna Traseira DIR</td><td><span class="pino">58</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">58</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span>A(58)0,75CZ/VM — Cinza/Vermelho</span></td><td class="destino">💡 Luz de Placa</td><td><span class="pino">58</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">56b</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span>A(58)0,75CZ/VM — Cinza/Vermelho</span></td><td class="destino">🔦 Farol ESQ/DIR (Lanterna)</td><td><span class="pino">56b</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">31</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Todas as lanternas e luzes de placa são alimentadas pelo terminal 58 do interruptor de faróis. Quando o interruptor é ligado, todas acendem simultaneamente.</div>
+  </div>
+
+  <!-- ============ PÁGINA 14: DIRECIONAIS ============ -->
+  <div class="componente" id="direcionais">
+    <h2>↔️ Luzes Direcionais e Emergência</h2>
+    <span class="ref">📄 Página 14 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)6,0VM — Vermelho</span></td><td class="destino">🔋 Bateria</td><td><span class="pino">+</span></td><td>Fonte de energia</td></tr>
+          <tr><td><span class="pino">49</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(49)0,75VD — Violeta</span></td><td class="destino">⚙️ Relé Direcionais Y4</td><td><span class="pino">49</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">49</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(49)0,75VD — Violeta</span></td><td class="destino">🎛️ Interruptor de Setas</td><td><span class="pino">49</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Sistema alimentado pelo Fusível 2 (15A) via pisca-pisca. O relé Y4 gera o pulso intermitente que é distribuído pelo interruptor de setas para as lâmpadas.</div>
+  </div>
+
+  <!-- ============ RELÉ DIRECIONAIS Y4 ============ -->
+  <div class="componente" id="rele-direcionais">
+    <h2>⚙️ Relé Direcionais Y4 (Pisca-Pisca)</h2>
+    <span class="ref">📄 Página 14 do PDF | 3 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">49</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(49)0,75VD — Violeta</span></td><td class="destino">🔶 Fusível 2</td><td><span class="pino">C1</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">49a</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(49)0,75VD — Violeta</span></td><td class="destino">🎛️ Interruptor de Setas</td><td><span class="pino">49</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">31</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> O pisca-pisca (relé térmico ou eletrônico) interrompe e restabelece a corrente elétrica em intervalos regulares, fazendo as lâmpadas piscarem. A frequência aumenta se uma lâmpada queimar (indicação de falha).</div>
+  </div>
+
+  <!-- ============ INTERRUPTOR DE SETAS ============ -->
+  <div class="componente" id="interruptor-setas">
+    <h2>🎛️ Interruptor de Setas</h2>
+    <span class="ref">📄 Página 14 do PDF | 4 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">49</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(49)0,75VD — Violeta</span></td><td class="destino">⚙️ Relé Direcionais Y4</td><td><span class="pino">49a</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">R</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(49)0,75VD — Violeta</span></td><td class="destino">💡 Lanterna Tras. DIR (Pisca)</td><td><span class="pino">57a</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">L</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(49)0,75VD — Violeta</span></td><td class="destino">💡 Lanterna Tras. ESQ (Pisca)</td><td><span class="pino">57a</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">31</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tabela-wrapper">
+      <table class="tabela-posicoes">
+        <thead><tr><th>Posição</th><th>Terminais Conectados</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Neutro</strong></td><td>Nenhum contato</td></tr>
+          <tr><td><strong>Direita</strong></td><td>49 → R</td></tr>
+          <tr><td><strong>Esquerda</strong></td><td>49 → L</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> A haste de seta comuta o pulso do pisca-pisca para as lâmpadas do lado correspondente. O retorno automático desfaz o contato após a curva.</div>
+  </div>
+
+  <!-- ============ INTERRUPTOR DE EMERGÊNCIA ============ -->
+  <div class="componente" id="interruptor-emergencia">
+    <h2>🚨 Interruptor das Luzes de Emergência</h2>
+    <span class="ref">📄 Página 14 do PDF | 7 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">49</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(49)0,75VD — Violeta</span></td><td class="destino">🔶 Fusível 2</td><td><span class="pino">C1</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">49a</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(49)0,75VD — Violeta</span></td><td class="destino">⚙️ Relé Direcionais Y4</td><td><span class="pino">49a</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">R</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(49)0,75VD — Violeta</span></td><td class="destino">💡 Lanterna Tras. DIR (Pisca)</td><td><span class="pino">57a</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">L</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(49)0,75VD — Violeta</span></td><td class="destino">💡 Lanterna Tras. ESQ (Pisca)</td><td><span class="pino">57a</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">15</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(15)1,0PT — Preto</span></td><td class="destino">🔑 Chave NATO</td><td><span class="pino">15</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)2,5VM — Vermelho</span></td><td class="destino">🔋 Bateria</td><td><span class="pino">+</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">58b</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(58)0,75VD — Violeta</span></td><td class="destino">💡 Iluminação do Painel</td><td><span class="pino">58</span></td><td><span class="comportamento na">NA</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento (conforme desenho do manual):</strong> Ao acionar o botão de emergência, a barra de contato desce e interliga os terminais. Isso faz com que <strong>todas as setas pisquem simultaneamente</strong>, independentemente da posição do interruptor de setas. O terminal 30 (direto da bateria) garante que funcione mesmo com a ignição desligada.</div>
+  </div>
+
+  <!-- ============ PÁGINA 15: RÉ E FREIO ============ -->
+  <div class="componente" id="re_freio">
+    <h2>🛑 Ré e Freio de Serviço</h2>
+    <span class="ref">📄 Página 15 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)6,0VM — Vermelho</span></td><td class="destino">🔋 Bateria</td><td><span class="pino">+</span></td><td>Fonte de energia</td></tr>
+          <tr><td><span class="pino">15</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>A(15)2,5AM — Amarelo</span></td><td class="destino">⚙️ Relé Alimentação Freio Y9</td><td><span class="pino">86</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)1,0VM — Vermelho</span></td><td class="destino">🔶 Fusível 16</td><td><span class="pino">C9</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Alimentação via fusível 16 (10A). O relé Y9 é energizado pela linha 15 (ignição) e alimenta as luzes de freio, tanto civis quanto militares.</div>
+  </div>
+
+  <!-- ============ RELÉ ALIMENTAÇÃO FREIO Y9 ============ -->
+  <div class="componente" id="rele-freio-y9">
+    <h2>⚙️ Relé Alimentação Freio Y9</h2>
+    <span class="ref">📄 Página 15 do PDF | 4 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)1,0VM — Vermelho</span></td><td class="destino">🔋 Bateria (via Chave NATO)</td><td><span class="pino">+</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">85</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+          <tr><td><span class="pino">86</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>A(15)2,5AM — Amarelo</span></td><td class="destino">🔑 Chave NATO</td><td><span class="pino">15</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">87</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)1,0VM — Vermelho</span></td><td class="destino">🎛️ Interruptor Luz de Freio</td><td><span class="pino">30</span></td><td><span class="comportamento na">NA</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Energizado pela linha 15 (ignição) quando a chave é ligada. Alimenta o circuito das luzes de freio, garantindo que só funcionem com a ignição ligada.</div>
+  </div>
+
+  <!-- ============ INTERRUPTOR LUZ DE FREIO ============ -->
+  <div class="componente" id="interruptor-freio">
+    <h2>🎛️ Interruptor das Luzes de Freio</h2>
+    <span class="ref">📄 Página 15 do PDF | 3 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(245)1,0VD — Violeta</span></td><td class="destino">⚙️ Relé Alimentação Freio Y9</td><td><span class="pino">87</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">54a</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>B(247)1,0VD — Violeta</span></td><td class="destino">💡 Lanterna Tras. ESQ/DIR (Freio)</td><td><span class="pino">54</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">31</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Interruptor mecânico acionado pelo pedal de freio. Quando o pedal é pressionado, fecha o contato entre 30 e 54a, acendendo as luzes de freio.</div>
+  </div>
+
+  <!-- ============ INTERRUPTOR LUZ DE RÉ ============ -->
+  <div class="componente" id="interruptor-re">
+    <h2>🎛️ Interruptor da Luz de Ré</h2>
+    <span class="ref">📄 Página 15 do PDF | 3 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">12</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>B(14)0,75VD — Violeta</span></td><td class="destino">🔶 Fusível 16</td><td><span class="pino">C9</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">57a</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>B(14)0,75VD — Violeta</span></td><td class="destino">💡 Lanterna Tras. ESQ/DIR (Ré)</td><td><span class="pino">57a</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">31</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Interruptor mecânico acionado pela alavanca de câmbio. Quando a marcha ré é engatada, o contato fecha e acende as luzes de ré.</div>
+  </div>
+
+  <!-- ============ PÁGINA 16: MILITAR ============ -->
+  <div class="componente" id="militar">
+    <h2>🎖️ Freio e Lanternas (Militar)</h2>
+    <span class="ref">📄 Página 16 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)6,0VM — Vermelho</span></td><td class="destino">🔋 Bateria</td><td><span class="pino">+</span></td><td>Fonte de energia</td></tr>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)2,5VM — Vermelho</span></td><td class="destino">🔶 Fusíveis 9 e 10</td><td><span class="pino">D1-D3, C2</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">553</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>A(553)1,0AZ — Azul</span></td><td class="destino">💡 Lanterna Militar Tras. ESQ</td><td><span class="pino">LM</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">558</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(558)1,0VD — Violeta</span></td><td class="destino">💡 Lanterna Militar Tras. DIR</td><td><span class="pino">LM</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">31</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(110)1,5PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Circuito das lanternas militares (blackout). Utiliza fiação independente (fios 553 e 558) para que as luzes táticas não interfiram nas luzes civis.</div>
+  </div>
+
+  <!-- ============ PÁGINA 17: APROXIMAÇÃO E BUZINA ============ -->
+  <div class="componente" id="aproximacao">
+    <h2>🔔 Farol de Aproximação</h2>
+    <span class="ref">📄 Página 17 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">460</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>A(460)0,75AM/VD — Amarelo/Verde</span></td><td class="destino">🔶 Fusível 14</td><td><span class="pino">D8</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">461</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>A(461)0,75AM/VD — Amarelo/Verde</span></td><td class="destino">💡 Farol de Aproximação</td><td><span class="pino">+</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">512</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span>A(512)0,75CZ — Cinza</span></td><td class="destino">🔶 Fusível 15</td><td><span class="pino">D9</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Farol auxiliar que ilumina a área de aproximação do veículo quando a porta é aberta ou através de um botão dedicado. Alimentado pelo fusível 14.</div>
+  </div>
+
+  <div class="componente" id="buzina">
+    <h2>📢 Buzina</h2>
+    <span class="ref">📄 Página 17 do PDF | 2 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span>A(512)0,75CZ — Cinza</span></td><td class="destino">🔶 Fusível 15</td><td><span class="pino">D9</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">-</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Acionada pelo interruptor no volante. Quando pressionado, fecha o circuito enviando positivo do fusível 15 para a buzina, que emite o som.</div>
+  </div>
+
+  <!-- ============ PÁGINA 18: MAPA / VENTILADOR / RELÉ 10s ============ -->
+  <div class="componente" id="mapa">
+    <h2>🗺️ Luz de Mapa, Ventilador e Relé 10s</h2>
+    <span class="ref">📄 Página 18 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)6,0VM — Vermelho</span></td><td class="destino">🔋 Bateria</td><td><span class="pino">+</span></td><td>Fonte de energia</td></tr>
+          <tr><td><span class="pino">F9</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>A(15)1,0AM — Amarelo</span></td><td class="destino">🔶 Fusível 19</td><td><span class="pino">-</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Alimenta três circuitos independentes: luz de mapa, ventilador interno e o relé de 10 segundos (para o sistema de nível de água).</div>
+  </div>
+
+  <div class="componente" id="ventilador">
+    <h2>🌀 Ventilador Interno</h2>
+    <span class="ref">📄 Página 18 do PDF | 2 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>A(234)1,5AZ — Azul</span></td><td class="destino">🎛️ Interruptor Ventilador</td><td><span class="pino">+</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">-</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Ventilador da cabine. Ligado por interruptor no painel. Alimentado pelo fusível 19 via fio azul.</div>
+  </div>
+
+  <div class="componente" id="luz-mapa">
+    <h2>💡 Luz de Mapa</h2>
+    <span class="ref">📄 Página 18 do PDF | 2 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>A(234)1,5AZ — Azul</span></td><td class="destino">🎛️ Interruptor Luz Mapa</td><td><span class="pino">+</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">-</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Luz de cortesia para leitura de mapas. Ligada por interruptor dedicado.</div>
+  </div>
+
+  <div class="componente" id="rele-10s">
+    <h2>⏱️ Relé 10 Segundos (Nível de Água)</h2>
+    <span class="ref">📄 Página 18 do PDF | 4 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">85</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>L(110)0,75VD — Violeta</span></td><td class="destino">🔌 Conector de Diagnose</td><td><span class="pino">-</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">86</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>A(15)1,0AM — Amarelo</span></td><td class="destino">🔶 Fusível 19</td><td><span class="pino">F9</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">87a</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>L(250)0,75VD — Violeta</span></td><td class="destino">💡 Luz Indicadora Nível Água</td><td><span class="pino">+</span></td><td><span class="comportamento na">NA</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Relé temporizado que mantém a luz indicadora de nível de água acesa por 10 segundos após a ignição ser ligada (teste de lâmpada). Após esse tempo, desliga automaticamente.</div>
+  </div>
+
+  <!-- ============ PÁGINA 19: ESTACIONAMENTO / 4x4 ============ -->
+  <div class="componente" id="estacionamento">
+    <h2>🅿️ Freio Estacionamento, 4x4 e Sinalizador</h2>
+    <span class="ref">📄 Página 19 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>A(30)6,0VM — Vermelho</span></td><td class="destino">🔋 Bateria</td><td><span class="pino">+</span></td><td>Fonte de energia</td></tr>
+          <tr><td><span class="pino">F7</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>A(15)1,0AM — Amarelo</span></td><td class="destino">🔶 Fusível 7</td><td><span class="pino">-</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>A(15)1,0AM — Amarelo</span></td><td class="destino">🔍 Relé Check Control Y6</td><td><span class="pino">30</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Conjunto de circuitos que monitoram: freio de estacionamento, engate do 4x4, restrição do filtro de ar, nível de água e nível de líquido de freio.</div>
+  </div>
+
+  <div class="componente" id="rele-check">
+    <h2>🔍 Relé Check Control Y6</h2>
+    <span class="ref">📄 Página 19 do PDF | 5 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>A(15)1,0AM — Amarelo</span></td><td class="destino">🔶 Fusível 7</td><td><span class="pino">F7</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">85</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+          <tr><td><span class="pino">86</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(112)0,75VD — Violeta</span></td><td class="destino">🔊 Sinalizador Sonoro</td><td><span class="pino">+</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">87</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(422)0,75VD — Violeta</span></td><td class="destino">💧 Interruptor Nível Água</td><td><span class="pino">+</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">87a</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(256)0,75VD — Violeta</span></td><td class="destino">💡 Luz Indicadora Nível Água</td><td><span class="pino">+</span></td><td><span class="comportamento na">NA</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Relé de verificação que testa os sensores de nível de água e aciona o sinalizador sonoro e a luz de advertência caso detecte anomalia.</div>
+  </div>
+
+  <div class="componente" id="sinalizador">
+    <h2>🔊 Sinalizador Sonoro</h2>
+    <span class="ref">📄 Página 19 do PDF | 2 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(112)0,75VD — Violeta</span></td><td class="destino">🔍 Relé Check Control Y6</td><td><span class="pino">86</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">-</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>A(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Buzzer que emite som de advertência quando algum sistema crítico apresenta falha.</div>
+  </div>
+
+  <div class="componente" id="interruptor-4x4">
+    <h2>🔧 Interruptor 4x4</h2>
+    <span class="ref">📄 Página 19 do PDF | 2 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(944)0,75VD — Violeta</span></td><td class="destino">🔍 Relé Check Control Y6</td><td><span class="pino">87</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">-</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>A(03)0,75AZ/VM — Azul/Vermelho</span></td><td class="destino">💡 Luz Indicadora 4x4</td><td><span class="pino">+</span></td><td><span class="comportamento na">NA</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Sensor de posição que fecha o contato quando a alavanca de tração 4x4 é engatada, acendendo a luz indicadora no painel.</div>
+  </div>
+
+  <!-- ============ PÁGINA 20: ÓLEO / VOLTÍMETRO ============ -->
+  <div class="componente" id="oleo">
+    <h2>🛢️ Indicador de Óleo e Voltímetro</h2>
+    <span class="ref">📄 Página 20 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+15</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>A(15)1,0AM — Amarelo</span></td><td class="destino">🔑 Chave NATO</td><td><span class="pino">15</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">G</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>C(23)0,75MA — Marrom</span></td><td class="destino">🛢️ Sensor Pressão Óleo</td><td><span class="pino">+</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">58b</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>C(23)0,75MA — Marrom</span></td><td class="destino">💡 Iluminação Painel</td><td><span class="pino">58</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">31</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>C(31)0,75MA — Marrom</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Recebe sinal analógico do sensor de pressão do óleo no terminal G. O ponteiro indica a pressão em tempo real no painel.</div>
+  </div>
+
+  <div class="componente" id="sensor-oleo">
+    <h2>🛢️ Sensor de Pressão do Óleo</h2>
+    <span class="ref">📄 Página 20 do PDF | 2 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>C(10)0,75VD/VM — Violeta/Vermelho</span></td><td class="destino">📊 Indicador Pressão Óleo</td><td><span class="pino">G</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">-</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>C(31)0,75MA — Marrom</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Sensor tipo reostato que varia a resistência conforme a pressão do óleo. Envia o sinal para o manômetro do painel.</div>
+  </div>
+
+  <!-- ============ PÁGINA 21: TACÔMETRO / TEMPERATURA / COMBUSTÍVEL ============ -->
+  <div class="componente" id="tacometro">
+    <h2>📊 Tacômetro / Temperatura / Combustível</h2>
+    <span class="ref">📄 Página 21 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">15</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>C(15)1,0AM — Amarelo</span></td><td class="destino">🔑 Chave NATO</td><td><span class="pino">15</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">W</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>C(39)0,75VD — Violeta</span></td><td class="destino">⚡ Alternador</td><td><span class="pino">W</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">G</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>C(38)0,75AZ/AM — Azul/Amarelo</span></td><td class="destino">🌡️ Sensor Temperatura</td><td><span class="pino">G</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">G</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>C(25)0,75CZ/VM — Cinza/Vermelho</span></td><td class="destino">⛽ Sensor Combustível</td><td><span class="pino">G</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">31</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>C(31)0,75MA — Marrom</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> O tacômetro recebe o sinal W do alternador (pulsos proporcionais à rotação). Os indicadores de temperatura e combustível recebem sinais dos respectivos sensores (tipo reostato).</div>
+  </div>
+
+  <div class="componente" id="sensor-temp">
+    <h2>🌡️ Sensor de Temperatura do Motor</h2>
+    <span class="ref">📄 Página 21 do PDF | 2 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>A(675)0,75VD — Violeta</span></td><td class="destino">📊 Indicador Temperatura</td><td><span class="pino">G</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">-</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>C(31)0,75MA — Marrom</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Sensor tipo NTC (resistência negativa). Quando o motor esquenta, a resistência diminui, fazendo o ponteiro do indicador subir.</div>
+  </div>
+
+  <div class="componente" id="sensor-combustivel">
+    <h2>⛽ Sensor de Nível de Combustível</h2>
+    <span class="ref">📄 Página 21 do PDF | 2 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>C(06)0,75AZ/VM — Azul/Vermelho</span></td><td class="destino">📊 Indicador Combustível</td><td><span class="pino">G</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">-</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>C(31)0,75MA — Marrom</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Boia no tanque que varia a resistência conforme o nível de combustível. Envia o sinal para o indicador no painel.</div>
+  </div>
+
+  <!-- ============ PÁGINA 22: TOMADA ELÉTRICA ============ -->
+  <div class="componente" id="tomada">
+    <h2>🔌 Tomada Elétrica 12 Polos</h2>
+    <span class="ref">📄 Página 22 do PDF | 12 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">LME</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>F(553)1,0AZ — Azul</span></td><td class="destino">💡 Lanterna Militar ESQ</td><td><span class="pino">553</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">RE</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>F(020)1,0VD — Violeta</span></td><td class="destino">💡 Luz de Ré</td><td><span class="pino">57a</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">31</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>F(31)1,5PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+          <tr><td><span class="pino">PE</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>F(640)1,0VD — Violeta</span></td><td class="destino">💡 Lanterna Tras. ESQ (Pisca)</td><td><span class="pino">57a</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">PD</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>F(570)1,0VD — Violeta</span></td><td class="destino">💡 Lanterna Tras. DIR (Pisca)</td><td><span class="pino">57a</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">LM</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>F(555)1,0AZ — Azul</span></td><td class="destino">💡 Lanterna Militar</td><td><span class="pino">LM</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">54</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>F(247)1,0VD — Violeta</span></td><td class="destino">💡 Luz de Freio</td><td><span class="pino">54</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">FM</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>F(249)1,0AZ — Azul</span></td><td class="destino">💡 Luz de Freio Militar</td><td><span class="pino">FM</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">58</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>F(833)1,0VD — Violeta</span></td><td class="destino">💡 Lanterna</td><td><span class="pino">58</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">R</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>F(570)1,0VD — Violeta</span></td><td class="destino">💡 Lanterna Tras. DIR (Pisca)</td><td><span class="pino">57a</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">57a</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>F(640)1,0VD — Violeta</span></td><td class="destino">💡 Lanterna Tras. ESQ (Pisca)</td><td><span class="pino">57a</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">L</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>F(640)1,0VD — Violeta</span></td><td class="destino">💡 Lanterna Tras. ESQ (Pisca)</td><td><span class="pino">57a</span></td><td><span class="comportamento na">NA</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Tomada padrão militar de 12 polos para conexão de reboque ou equipamentos auxiliares. Transmite todos os sinais de iluminação.</div>
+  </div>
+
+  <!-- ============ PÁGINA 23: BORNES / ELEVADOR ============ -->
+  <div class="componente" id="bornes">
+    <h2>🔩 Placas de Bornes e Elevador de Tensão</h2>
+    <span class="ref">📄 Página 23 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">12V</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>N(35)6,0VM — Vermelho</span></td><td class="destino">🔶 Fusível 35</td><td><span class="pino">35</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">24V</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>N(03)6,0MA — Marrom</span></td><td class="destino">🔌 Placa Borne 24V</td><td><span class="pino">+</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">12V</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>N(05)6,0AZ — Azul</span></td><td class="destino">🔌 Placa Borne 12V</td><td><span class="pino">+</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">(-)</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>N(35)6,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> As placas de bornes servem como pontos de distribuição de energia. O sistema tem duas saídas: uma de 12V e uma de 24V (proveniente do elevador de tensão).</div>
+  </div>
+
+  <div class="componente" id="elevador">
+    <h2>⚡ Elevador de Tensão ARPE EB 1224S-20A</h2>
+    <span class="ref">📄 Página 23 do PDF | 3 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">12V</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>N(35)6,0VM — Vermelho</span></td><td class="destino">🔶 Fusível 35 (30A)</td><td><span class="pino">35</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">(-)</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>N(35)6,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+          <tr><td><span class="pino">24V</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>N(03)6,0MA — Marrom</span></td><td class="destino">🔌 Placa Borne 24V</td><td><span class="pino">+</span></td><td><span class="comportamento na">NA</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> O elevador de tensão converte os 12V da bateria do veículo em 24V para alimentar equipamentos militares. Possui capacidade de 20A.</div>
+  </div>
+
+  <!-- ============ PÁGINA 24: VELOCIDADE ============ -->
+  <div class="componente" id="velocidade">
+    <h2>🏁 Sinal de Velocidade</h2>
+    <span class="ref">📄 Página 24 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+15</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>D(15)1,0AM — Amarelo</span></td><td class="destino">🔑 Chave NATO</td><td><span class="pino">15</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">H9</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>D(288)1,0VD — Verde</span></td><td class="destino">🔶 Fusível 8</td><td><span class="pino">H9</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">A</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span>C(06)0,75CZ/VM — Cinza/Vermelho</span></td><td class="destino">📊 Velocímetro</td><td><span class="pino">06</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">B</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>C(25)0,75CZ/VM — Cinza/Vermelho</span></td><td class="destino">📊 Velocímetro</td><td><span class="pino">25</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">C</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>C(26)0,75CZ/VM — Cinza/Vermelho</span></td><td class="destino">📊 Velocímetro</td><td><span class="pino">26</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> O sensor Hall gera pulsos proporcionais à rotação do eixo. Esses pulsos são enviados ao velocímetro e à ECU do motor.</div>
+  </div>
+
+  <div class="componente" id="sensor-velocidade">
+    <h2>🏁 Sensor de Velocidade Hall</h2>
+    <span class="ref">📄 Página 24 do PDF | 3 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">A</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span>C(06)0,75CZ/VM — Cinza/Vermelho</span></td><td class="destino">📊 Velocímetro</td><td><span class="pino">06</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">B</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>C(25)0,75CZ/VM — Cinza/Vermelho</span></td><td class="destino">📊 Velocímetro</td><td><span class="pino">25</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">C</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>D(31)0,5PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Sensor de efeito Hall que gera uma onda quadrada conforme os dentes de uma roda fônica passam por ele.</div>
+  </div>
+
+  <!-- ============ PÁGINA 25: ALIMENTAÇÃO INJEÇÃO ============ -->
+  <div class="componente" id="injecao">
+    <h2>💉 Alimentação do Sistema de Injeção</h2>
+    <span class="ref">📄 Página 25 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>D(30)2,5VM — Vermelho</span></td><td class="destino">🔋 Bateria</td><td><span class="pino">+</span></td><td>Fonte de energia</td></tr>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>D(30)2,5VM — Vermelho</span></td><td class="destino">⚙️ Relé Principal Y9</td><td><span class="pino">30</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> O sistema de injeção é alimentado diretamente da bateria (via fusíveis principais) e controlado pelo Relé Principal Y9.</div>
+  </div>
+
+  <div class="componente" id="rele-principal">
+    <h2>⚙️ Relé Principal Y9</h2>
+    <span class="ref">📄 Página 25 do PDF | 4 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>D(30)2,5VM — Vermelho</span></td><td class="destino">🔋 Bateria</td><td><span class="pino">+</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">85</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>D(286)0,5VD — Verde</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">K</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">86</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>D(271)1,0VD — Verde</span></td><td class="destino">🔑 Chave NATO</td><td><span class="pino">15</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">87</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>D(277)2,5VD — Verde</span></td><td class="destino">🔶 Fusíveis 25-28</td><td><span class="pino">-</span></td><td><span class="comportamento na">NA</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Quando a ECU é energizada, envia sinal de terra para o terminal 85. A bobina é energizada e o contato fecha, conectando o positivo aos fusíveis 25-28.</div>
+  </div>
+
+  <!-- ============ PÁGINA 26: ACELERADOR ============ -->
+  <div class="componente" id="acelerador">
+    <h2>🎛️ Acelerador Eletrônico</h2>
+    <span class="ref">📄 Página 26 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+15</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>D(15)1,0AM — Amarelo</span></td><td class="destino">🔑 Chave NATO</td><td><span class="pino">15</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">28</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>D(286)0,5VD — Violeta</span></td><td class="destino">🔶 Fusível 28</td><td><span class="pino">-</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> O sistema de acelerador eletrônico (drive-by-wire) elimina o cabo mecânico. O pedal envia sinais elétricos para a ECU.</div>
+  </div>
+
+  <div class="componente" id="pedal">
+    <h2>🎛️ Pedal Acelerador Eletrônico</h2>
+    <span class="ref">📄 Página 26 do PDF | 6 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">1</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>D(960)0,5AM — Amarelo</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">K45</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">2</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>D(284)0,5VD — Violeta</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">K46</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">3</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>D(670)0,5VD — Verde</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">K47</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">4</span></td><td><span class="fio"><span class="fio-cor" style="background:#FF8C00;"></span>D(330)0,5LR — Laranja</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">K48</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">5</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>D(177)0,5PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+          <tr><td><span class="pino">6</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>D(286)0,5VD — Violeta</span></td><td class="destino">🔶 Fusível 28</td><td><span class="pino">-</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> O pedal possui dois potenciômetros redundantes (para segurança). Cada um envia um sinal analógico independente para a ECU, que compara os dois sinais.</div>
+  </div>
+
+  <!-- ============ PÁGINA 27: PEDAIS ============ -->
+  <div class="componente" id="pedais">
+    <h2>🦶 Interruptores dos Pedais</h2>
+    <span class="ref">📄 Página 27 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+15</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>D(15)1,0AM — Amarelo</span></td><td class="destino">🔑 Chave NATO</td><td><span class="pino">15</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">28</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>D(286)0,5VD — Verde</span></td><td class="destino">🔶 Fusível 28</td><td><span class="pino">-</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Os interruptores dos pedais enviam sinais redundantes para a ECU, usados para corte de injeção em desaceleração, controle de marcha lenta e diagnóstico.</div>
+  </div>
+
+  <div class="componente" id="interruptor-embreagem">
+    <h2>🦶 Interruptor da Embreagem</h2>
+    <span class="ref">📄 Página 27 do PDF | 2 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>D(860)0,5VD — Verde</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">K58</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">-</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>D(31)0,5PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Sensor de posição do pedal de embreagem. Quando pressionado, envia sinal para a ECU, que corta momentaneamente a injeção.</div>
+  </div>
+
+  <div class="componente" id="interruptor-freio-red">
+    <h2>🦶 Interruptor Redundante de Freio</h2>
+    <span class="ref">📄 Página 27 do PDF | 4 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">12</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>D(288)1,0VD — Violeta</span></td><td class="destino">🔶 Fusível 28</td><td><span class="pino">-</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">11</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>D(445)0,5VD — Violeta</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">K17</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">14</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>D(445)0,5AM — Amarelo</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">K80</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">31</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>D(31)0,5PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Interruptor redundante que envia sinal para a ECU. Usado para funções como corte de injeção e diagnóstico de falhas.</div>
+  </div>
+
+  <!-- ============ PÁGINA 28: BOMBA ============ -->
+  <div class="componente" id="bomba">
+    <h2>⛽ Bomba Elétrica</h2>
+    <span class="ref">📄 Página 28 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>D(30)2,5VM — Vermelho</span></td><td class="destino">🔋 Bateria</td><td><span class="pino">+</span></td><td>Fonte de energia</td></tr>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>D(288)1,0VM — Vermelho</span></td><td class="destino">⚙️ Relé Bomba Y11</td><td><span class="pino">30</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">I1</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>D(288)1,0VD — Violeta</span></td><td class="destino">🔶 Fusível 29</td><td><span class="pino">I1</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">I8</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>D(288)1,0VD — Violeta</span></td><td class="destino">🔶 Fusível 29</td><td><span class="pino">I8</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>D(288)1,0VD — Violeta</span></td><td class="destino">⛽ Bomba Elétrica</td><td><span class="pino">+</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">31</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>D(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Bomba elétrica de baixa pressão que alimenta o sistema de injeção. É acionada pelo Relé Y11, controlado pela ECU.</div>
+  </div>
+
+  <div class="componente" id="rele-bomba">
+    <h2>⚙️ Relé Bomba Elétrica Y11</h2>
+    <span class="ref">📄 Página 28 do PDF | 5 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>D(30)2,5VM — Vermelho</span></td><td class="destino">🔋 Bateria</td><td><span class="pino">+</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">85</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>D(730)0,5PT — Preto</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">K91</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">86</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>D(288)1,0VD — Violeta</span></td><td class="destino">🔶 Fusível 29</td><td><span class="pino">I1</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">87</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>D(288)1,0VM — Vermelho</span></td><td class="destino">⛽ Bomba Elétrica</td><td><span class="pino">+</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">87a</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>D(286)0,5VD — Violeta</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">K91</span></td><td><span class="comportamento na">NA</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> A ECU envia um sinal de terra para o terminal 85, energizando a bobina. Isso fecha o contato, conectando o positivo à bomba.</div>
+  </div>
+
+  <!-- ============ PÁGINA 29: DIAGNOSE ============ -->
+  <div class="componente" id="diagnose">
+    <h2>🔍 Diagnose do Motor e Água no Combustível</h2>
+    <span class="ref">📄 Página 29 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+15</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>D(15)1,0AM — Amarelo</span></td><td class="destino">🔑 Chave NATO</td><td><span class="pino">15</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> O sistema de diagnose monitora continuamente os sensores do motor. Se detectar falhas, acende a luz de diagnose no painel e armazena códigos de erro.</div>
+  </div>
+
+  <div class="componente" id="sensor-agua">
+    <h2>💧 Sensor de Água no Combustível</h2>
+    <span class="ref">📄 Página 29 do PDF | 3 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">1</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>D(286)1,0VD — Violeta</span></td><td class="destino">🔶 Fusível 28</td><td><span class="pino">-</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">2</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>D(706)0,75VD — Verde</span></td><td class="destino">💡 Luz Indic. Água Combustível</td><td><span class="pino">+</span></td><td><span class="comportamento na">NA</span></td></tr>
+          <tr><td><span class="pino">31</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>D(31)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Sensor instalado no filtro de combustível. Se detectar presença de água, fecha o contato, acendendo a luz de advertência no painel.</div>
+  </div>
+
+  <div class="componente" id="conector-diagnose">
+    <h2>🔌 Conector de Diagnose do Motor</h2>
+    <span class="ref">📄 Página 29 do PDF | 5 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">1</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>D(170)1,0PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+          <tr><td><span class="pino">2</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>D(286)1,0VD — Verde</span></td><td class="destino">🔶 Fusível 28</td><td><span class="pino">-</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">3</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>D(680)0,5VD — Violeta</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">K-Line</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Conector OBD-II usado para conectar o scanner de diagnóstico. Permite ler códigos de erro, apagar falhas e monitorar dados em tempo real.</div>
+  </div>
+
+  <!-- ============ PÁGINA 30: SENSORES E ATUADORES ============ -->
+  <div class="componente" id="sensores">
+    <h2>🌡️ Alimentação dos Sensores e Atuadores</h2>
+    <span class="ref">📄 Página 30 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>D(30)2,5VM — Vermelho</span></td><td class="destino">🔋 Bateria</td><td><span class="pino">+</span></td><td>Fonte de energia</td></tr>
+          <tr><td><span class="pino">30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>D(30)2,5VM — Vermelho</span></td><td class="destino">⚙️ Relé Principal Y9</td><td><span class="pino">30</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">28</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>D(288)1,0VD — Verde</span></td><td class="destino">🔶 Fusível 28</td><td><span class="pino">-</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Todos os sensores e atuadores recebem alimentação via Fusível 28 (15A), que é energizado pelo Relé Principal Y9. A ECU fornece 5V de referência para os sensores analógicos.</div>
+  </div>
+
+  <div class="componente" id="mprop">
+    <h2>🎛️ Válvula MProp (Atuador Bomba Alta Pressão)</h2>
+    <span class="ref">📄 Página 30 do PDF | 2 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">1</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>D(288)0,75VD — Violeta</span></td><td class="destino">🔶 Fusível 28</td><td><span class="pino">-</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">2</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>D(440)0,75AM — Amarelo</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">A-L4</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">31</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>D(31)0,75PT — Preto</span></td><td class="destino">⏚ Terra (Chassi)</td><td><span class="pino">-</span></td><td><span class="comportamento nf">NF</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> A Válvula MProp controla a pressão do combustível na bomba de alta pressão. A ECU envia um sinal PWM para regular a pressão do rail de injeção.</div>
+  </div>
+
+  <div class="componente" id="sensor-temp-ar">
+    <h2>🌡️ Sensor de Temperatura do Ar / Pressão do Coletor</h2>
+    <span class="ref">📄 Página 30 do PDF | 4 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">1</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>D(0.5AZ/VM) — Azul/Vermelho</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">A-12</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">2</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>D(0.5AZ/BR) — Azul/Marrom</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">A-19</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">3</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>D(0.5AZ/CZ) — Azul/Cinza</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">A-41</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">4</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>D(0.5AZ/LL) — Azul/Lilás</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">A-53</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Sensor combinado (MAP + IAT) que mede a pressão do ar no coletor de admissão e sua temperatura. Esses dados são essenciais para a ECU calcular a massa de ar admitida.</div>
+  </div>
+
+  <div class="componente" id="sensor-rotacao">
+    <h2>⚙️ Sensor de Rotação do Motor</h2>
+    <span class="ref">📄 Página 30 do PDF | 3 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">1</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>D(0.5AZ/BR) — Azul/Marrom</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">A-48</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">2</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>D(0.5AZ/CZ) — Azul/Cinza</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">A-50</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">3</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>D(0.5AZ/LL) — Azul/Lilás</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">A-58</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Sensor indutivo que lê os dentes da roda fônica do volante do motor. Gera um sinal alternado cuja frequência é proporcional à rotação do motor.</div>
+  </div>
+
+  <div class="componente" id="valvula-vacuo">
+    <h2>🔧 Válvula Atuadora de Vácuo</h2>
+    <span class="ref">📄 Página 30 do PDF | 2 Terminais</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">1</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>D(286)1,0VD — Verde</span></td><td class="destino">🔶 Fusível 28</td><td><span class="pino">-</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">2</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>D(286)0,5VD — Verde</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">A-27</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Válvula solenoide que controla a passagem de vácuo para atuadores do motor (como a válvula EGR ou wastegate do turbo).</div>
+  </div>
+
+  <!-- ============ PÁGINA 31: BICOS E ECU ============ -->
+  <div class="componente" id="bicos">
+    <h2>💦 Bicos Injetores</h2>
+    <span class="ref">📄 Página 31 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">Bico 1</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>D(2.5PT/AM) — Preto/Amarelo</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">A-16</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">Bico 2</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>D(2.5AZ) — Azul</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">A-17</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">Bico 3</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>D(2.5PR) — Preto/Rosa</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">A-31</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">Bico 4</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>D(2.5AZ) — Azul</span></td><td class="destino">🧠 ECU Motor EDC16</td><td><span class="pino">A-33</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> Os bicos injetores são atuadores eletromagnéticos que injetam combustível na câmara de combustão. A ECU controla o momento exato e a duração da injeção em cada bico.</div>
+  </div>
+
+  <div class="componente" id="ecu">
+    <h2>🧠 ECU Motor EDC16</h2>
+    <span class="ref">📄 Páginas 25, 29, 30 e 31 do PDF</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Terminal Destino</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">A-16</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>D(2.5PT/AM) — Preto/Amarelo</span></td><td class="destino">💦 Bico Injetor 1</td><td><span class="pino">+</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">A-17</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>D(2.5AZ) — Azul</span></td><td class="destino">💦 Bico Injetor 2</td><td><span class="pino">+</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">A-31</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>D(2.5PR) — Preto/Rosa</span></td><td class="destino">💦 Bico Injetor 3</td><td><span class="pino">+</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">A-33</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>D(2.5AZ) — Azul</span></td><td class="destino">💦 Bico Injetor 4</td><td><span class="pino">+</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">A-L4</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>D(440)0,75AM — Amarelo</span></td><td class="destino">🎛️ Válvula MProp</td><td><span class="pino">2</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">K17</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>D(445)0,5VD — Violeta</span></td><td class="destino">🦶 Interruptor Freio Redundante</td><td><span class="pino">11</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">K45</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>D(960)0,5AM — Amarelo</span></td><td class="destino">🎛️ Pedal Acelerador</td><td><span class="pino">1</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">K46</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>D(284)0,5VD — Violeta</span></td><td class="destino">🎛️ Pedal Acelerador</td><td><span class="pino">2</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">K91</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>D(730)0,5PT — Preto</span></td><td class="destino">⚙️ Relé Bomba Elétrica Y11</td><td><span class="pino">85</span></td><td><span class="comportamento com">COM</span></td></tr>
+          <tr><td><span class="pino">K-Line</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>D(680)0,5VD — Violeta</span></td><td class="destino">🔌 Conector de Diagnose</td><td><span class="pino">3</span></td><td><span class="comportamento com">COM</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="destaque">
+      <strong style="color: #89b4fa;">📌 Pinagem Completa da ECU EDC16 (Conector A — 60 Vias):</strong>
+      <table>
+        <thead><tr><th>Pino</th><th>Função</th><th>Fio</th><th>Cor</th></tr></thead>
+        <tbody>
+          <tr><td>08</td><td>Atuador Bomba Alta Pressão (MProp)</td><td>D(288)0,75VD</td><td>Violeta</td></tr>
+          <tr><td>11</td><td>Sinal Sensor Pressão Rail</td><td>D(0.5BR)</td><td>Marrom</td></tr>
+          <tr><td>12</td><td>Sinal Sensor Temperatura Ar</td><td>D(0.5VD/AM)</td><td>Violeta/Amarelo</td></tr>
+          <tr><td>13</td><td>Sinal Sensor Temperatura Água</td><td>D(0.5PT/VM)</td><td>Preto/Vermelho</td></tr>
+          <tr><td>15</td><td>Sinal Sensor Pressão Ralenti</td><td>D(0.5VD)</td><td>Violeta</td></tr>
+          <tr><td>16</td><td>Bico Injetor 1</td><td>D(2.5PT/AM)</td><td>Preto/Amarelo</td></tr>
+          <tr><td>17</td><td>Bico Injetor 2</td><td>D(2.5AZ)</td><td>Azul</td></tr>
+          <tr><td>19</td><td>Terra Sensores</td><td>D(0.5BR)</td><td>Marrom</td></tr>
+          <tr><td>20</td><td>Sinal Sensor Posição Motor</td><td>D(0.5SL)</td><td>Lilás</td></tr>
+          <tr><td>21</td><td>Sinal Sensor Rotação Motor</td><td>D(0.5BR/PR)</td><td>Marrom/Preto</td></tr>
+          <tr><td>22</td><td>Alimentação 5V Sensores</td><td>D(0.5VM/BR)</td><td>Vermelho/Marrom</td></tr>
+          <tr><td>27</td><td>Sinal Válvula Atuadora Vácuo</td><td>D(286)0,5VD</td><td>Verde</td></tr>
+          <tr><td>28</td><td>Sinal Atuador Bomba Alta Pressão</td><td>D(440)0,75AM</td><td>Amarelo</td></tr>
+          <tr><td>31</td><td>Bico Injetor 3</td><td>D(2.5PR)</td><td>Preto/Rosa</td></tr>
+          <tr><td>33</td><td>Bico Injetor 4</td><td>D(2.5AZ)</td><td>Azul</td></tr>
+          <tr><td>40</td><td>Terra Atuadores</td><td>D(0.5BR)</td><td>Marrom</td></tr>
+          <tr><td>41</td><td>Sinal Sensor Pressão Coletor</td><td>D(1.5CZ/AM)</td><td>Cinza/Amarelo</td></tr>
+          <tr><td>46</td><td>Comando Bicos</td><td>D(2.5PR/CZ)</td><td>Preto/Cinza</td></tr>
+          <tr><td>47</td><td>Comando Bicos</td><td>D(2.5PT/LL)</td><td>Preto/Lilás</td></tr>
+          <tr><td>48</td><td>Sinal Sensor Posição Motor</td><td>D(0.5AZ/BR)</td><td>Azul/Marrom</td></tr>
+          <tr><td>50</td><td>Sinal Sensor Rotação Motor</td><td>D(0.5AZ/PR)</td><td>Azul/Preto</td></tr>
+          <tr><td>53</td><td>Alimentação 5V Sensores</td><td>D(0.5AZ/MA)</td><td>Azul/Marrom</td></tr>
+          <tr><td>58</td><td>Terra Sensores</td><td>D(0.5VD/VM)</td><td>Violeta/Vermelho</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao"><strong>Funcionamento:</strong> A ECU EDC16 é o "cérebro" do sistema de injeção. Ela recebe sinais de todos os sensores, processa as informações e comanda os atuadores. Possui mapas de injeção que otimizam consumo, potência e emissões.</div>
+  </div>
+
+</main>
+
+<button class="btn-print" onclick="window.print()">
+  🖨️ <span>Imprimir / Salvar PDF</span>
+</button>
+
+<script>
+  const menu = document.getElementById('menuLateral');
+  const overlay = document.getElementById('overlay');
+  const body = document.body;
+  const btnMenu = document.getElementById('btnMenu');
+
+  function isMobile() { return window.innerWidth < 1024; }
+
+  function initMenu() {
+    if (isMobile()) {
+      menu.classList.add('fechado');
+      body.classList.remove('menu-aberto');
+    } else {
+      menu.classList.remove('fechado');
+      body.classList.add('menu-aberto');
+    }
+  }
+
+  function toggleMenu() {
+    if (isMobile()) {
+      const fechado = menu.classList.toggle('fechado');
+      overlay.classList.toggle('ativo', !fechado);
+      body.classList.toggle('menu-aberto', !fechado);
+    } else {
+      const aberto = body.classList.toggle('menu-aberto');
+      menu.classList.toggle('fechado', !aberto);
+    }
+  }
+
+  document.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (isMobile()) {
+        menu.classList.add('fechado');
+        overlay.classList.remove('ativo');
+        body.classList.remove('menu-aberto');
+      }
+    });
+  });
+
+  overlay.addEventListener('click', () => {
+    menu.classList.add('fechado');
+    overlay.classList.remove('ativo');
+    body.classList.remove('menu-aberto');
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isMobile()) {
+      menu.classList.add('fechado');
+      overlay.classList.remove('ativo');
+      body.classList.remove('menu-aberto');
+    }
+  });
+
+  let ultimoEstadoMobile = isMobile();
+  window.addEventListener('resize', () => {
+    const atualMobile = isMobile();
+    if (atualMobile !== ultimoEstadoMobile) {
+      initMenu();
+      ultimoEstadoMobile = atualMobile;
+    }
+  });
+
+  initMenu();
+</script>
+
+</body>
+</html>
