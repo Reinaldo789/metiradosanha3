@@ -6,7 +6,7 @@
 <title>Diagramas Elétricos - Agrale Marruá AM21</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+  html { scroll-behavior: smooth; scroll-padding-top: 80px; -webkit-text-size-adjust: 100%; -moz-text-size-adjust: 100%; text-size-adjust: 100%; }
   body { font-family: 'Segoe UI', Arial, sans-serif; background: #1e1e2e; color: #e0e0e0; min-height: 100vh; overflow-x: hidden; }
   .btn-menu { position: fixed; top: 15px; left: 15px; z-index: 1001; background: #89b4fa; color: #1e1e2e; border: none; width: 45px; height: 45px; border-radius: 8px; font-size: 22px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(137,180,250,0.3); transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
   .btn-menu:hover { background: #b4befe; transform: scale(1.05); }
@@ -76,6 +76,16 @@
     .tabela-posicoes { min-width: 550px; }
   }
   @media (max-width: 480px) { h1 { font-size: 16px; } .componente h2 { font-size: 13px; } .tabela-pinagem { font-size: 11px; } .btn-topo { width: 42px; height: 42px; font-size: 18px; } }
+  /* Correção celular: impede o navegador de aumentar o texto das tabelas largas e iguala os tamanhos */
+  .tabela-wrapper, .destaque { max-height: 999999px; }
+  @media (max-width: 768px) {
+    .tabela-pinagem th, .tabela-pinagem td, .destaque th, .destaque td { font-size: 12px; line-height: 1.4; padding: 7px 8px; }
+    .destaque table { font-size: 12px; min-width: 420px; }
+  }
+  @media (max-width: 480px) {
+    .tabela-pinagem th, .tabela-pinagem td, .destaque th, .destaque td { font-size: 11px; padding: 6px 7px; }
+    .destaque table { font-size: 11px; }
+  }
   @media print { nav, .btn-topo, .btn-menu, .overlay { display: none !important; } body { background: white; color: black; } main { max-width: 100%; padding: 10px; margin: 0 !important; } .componente { background: white; border: 1px solid #ccc; page-break-inside: avoid; } .tabela-pinagem th { background: #ddd; color: #000; } .tabela-pinagem td { color: #000; } .pino { background: #eee; color: #000; } .destino { color: #000; } .descricao-acao { border-left-color: #000; } .comportamento { border: 1px solid #000; } }
 </style>
 </head>
@@ -172,7 +182,7 @@
           <tr><td><span class="pino">4</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span><strong>Amarelo</strong></span></td><td><strong>AM</strong></td><td>Ignição (+15) / Sinal analógico</td></tr>
           <tr><td><span class="pino">5</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span><strong>Verde</strong></span></td><td><strong>VD</strong></td><td>Comandos / Sinais de relé</td></tr>
           <tr><td><span class="pino">6</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span><strong>Azul</strong></span></td><td><strong>AZ</strong></td><td>D+ / W / Sinais de sensores</td></tr>
-          <tr><td><span class="pino">7</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span><strong>Violeta</strong></span></td><td><strong>VD</strong></td><td>Sinais de comandos / Atuadores</td></tr>
+          <tr><td><span class="pino">7</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span><strong>Violeta</strong></span></td><td><strong>VL</strong></td><td>Sinais de comandos / Atuadores</td></tr>
           <tr><td><span class="pino">8</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span><strong>Cinza</strong></span></td><td><strong>CZ</strong></td><td>Iluminação / Sinais de sensores</td></tr>
           <tr><td><span class="pino">9</span></td><td><span class="fio"><span class="fio-cor" style="background:#fff; border:1px solid #666;"></span><strong>Branco</strong></span></td><td><strong>BR</strong></td><td>Sinais especiais</td></tr>
         </tbody>
