@@ -6,6 +6,7 @@
 <title>Diagramas Elétricos - Agrale Marruá AM21</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   body { font-family: 'Segoe UI', Arial, sans-serif; background: #1e1e2e; color: #e0e0e0; min-height: 100vh; overflow-x: hidden; }
   .btn-menu { position: fixed; top: 15px; left: 15px; z-index: 1001; background: #89b4fa; color: #1e1e2e; border: none; width: 45px; height: 45px; border-radius: 8px; font-size: 22px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(137,180,250,0.3); transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
   .btn-menu:hover { background: #b4befe; transform: scale(1.05); }
@@ -28,7 +29,9 @@
   .tabela-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; border-radius: 6px; }
   .tabela-pinagem { width: 100%; min-width: 650px; border-collapse: collapse; font-size: 12px; }
   .tabela-pinagem th { background: #313244; color: #89b4fa; padding: 8px 10px; text-align: left; border: 1px solid #45475a; font-weight: 600; white-space: nowrap; }
-  .tabela-pinagem td { padding: 8px 10px; border: 1px solid #45475a; color: #cdd6f4; vertical-align: middle; }
+  .tabela-pinagem td { padding: 8px 10px; border: 1px solid #45475a; color: #cdd6f4; vertical-align: middle; font-size: 12px; line-height: 1.4; }
+  .tabela-pinagem td:nth-child(2) { white-space: normal; min-width: 300px; font-size: 11px; }
+  .tabela-pinagem th:nth-child(2) { min-width: 300px; }
   .tabela-pinagem tr:nth-child(even) { background: #1e1e2e; }
   .pino { display: inline-block; background: #45475a; color: #f9e2af; padding: 2px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-weight: bold; font-size: 11px; white-space: nowrap; }
   .fio { display: inline-flex; align-items: center; gap: 6px; font-family: 'Consolas', monospace; font-size: 11px; white-space: nowrap; }
@@ -61,6 +64,8 @@
     .btn-print { padding: 10px 14px; font-size: 12px; bottom: 15px; right: 15px; }
     .btn-menu { width: 40px; height: 40px; font-size: 20px; top: 12px; left: 12px; }
     nav { width: 85vw; max-width: 320px; }
+    .tabela-pinagem { min-width: 750px; }
+    .tabela-posicoes { min-width: 550px; }
   }
   @media (max-width: 480px) { h1 { font-size: 16px; } .componente h2 { font-size: 13px; } .tabela-pinagem { font-size: 11px; } .btn-print span { display: none; } .btn-print::before { content: "🖨️"; font-size: 18px; } }
   @media print { nav, .btn-print, .btn-menu, .overlay { display: none !important; } body { background: white; color: black; } main { max-width: 100%; padding: 10px; margin: 0 !important; } .componente { background: white; border: 1px solid #ccc; page-break-inside: avoid; } .tabela-pinagem th { background: #ddd; color: #000; } .tabela-pinagem td { color: #000; } .pino { background: #eee; color: #000; } .destino { color: #000; } .descricao-acao { border-left-color: #000; } .comportamento { border: 1px solid #000; } }
@@ -399,7 +404,7 @@
     <div class="descricao-acao"><strong>Funcionamento:</strong> Protege o circuito da linha 15 (painel, instrumentos). Se a corrente ultrapassar 7,5A, o filamento derrete.</div>
   </div>
 
-   <!-- ============ PÁGINA 10: LIMPADOR ============ -->
+  <!-- ============ PÁGINA 10: LIMPADOR ============ -->
   <div class="componente" id="limpador">
     <h2>🌧️ Sistema do Limpador e Lavador</h2>
     <span class="ref">📄 Página 10 do PDF</span>
@@ -1326,7 +1331,7 @@
     <div class="descricao-acao"><strong>Funcionamento:</strong> Sensor tipo reostato que varia a resistência conforme a pressão do óleo. Envia o sinal para o manômetro do painel.</div>
   </div>
 
-   <!-- ============ PÁGINA 21: TACÔMETRO / TEMPERATURA / COMBUSTÍVEL ============ -->
+  <!-- ============ PÁGINA 21: TACÔMETRO / TEMPERATURA / COMBUSTÍVEL ============ -->
   <div class="componente" id="tacometro">
     <h2>📊 Tacômetro / Temperatura / Combustível</h2>
     <span class="ref">📄 Página 21 do PDF</span>
