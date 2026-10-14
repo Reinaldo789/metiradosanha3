@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagramas Elétricos - Toyota Hilux 3.0 16V i-ART Denso</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #1e1e2e; color: #e0e0e0; min-height: 100vh; overflow-x: hidden; }
+  .btn-menu { position: fixed; top: 15px; left: 15px; z-index: 1001; background: #89b4fa; color: #1e1e2e; border: none; width: 45px; height: 45px; border-radius: 8px; font-size: 22px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(137,180,250,0.3); transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+  .btn-menu:hover { background: #b4befe; transform: scale(1.05); }
+  .btn-menu:active { transform: scale(0.95); }
+  .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 998; opacity: 0; visibility: hidden; transition: all 0.3s; }
+  .overlay.ativo { opacity: 1; visibility: visible; }
+  nav { position: fixed; top: 0; left: 0; width: 320px; height: 100vh; background: #181825; padding: 70px 10px 20px 10px; overflow-y: auto; border-right: 2px solid #313244; z-index: 1000; transition: transform 0.3s ease; transform: translateX(0); }
+  nav.fechado { transform: translateX(-100%); }
+  nav h2 { font-size: 13px; color: #89b4fa; text-transform: uppercase; margin-bottom: 15px; padding-left: 10px; letter-spacing: 1px; position: sticky; top: -70px; background: #181825; padding-top: 15px; padding-bottom: 10px; z-index: 1; }
+  nav h3 { font-size: 11px; color: #6c7086; text-transform: uppercase; margin: 12px 0 6px 10px; letter-spacing: 1px; }
+  nav a { display: block; color: #cdd6f4; text-decoration: none; padding: 6px 10px; border-radius: 6px; font-size: 12px; margin-bottom: 2px; border-left: 3px solid transparent; transition: all 0.2s; }
+  nav a:hover { background: #313244; color: #89b4fa; border-left-color: #89b4fa; }
+  nav a .pg { color: #6c7086; font-size: 10px; margin-left: 5px; }
+  main { padding: 30px 40px; max-width: 1200px; margin: 0 auto; transition: margin-left 0.3s; padding-top: 70px; }
+  @media (min-width: 1024px) { body.menu-aberto main { margin-left: 320px; } body.menu-aberto .btn-menu { left: 335px; } }
+  h1 { color: #89b4fa; font-size: 22px; margin-bottom: 5px; border-bottom: 2px solid #313244; padding-bottom: 10px; }
+  .sub { color: #a6adc8; font-size: 12px; margin-bottom: 30px; }
+  .componente { background: #181825; border: 1px solid #313244; border-radius: 10px; padding: 20px; margin-bottom: 25px; page-break-inside: avoid; overflow: hidden; }
+  .componente h2 { color: #f9e2af; font-size: 16px; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .componente .ref { font-size: 11px; color: #6c7086; margin-bottom: 15px; display: block; }
+  .tabela-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; border-radius: 6px; }
+  .tabela-pinagem { width: 100%; min-width: 650px; border-collapse: collapse; font-size: 12px; }
+  .tabela-pinagem th { background: #313244; color: #89b4fa; padding: 8px 10px; text-align: left; border: 1px solid #45475a; font-weight: 600; white-space: nowrap; }
+  .tabela-pinagem td { padding: 8px 10px; border: 1px solid #45475a; color: #cdd6f4; vertical-align: middle; font-size: 12px; line-height: 1.4; }
+  .tabela-pinagem tr:nth-child(even) { background: #1e1e2e; }
+  .pino { display: inline-block; background: #45475a; color: #f9e2af; padding: 2px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-weight: bold; font-size: 11px; white-space: nowrap; }
+  .fio { display: inline-flex; align-items: center; gap: 6px; font-family: 'Consolas', monospace; font-size: 11px; white-space: nowrap; }
+  .fio-cor { width: 14px; height: 14px; border-radius: 2px; display: inline-block; border: 1px solid #666; flex-shrink: 0; }
+  .destino { color: #94e2d5; font-weight: 600; white-space: nowrap; }
+  .conexao-critica { background: #2a1a1a; border-left: 3px solid #f38ba8; }
+  .conexao-critica td { color: #f38ba8 !important; }
+  .comportamento { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 600; white-space: nowrap; }
+  .com { background: #f9e2af; color: #1e1e2e; }
+  .na  { background: #a6e3a1; color: #1e1e2e; }
+  .nf  { background: #f38ba8; color: #1e1e2e; }
+  .tensao { display: inline-block; font-size: 10px; padding: 2px 6px; border-radius: 3px; font-weight: 600; white-space: nowrap; }
+  .t30 { background: #f38ba8; color: #1e1e2e; }
+  .t15 { background: #f9e2af; color: #1e1e2e; }
+  .t50 { background: #a6e3a1; color: #1e1e2e; }
+  .ttr { background: #6c7086; color: #fff; }
+  .t58 { background: #cba6f7; color: #1e1e2e; }
+  .tac { background: #94e2d5; color: #1e1e2e; }
+  .t5v { background: #a6e3a1; color: #1e1e2e; }
+  .descricao-acao { background: #1e1e2e; border-left: 3px solid #89b4fa; padding: 12px 15px; margin-top: 15px; border-radius: 4px; font-size: 12px; color: #cdd6f4; line-height: 1.6; }
+  .descricao-acao strong { color: #89b4fa; }
+  .tabela-posicoes { width: 100%; min-width: 500px; border-collapse: collapse; font-size: 11px; margin-top: 10px; background: #1a1a2e; }
+  .tabela-posicoes th { background: #3a2a1a; color: #f9e2af; padding: 6px 8px; border: 1px solid #45475a; }
+  .tabela-posicoes td { padding: 6px 8px; border: 1px solid #45475a; color: #cdd6f4; }
+  .destaque { margin-top: 20px; padding: 15px; background: #1e1e2e; border: 1px solid #45475a; border-radius: 8px; overflow-x: auto; }
+  .destaque table { width: 100%; min-width: 500px; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+  .destaque th, .destaque td { border: 1px solid #45475a; padding: 6px 8px; text-align: left; }
+  .destaque th { background: #313244; color: #89b4fa; }
+  .destaque td { color: #cdd6f4; }
+  .anotacao { background: #2a2a1a; border-left: 3px solid #f9e2af; padding: 10px 15px; margin-top: 12px; border-radius: 4px; font-size: 11px; color: #f9e2af; line-height: 1.5; }
+  .anotacao strong { color: #fab387; }
+  .fluxo-visual { background: #1a1a2e; border: 1px dashed #89b4fa; border-radius: 8px; padding: 15px; margin-top: 15px; font-family: 'Consolas', monospace; font-size: 11px; color: #cdd6f4; overflow-x: auto; }
+  .fluxo-visual .linha { display: flex; align-items: center; gap: 8px; margin: 4px 0; flex-wrap: wrap; }
+  .fluxo-visual .bloco-mini { background: #313244; padding: 3px 8px; border-radius: 4px; color: #f9e2af; white-space: nowrap; }
+  .fluxo-visual .seta { color: #89b4fa; font-weight: bold; }
+  /* ---- BOTÃO VOLTAR AO TOPO ---- */
+  .btn-topo { position: fixed; bottom: 20px; right: 20px; background: #89b4fa; color: #1e1e2e; border: none; width: 50px; height: 50px; border-radius: 50%; font-weight: bold; cursor: pointer; font-size: 24px; box-shadow: 0 4px 15px rgba(137,180,250,0.4); z-index: 100; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; opacity: 0; visibility: hidden; transform: translateY(20px); }
+  .btn-topo.visivel { opacity: 1; visibility: visible; transform: translateY(0); }
+  .btn-topo:hover { background: #b4befe; transform: translateY(-3px) scale(1.05); box-shadow: 0 6px 20px rgba(137,180,250,0.6); }
+  .btn-topo:active { transform: translateY(0) scale(0.95); }
+  @media (max-width: 768px) {
+    main { padding: 20px 15px; padding-top: 70px; }
+    h1 { font-size: 18px; }
+    .sub { font-size: 11px; }
+    .componente { padding: 15px 12px; }
+    .componente h2 { font-size: 14px; }
+    .btn-topo { width: 45px; height: 45px; font-size: 20px; bottom: 15px; right: 15px; }
+    .btn-menu { width: 40px; height: 40px; font-size: 20px; top: 12px; left: 12px; }
+    nav { width: 85vw; max-width: 320px; }
+    .tabela-pinagem { min-width: 750px; }
+    .tabela-posicoes { min-width: 550px; }
+  }
+  @media (max-width: 480px) { h1 { font-size: 16px; } .componente h2 { font-size: 13px; } .tabela-pinagem { font-size: 11px; } .btn-topo { width: 42px; height: 42px; font-size: 18px; } }
+  @media print { nav, .btn-topo, .btn-menu, .overlay { display: none !important; } body { background: white; color: black; } main { max-width: 100%; padding: 10px; margin: 0 !important; } .componente { background: white; border: 1px solid #ccc; page-break-inside: avoid; } .tabela-pinagem th { background: #ddd; color: #000; } .tabela-pinagem td { color: #000; } .pino { background: #eee; color: #000; } .destino { color: #000; } .descricao-acao { border-left-color: #000; } .comportamento { border: 1px solid #000; } }
+</style>
+</head>
+<body class="menu-aberto">
+
+<button class="btn-menu" id="btnMenu" onclick="toggleMenu()">☰</button>
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<nav id="menuLateral">
+  <h2>📑 Índice do Manual</h2>
+  <h3>Introdução</h3>
+  <a href="#legenda-cores">🎨 Legenda de Cores <span class="pg">Geral</span></a>
+  <a href="#sistema-iart">🔧 Sistema i-ART <span class="pg">Descrição</span></a>
+  <a href="#injetor-g3pi">💉 Injetor G3Pi i-ART <span class="pg">Operação</span></a>
+  <h3>Componentes</h3>
+  <a href="#ecu">🧠 ECU (Engine Control) <span class="pg">A4</span></a>
+  <a href="#edu">⚡ EDU (Drive Unit) <span class="pg">A1</span></a>
+  <a href="#injetor1">💉 Injetor 1 (Válvula + Sensor) <span class="pg">A2</span></a>
+  <a href="#injetor2">💉 Injetor 2 (Válvula + Sensor) <span class="pg">A3</span></a>
+  <a href="#injetor3-4">💉 Injetores 3 e 4 (Controle) <span class="pg">A4</span></a>
+  <a href="#valvula-controle">🎛️ Válvula de Controle de Pressão <span class="pg">Rail</span></a>
+  <a href="#valvula-rail">🎛️ Válvula Reguladora Pressão Rail <span class="pg">F12</span></a>
+  <a href="#sensor-app">🦶 Sensor Posição Pedal Acelerador <span class="pg">B01</span></a>
+  <a href="#sensor-crp">⚙️ Sensor de Rotação (CRP/CKP) <span class="pg">E08</span></a>
+  <a href="#sensor-cmp">🔄 Sensor Posição Comando (CMP) <span class="pg">E14</span></a>
+  <a href="#sensor-intercooler">🌡️ Sensor Temperatura Intercooler <span class="pg">C09</span></a>
+  <a href="#sensor-agua">🌡️ Sensor Temperatura Água <span class="pg">C09</span></a>
+  <a href="#sensor-turbo">📊 Sensor Pressão Turbo <span class="pg">C18</span></a>
+  <a href="#sensor-aletas">📊 Sensor Posição Aletas Turbo <span class="pg">C11</span></a>
+  <a href="#atuador-aletas">🔧 Atuador Aletas Turbo <span class="pg">E15</span></a>
+  <a href="#valvula-egr">🎛️ Conjunto Válvula EGR <span class="pg">E01</span></a>
+  <a href="#ar-condicionado">❄️ Módulo Ar Condicionado <span class="pg">E10</span></a>
+  <a href="#sensor-velocidade">🏁 Sensor de Velocidade <span class="pg">E16</span></a>
+  <a href="#painel">📟 Painel de Instrumentos <span class="pg">C01</span></a>
+  <a href="#conector-diag">🔌 Conector de Diagnóstico <span class="pg">D23</span></a>
+  <a href="#imobilizador">🔒 Módulo de Controle (Imobilizador) <span class="pg">B28</span></a>
+  <a href="#telefone">📞 Transceptor de Telefone <span class="pg">B29</span></a>
+  <a href="#bloqueio-partida">🚫 Interruptor Bloqueio Partida <span class="pg">A06</span></a>
+  <a href="#interruptor-freio">🛑 Interruptor Pedal de Freio <span class="pg">A08</span></a>
+  <a href="#alternador">⚡ Alternador <span class="pg">O23</span></a>
+  <a href="#caixa-fusiveis">🔶 Caixa de Fusíveis <span class="pg">B01</span></a>
+</nav>
+
+<main>
+  <h1>Diagramas Elétricos — Toyota Hilux 3.0 16V (1KD-FTV i-ART) Denso</h1>
+  <p class="sub">Hilux 3.0 16V 1KD-FTV i-ART de 2012 em diante | Sistema Denso CRS i-ART (Intelligent Accuracy Refinement Technology)</p>
+
+  <!-- ============ LEGENDA DE CORES ============ -->
+  <div class="componente" id="legenda-cores">
+    <h2>🎨 Legenda de Cores dos Cabos</h2>
+    <span class="ref">📄 Código de cores dos fios (Denso)</span>
+
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Cor</th>
+            <th>Sigla</th>
+            <th>Aplicação Típica</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="pino">0</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span><strong>Preto</strong></span></td><td><strong>B</strong> (Black)</td><td>Terra / Chassi / Comandos</td></tr>
+          <tr><td><span class="pino">1</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span><strong>Marrom</strong></span></td><td><strong>Br</strong> (Brown)</td><td>Terra de sensores / Sinais</td></tr>
+          <tr><td><span class="pino">2</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span><strong>Vermelho</strong></span></td><td><strong>R</strong> (Red)</td><td>Alimentação +12V / B+</td></tr>
+          <tr><td><span class="pino">3</span></td><td><span class="fio"><span class="fio-cor" style="background:#FF8C00;"></span><strong>Laranja</strong></span></td><td><strong>O</strong> (Orange)</td><td>Sinais digitais / PWM</td></tr>
+          <tr><td><span class="pino">4</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span><strong>Amarelo</strong></span></td><td><strong>Y</strong> (Yellow)</td><td>Ignição / Sinais analógicos</td></tr>
+          <tr><td><span class="pino">5</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span><strong>Verde</strong></span></td><td><strong>G</strong> (Green)</td><td>Comandos / Sinais de relé</td></tr>
+          <tr><td><span class="pino">6</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span><strong>Azul</strong></span></td><td><strong>L</strong> (Blue)</td><td>Sinais de sensores / D+</td></tr>
+          <tr><td><span class="pino">7</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span><strong>Violeta</strong></span></td><td><strong>V</strong> (Violet)</td><td>Sinais de comandos / Atuadores</td></tr>
+          <tr><td><span class="pino">8</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span><strong>Cinza</strong></span></td><td><strong>Gr</strong> (Gray)</td><td>Iluminação / Sinais</td></tr>
+          <tr><td><span class="pino">9</span></td><td><span class="fio"><span class="fio-cor" style="background:#fff; border:1px solid #666;"></span><strong>Branco</strong></span></td><td><strong>W</strong> (White)</td><td>Sinais especiais / Comunicação</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="anotacao">
+      <strong>📌 Padrão Denso:</strong> As cores seguem o padrão Denso/Toyota, onde as siglas são em inglês (B=Black, R=Red, Y=Yellow, G=Green, L=Blue, W=White, Br=Brown, Gr=Gray, V=Violet, O=Orange). Cabos com duas cores são grafados como <strong>"Cor1/Cor2"</strong> (ex: Y/B = Amarelo com faixa Preta).
+    </div>
+  </div>
+
+  <!-- ============ SISTEMA i-ART ============ -->
+  <div class="componente" id="sistema-iart">
+    <h2>🔧 Sistema i-ART (Intelligent Accuracy Refinement Technology)</h2>
+    <span class="ref">📄 Descrição do Sistema Denso CRS i-ART</span>
+
+    <div class="descricao-acao">
+      <strong>O que mudou em relação ao motor KD convencional:</strong>
+    </div>
+
+    <div class="destaque">
+      <strong style="color:#89b4fa;">📌 Principais alterações técnicas:</strong>
+      <table>
+        <thead><tr><th>#</th><th>Alteração</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1</strong></td><td>Os recém-projetados <strong>injetores piezo G3Pi</strong> com <strong>sensor de pressão embutido i-ART</strong> (e temperatura do combustível com função medidora)</td></tr>
+          <tr><td><strong>2</strong></td><td>A pressão do sistema aumentou de <strong>180 MPa</strong> para <strong>200 MPa</strong></td></tr>
+          <tr><td><strong>3</strong></td><td>Filtros de separação de umidade eficientes com <strong>camada dupla redundante</strong></td></tr>
+          <tr><td><strong>4</strong></td><td>Não está mais presente o <strong>sensor de temperatura do combustível</strong> da bomba de abastecimento</td></tr>
+          <tr><td><strong>5</strong></td><td>Não está mais presente o <strong>sensor de pressão do rail</strong> (substituído pelos sensores internos dos injetores)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="fluxo-visual">
+      <strong style="color:#89b4fa;display:block;margin-bottom:10px;">📌 Arquitetura do Sistema i-ART:</strong>
+      <div class="linha"><span class="bloco-mini">ECU</span> <span class="seta">→</span> <span class="bloco-mini">EDU (Drive Unit)</span> <span class="seta">→</span> <span class="bloco-mini">Injetores Piezo G3Pi</span></div>
+      <div class="linha"><span class="bloco-mini">Injetores G3Pi</span> <span class="seta">→</span> <span class="bloco-mini">Sensor de Pressão Interno</span> <span class="seta">→</span> <span class="bloco-mini">ECU (Feedback)</span></div>
+      <div class="linha"><span class="bloco-mini">Bomba de Alta Pressão</span> <span class="seta">→</span> <span class="bloco-mini">Rail (200 MPa)</span> <span class="seta">→</span> <span class="bloco-mini">Injetores G3Pi</span></div>
+      <div class="linha"><span class="bloco-mini">Válvula de Controle de Pressão</span> <span class="seta">→</span> <span class="bloco-mini">Controla Pressão do Rail</span></div>
+      <div class="linha"><span class="bloco-mini">Pressão de Retorno da Bomba</span> <span class="seta">→</span> <span class="bloco-mini">1,1 MPa (11 bar)</span></div>
+      <div class="linha"><span class="bloco-mini">Alimentação da Injeção</span> <span class="seta">→</span> <span class="bloco-mini">200 MPa (2000 bar)</span></div>
+    </div>
+
+    <div class="anotacao">
+      <strong>📌 Sensores embutidos:</strong> O sistema i-ART tem sensores de pressão construídos <strong>dentro dos injetores piezo</strong>. O i-ART detecta a variação de pressão e temperatura de combustível para <strong>cada cilindro individualmente</strong>, proporcionando um retorno para a ECU controlar a taxa de injeção de forma ideal e individualizada.
+    </div>
+
+    <div class="descricao-acao">
+      <strong>Fluxo de controle:</strong><br><br>
+      • <strong>Cada injetor G3Pi</strong> envia à ECU dois sinais: <strong>pressão interna</strong> e <strong>temperatura do combustível</strong>.<br>
+      • A ECU calcula a taxa de injeção ideal por cilindro usando um <strong>modelo trapezoidal</strong>.<br>
+      • A ECU envia comandos ao <strong>EDU (Electronic Drive Unit)</strong>.<br>
+      • O EDU atua nos injetores piezo com a tensão correta.<br>
+      • O sistema compensa diferenças de cilindro para cilindro (balanceamento de injeção).
+    </div>
+  </div>
+
+  <!-- ============ INJETOR G3Pi i-ART ============ -->
+  <div class="componente" id="injetor-g3pi">
+    <h2>💉 Injetor Piezo G3Pi i-ART — Operação</h2>
+    <span class="ref">📄 Funcionamento interno do injetor piezo</span>
+
+    <div class="descricao-acao">
+      <strong>Princípio de funcionamento do injetor piezo:</strong>
+    </div>
+
+    <div class="destaque">
+      <strong style="color:#89b4fa;">📌 Estados do injetor:</strong>
+      <table>
+        <thead>
+          <tr><th>Estado</th><th>Tensão na Pilha Piezo</th><th>Ação Interna</th><th>Resultado</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>🔵 SEM ACIONAMENTO</strong></td>
+            <td>0V (sem tensão)</td>
+            <td>A pilha piezo está contraída; a válvula de controle mantém o assento superior fechado</td>
+            <td>Pressão da câmara de controle = pressão do rail → agulha fechada → <strong>SEM INJEÇÃO</strong></td>
+          </tr>
+          <tr>
+            <td><strong>🟢 EM INJEÇÃO</strong></td>
+            <td>Tensão aplicada</td>
+            <td>A pilha piezo se expande; empurra a válvula de controle para baixo, abrindo o assento superior e fechando o assento inferior</td>
+            <td>Combustível da câmara de controle escapa pelo orifício A → pressão cai → agulha sobe → <strong>INJEÇÃO</strong></td>
+          </tr>
+          <tr>
+            <td><strong>🔴 INJEÇÃO COMPLETA</strong></td>
+            <td>Tensão removida</td>
+            <td>A pilha piezo se contrai; a válvula de controle volta à posição original, fechando o assento superior</td>
+            <td>Pressão da câmara de controle retorna à pressão do rail → agulha desce → <strong>FIM DA INJEÇÃO</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="anotacao">
+      <strong>📌 Importante:</strong> O injetor piezo <strong>não usa solenoide</strong>. Ele usa uma <strong>pilha piezoelétrica</strong> que se expande/contrai com a tensão. Esse movimento é amplificado por pistões (grande e pequeno diâmetro) para atuar na válvula de controle. É esse princípio que permite múltiplas injeções por ciclo (pilot, main, post) com extrema precisão.
+    </div>
+
+    <div class="destaque">
+      <strong style="color:#89b4fa;">📌 Sensores embutidos em cada injetor G3Pi:</strong>
+      <table>
+        <thead><tr><th>Sensor</th><th>Função</th><th>Retorno para a ECU</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Sensor de Pressão</strong></td><td>Mede a pressão interna do combustível dentro do injetor</td><td>Sinal analógico de pressão (por cilindro)</td></tr>
+          <tr><td><strong>Sensor de Temperatura</strong></td><td>Mede a temperatura do combustível dentro do injetor</td><td>Sinal analógico de temperatura (por cilindro)</td></tr>
+          <tr><td><strong>Válvula Piezo</strong></td><td>Atua mecanicamente na agulha do bico</td><td>Recebe tensão do EDU</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+    <!-- ============ ECU (ENGINE CONTROL) ============ -->
+  <div class="componente" id="ecu">
+    <h2>🧠 ECU (Engine Control Unit)</h2>
+    <span class="ref">📄 Conector A4 | Central de controle do motor</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr class="conexao-critica"><td><span class="pino">B01</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom/Vermelho</span></td><td class="destino">Caixa de Fusíveis</td><td><span class="tensao t30">+B</span></td><td>Alimentação direta da bateria</td></tr>
+          <tr><td><span class="pino">B03</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom/Amarelo</span></td><td class="destino">Sensor Posição Pedal</td><td><span class="tensao t5v">+5V</span></td><td>Alimentação 5V do APP</td></tr>
+          <tr><td><span class="pino">A01</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span>Cinza/Verde</span></td><td class="destino">Sensor Posição Pedal</td><td><span class="tensao tac">Sinal</span></td><td>Sinal VPA2 (APP)</td></tr>
+          <tr><td><span class="pino">B05</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span>Cinza</span></td><td class="destino">Sensor Posição Pedal</td><td><span class="tensao tac">Sinal</span></td><td>Sinal VPA (APP)</td></tr>
+          <tr><td><span class="pino">B06</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom/Branco</span></td><td class="destino">Sensor Posição Pedal</td><td><span class="tensao t5v">+5V</span></td><td>Alimentação 5V do APP</td></tr>
+          <tr><td><span class="pino">E08</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Amarelo</span></td><td class="destino">Sensor CRP</td><td><span class="tensao tac">Sinal</span></td><td>Sinal NE+ do Sensor Rotação</td></tr>
+          <tr><td><span class="pino">E07</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>Azul</span></td><td class="destino">Sensor CRP</td><td><span class="tensao tac">Sinal</span></td><td>Sinal NE− do Sensor Rotação</td></tr>
+          <tr><td><span class="pino">E14</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>Azul</span></td><td class="destino">Sensor CMP</td><td><span class="tensao tac">Sinal</span></td><td>Sinal G+ do Sensor Comando</td></tr>
+          <tr><td><span class="pino">E13</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom</span></td><td class="destino">Sensor CMP</td><td><span class="tensao tac">Sinal</span></td><td>Sinal G− do Sensor Comando</td></tr>
+          <tr><td><span class="pino">C09</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Amarelo</span></td><td class="destino">Sensor Temp. Intercooler</td><td><span class="tensao tac">Sinal</span></td><td>Sinal THA</td></tr>
+          <tr><td><span class="pino">C09</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Amarelo/Verde</span></td><td class="destino">Sensor Temp. Água</td><td><span class="tensao tac">Sinal</span></td><td>Sinal THW</td></tr>
+          <tr><td><span class="pino">C18</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Vermelho/Branco</span></td><td class="destino">Sensor Pressão Turbo</td><td><span class="tensao t5v">+5V</span></td><td>Alimentação 5V VC</td></tr>
+          <tr><td><span class="pino">C11</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>Violeta</span></td><td class="destino">Sensor Aletas Turbo</td><td><span class="tensao t5v">+5V</span></td><td>Alimentação VTA</td></tr>
+          <tr><td><span class="pino">C15</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>Violeta</span></td><td class="destino">Sensor Aletas Turbo</td><td><span class="tensao tac">Sinal</span></td><td>Sinal VTA1 (posição aletas)</td></tr>
+          <tr><td><span class="pino">C11</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>Azul</span></td><td class="destino">Sensor Aletas Turbo</td><td><span class="tensao tac">Sinal</span></td><td>Sinal VTA2 (redundante)</td></tr>
+          <tr><td><span class="pino">C17</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom</span></td><td class="destino">Sensor Aletas Turbo</td><td><span class="tensao ttr">Terra</span></td><td>Terra do sensor</td></tr>
+          <tr><td><span class="pino">E14</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>Preto</span></td><td class="destino">Atuador Aletas Turbo</td><td><span class="tensao tac">Sinal</span></td><td>Sinal PWM para atuador</td></tr>
+          <tr><td><span class="pino">E15</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>Verde/Branco</span></td><td class="destino">Atuador Aletas Turbo</td><td><span class="tensao tac">Sinal</span></td><td>Retorno do atuador</td></tr>
+          <tr><td><span class="pino">F12</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom</span></td><td class="destino">Válvula Reguladora Rail</td><td><span class="tensao tac">Sinal</span></td><td>Sinal de comando da válvula</td></tr>
+          <tr><td><span class="pino">F12</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>Verde/Branco</span></td><td class="destino">Válvula Reguladora Rail</td><td><span class="tensao tac">Sinal</span></td><td>Retorno da válvula</td></tr>
+          <tr><td><span class="pino">E01</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom</span></td><td class="destino">Conjunto Válvula EGR</td><td><span class="tensao tac">Sinal</span></td><td>Sinal de comando EGR</td></tr>
+          <tr><td><span class="pino">E01</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>Azul</span></td><td class="destino">Conjunto Válvula EGR</td><td><span class="tensao tac">Sinal</span></td><td>Sinal de posição EGR</td></tr>
+          <tr><td><span class="pino">E01</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>Azul</span></td><td class="destino">Módulo Ar Condicionado</td><td><span class="tensao tac">Sinal</span></td><td>Comando do compressor A/C</td></tr>
+          <tr><td><span class="pino">E10</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom</span></td><td class="destino">Sensor de Velocidade</td><td><span class="tensao tac">Sinal</span></td><td>Sinal SPD</td></tr>
+          <tr><td><span class="pino">E16</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>Rosa/Azul</span></td><td class="destino">Sensor de Velocidade</td><td><span class="tensao tac">Sinal</span></td><td>Sinal SPD (redundante)</td></tr>
+          <tr><td><span class="pino">B16</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Rosa</span></td><td class="destino">Painel de Instrumentos</td><td><span class="tensao tac">Sinal</span></td><td>Sinal de comunicação</td></tr>
+          <tr><td><span class="pino">B30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Rosa/Vermelho</span></td><td class="destino">Painel de Instrumentos</td><td><span class="tensao tac">Sinal</span></td><td>Velocímetro</td></tr>
+          <tr><td><span class="pino">B11</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Rosa/Vermelho</span></td><td class="destino">Painel de Instrumentos</td><td><span class="tensao tac">Sinal</span></td><td>Engine Check (MIL)</td></tr>
+          <tr><td><span class="pino">D23</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom</span></td><td class="destino">Conector de Diagnóstico</td><td><span class="tensao tac">Sinal</span></td><td>CAN HIGH</td></tr>
+          <tr><td><span class="pino">D36</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>Vermelho</span></td><td class="destino">Conector de Diagnóstico</td><td><span class="tensao tac">Sinal</span></td><td>CAN LOW</td></tr>
+          <tr><td><span class="pino">B28</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom/Preto</span></td><td class="destino">Módulo Imobilizador</td><td><span class="tensao tac">Sinal</span></td><td>Comunicação IMO</td></tr>
+          <tr><td><span class="pino">B29</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Amarelo/Preto</span></td><td class="destino">Transceptor Telefone</td><td><span class="tensao tac">Sinal</span></td><td>Comunicação telefone</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> A ECU é o cérebro do sistema. Ela recebe sinais de todos os sensores (pressão rail, temperatura, posição, rotação, etc.), processa as informações e envia comandos ao EDU para atuar nos injetores piezo. No sistema i-ART, a ECU também recebe o feedback individual de pressão e temperatura de cada injetor, permitindo balanceamento cilindro a cilindro.
+    </div>
+  </div>
+
+  <!-- ============ EDU (DRIVE UNIT) ============ -->
+  <div class="componente" id="edu">
+    <h2>⚡ EDU (Electronic Drive Unit)</h2>
+    <span class="ref">📄 Conector A1 | Unidade de acionamento dos injetores piezo</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr class="conexao-critica"><td><span class="pino">D06</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>Vermelho</span></td><td class="destino">Injetor 1 — Sensor de Pressão</td><td><span class="tensao tac">Sinal</span></td><td>Alimentação do sensor de pressão</td></tr>
+          <tr><td><span class="pino">D18</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Amarelo</span></td><td class="destino">Injetor 1 — Sensor de Pressão</td><td><span class="tensao t5v">+5V</span></td><td>Alimentação 5V do sensor</td></tr>
+          <tr><td><span class="pino">D12</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Preto</span></td><td class="destino">Injetor 1 — Sensor de Pressão</td><td><span class="tensao tac">Sinal</span></td><td>Sinal de pressão do injetor 1</td></tr>
+          <tr><td><span class="pino">D22</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>Branco</span></td><td class="destino">Injetor 1 — Controle</td><td><span class="tensao tac">Sinal</span></td><td>Comando piezo injetor 1</td></tr>
+          <tr class="conexao-critica"><td><span class="pino">D05</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>Azul</span></td><td class="destino">Injetor 2 — Sensor de Pressão</td><td><span class="tensao tac">Sinal</span></td><td>Alimentação do sensor de pressão</td></tr>
+          <tr><td><span class="pino">D17</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Amarelo</span></td><td class="destino">Injetor 2 — Sensor de Pressão</td><td><span class="tensao t5v">+5V</span></td><td>Alimentação 5V do sensor</td></tr>
+          <tr><td><span class="pino">D11</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>Verde</span></td><td class="destino">Injetor 2 — Sensor de Pressão</td><td><span class="tensao tac">Sinal</span></td><td>Sinal de pressão do injetor 2</td></tr>
+          <tr><td><span class="pino">D21</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>Rosa</span></td><td class="destino">Injetor 2 — Controle</td><td><span class="tensao tac">Sinal</span></td><td>Comando piezo injetor 2</td></tr>
+          <tr><td><span class="pino">B03</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>Rosa</span></td><td class="destino">Injetor 3 — Controle</td><td><span class="tensao tac">Sinal</span></td><td>Comando piezo injetor 3</td></tr>
+          <tr><td><span class="pino">B06</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>Azul</span></td><td class="destino">Injetor 3 — Controle</td><td><span class="tensao tac">Sinal</span></td><td>Retorno piezo injetor 3</td></tr>
+          <tr><td><span class="pino">B04</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>Preto</span></td><td class="destino">Injetor 4 — Controle</td><td><span class="tensao tac">Sinal</span></td><td>Comando piezo injetor 4</td></tr>
+          <tr><td><span class="pino">B01</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>Branco</span></td><td class="destino">Injetor 4 — Controle</td><td><span class="tensao tac">Sinal</span></td><td>Retorno piezo injetor 4</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="anotacao">
+      <strong>📌 EDU (Electronic Drive Unit):</strong> O EDU é a <strong>unidade de acionamento</strong> que recebe os comandos de baixa potência da ECU e os converte em <strong>pulsos de alta tensão</strong> para acionar a pilha piezo de cada injetor. Sem o EDU, a ECU não consegue acionar os injetores piezo (que precisam de ~200V para expandir a pilha).
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> A ECU envia os sinais de tempo de injeção (Tp) e taxa de injeção (Tq) para o EDU. O EDU gera os pulsos de tensão corretos para cada injetor piezo, respeitando a sequência de injeção (1-3-4-2). O circuito é dividido em duas partes: <strong>sensor de pressão</strong> (alimentação, sinal e terra) e <strong>controle piezo</strong> (comando e retorno).
+    </div>
+  </div>
+
+  <!-- ============ INJETOR 1 ============ -->
+  <div class="componente" id="injetor1">
+    <h2>💉 Injetor 1 (Piezo G3Pi i-ART)</h2>
+    <span class="ref">📄 Conector A2 | Válvula injetora + Sensor de pressão</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr class="conexao-critica"><td><span class="pino">01</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>Vermelho</span></td><td class="destino">EDU (D06)</td><td><span class="tensao tac">Sinal</span></td><td>Sensor de Pressão</td></tr>
+          <tr><td><span class="pino">02</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>Preto</span></td><td class="destino">EDU (D18)</td><td><span class="tensao t5v">+5V</span></td><td>Alimentação do sensor</td></tr>
+          <tr><td><span class="pino">03</span></td><td><span class="fio"><span class="fio-cor" style="background:#fff;"></span>Branco</span></td><td class="destino">EDU (D12)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal de pressão</td></tr>
+          <tr><td><span class="pino">04</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>Preto</span></td><td class="destino">EDU (D22)</td><td><span class="tensao tac">Sinal</span></td><td>Controle da válvula piezo</td></tr>
+          <tr><td><span class="pino">05</span></td><td><span class="fio"><span class="fio-cor" style="background:#fff;"></span>Branco</span></td><td class="destino">EDU</td><td><span class="tensao tac">Sinal</span></td><td>Retorno piezo</td></tr>
+          <tr><td><span class="pino">06</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>Preto</span></td><td class="destino">Terra</td><td><span class="tensao ttr">Terra</span></td><td>Terra do injetor</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> O injetor 1 possui <strong>sensor de pressão embutido</strong> (pinos 1-3) e <strong>controle piezo</strong> (pinos 4-6). O sensor envia o sinal de pressão interna para a ECU (via EDU) para ajuste fino da injeção. A pilha piezo é acionada pelo EDU com tensão modulada em PWM.
+    </div>
+  </div>
+
+  <!-- ============ INJETOR 2 ============ -->
+  <div class="componente" id="injetor2">
+    <h2>💉 Injetor 2 (Piezo G3Pi i-ART)</h2>
+    <span class="ref">📄 Conector A3 | Válvula injetora + Sensor de pressão</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Terminal</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr class="conexao-critica"><td><span class="pino">01</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>Azul</span></td><td class="destino">EDU (D05)</td><td><span class="tensao tac">Sinal</span></td><td>Sensor de Pressão</td></tr>
+          <tr><td><span class="pino">02</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Amarelo</span></td><td class="destino">EDU (D17)</td><td><span class="tensao t5v">+5V</span></td><td>Alimentação do sensor</td></tr>
+          <tr><td><span class="pino">03</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>Verde</span></td><td class="destino">EDU (D11)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal de pressão</td></tr>
+          <tr><td><span class="pino">04</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>Preto</span></td><td class="destino">EDU (D21)</td><td><span class="tensao tac">Sinal</span></td><td>Controle da válvula piezo</td></tr>
+          <tr><td><span class="pino">05</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>Azul</span></td><td class="destino">EDU</td><td><span class="tensao tac">Sinal</span></td><td>Retorno piezo</td></tr>
+          <tr><td><span class="pino">06</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>Rosa</span></td><td class="destino">EDU</td><td><span class="tensao tac">Sinal</span></td><td>Controle redundante</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> Idêntico ao injetor 1, mas com fiação dedicada (pinos D05, D17, D11, D21). Cada injetor tem seu próprio circuito, permitindo que a ECU controle individualmente a injeção de cada cilindro.
+    </div>
+  </div>
+
+  <!-- ============ INJETORES 3 E 4 ============ -->
+  <div class="componente" id="injetor3-4">
+    <h2>💉 Injetores 3 e 4 (Controle Piezo)</h2>
+    <span class="ref">📄 Conector A4 | Controle dos injetores 3 e 4</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">B03</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>Rosa</span></td><td class="destino">Injetor 3 — Controle</td><td><span class="tensao tac">Sinal</span></td><td>Comando piezo injetor 3</td></tr>
+          <tr><td><span class="pino">B06</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>Azul</span></td><td class="destino">Injetor 3 — Controle</td><td><span class="tensao tac">Sinal</span></td><td>Retorno piezo injetor 3</td></tr>
+          <tr><td><span class="pino">B04</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>Preto</span></td><td class="destino">Injetor 4 — Controle</td><td><span class="tensao tac">Sinal</span></td><td>Comando piezo injetor 4</td></tr>
+          <tr><td><span class="pino">B01</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>Branco</span></td><td class="destino">Injetor 4 — Controle</td><td><span class="tensao tac">Sinal</span></td><td>Retorno piezo injetor 4</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> Os injetores 3 e 4 compartilham o mesmo conector (A4) do módulo de controle, mas com pinos dedicados. O controle piezo é feito por dois fios (comando + retorno) para cada injetor, garantindo acionamento independente.
+    </div>
+  </div>
+
+  <!-- ============ SENSOR POSIÇÃO PEDAL ACELERADOR ============ -->
+  <div class="componente" id="sensor-app">
+    <h2>🦶 Sensor de Posição do Pedal do Acelerador (APP)</h2>
+    <span class="ref">📄 Conector B01 | Sensor duplo redundante</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">VPA</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span>Cinza</span></td><td class="destino">ECU (B05)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal VPA (0,5V a 4,5V)</td></tr>
+          <tr><td><span class="pino">VPA2</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span>Cinza/Verde</span></td><td class="destino">ECU (A01)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal VPA2 (redundante)</td></tr>
+          <tr><td><span class="pino">VCP</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom/Amarelo</span></td><td class="destino">ECU (B03)</td><td><span class="tensao t5v">+5V</span></td><td>Alimentação 5V do APP</td></tr>
+          <tr><td><span class="pino">VCPA</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom/Branco</span></td><td class="destino">ECU (B06)</td><td><span class="tensao t5v">+5V</span></td><td>Alimentação 5V redundante</td></tr>
+          <tr><td><span class="pino">EPA</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>Preto</span></td><td class="destino">Terra</td><td><span class="tensao ttr">Terra</span></td><td>Terra do APP</td></tr>
+          <tr><td><span class="pino">EPA2</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>Preto</span></td><td class="destino">Terra</td><td><span class="tensao ttr">Terra</span></td><td>Terra redundante</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> O APP é um sensor duplo (dois potenciômetros) para redundância. A ECU compara os dois sinais (VPA e VPA2). Se houver divergência, entra em modo de emergência com marcha lenta forçada. É o sensor principal para o controle de aceleração drive-by-wire.
+    </div>
+  </div>
+
+  <!-- ============ SENSOR DE ROTAÇÃO (CRP) ============ -->
+  <div class="componente" id="sensor-crp">
+    <h2>⚙️ Sensor de Rotação (CRP / CKP)</h2>
+    <span class="ref">📄 Conector E08 | Sensor indutivo do volante do motor</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr class="conexao-critica"><td><span class="pino">NE+</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Amarelo</span></td><td class="destino">ECU (E08)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal NE+ (positivo)</td></tr>
+          <tr><td><span class="pino">NE−</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>Azul</span></td><td class="destino">ECU (E07)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal NE− (negativo)</td></tr>
+          <tr><td><span class="pino">Blindagem</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span>Branco/Preto</span></td><td class="destino">Blindagem</td><td><span class="tensao ttr">Blind.</span></td><td>Malha de blindagem</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> Sensor indutivo que lê os dentes da roda fônica do volante do motor. Gera um sinal alternado cuja frequência é proporcional à rotação do motor. É essencial para a ECU saber o momento exato de injetar e o regime do motor.
+    </div>
+  </div>
+
+  <!-- ============ SENSOR DE POSIÇÃO COMANDO (CMP) ============ -->
+  <div class="componente" id="sensor-cmp">
+    <h2>🔄 Sensor de Posição do Comando de Válvulas (CMP)</h2>
+    <span class="ref">📄 Conector E14 | Sensor de fase do comando</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">G+</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>Azul</span></td><td class="destino">ECU (E14)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal G+ (positivo)</td></tr>
+          <tr><td><span class="pino">G−</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom</span></td><td class="destino">ECU (E13)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal G− (negativo)</td></tr>
+          <tr><td><span class="pino">Blindagem</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span>Branco/Preto</span></td><td class="destino">Blindagem</td><td><span class="tensao ttr">Blind.</span></td><td>Malha de blindagem</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> Sensor que identifica a posição do comando de válvulas. Usado pela ECU para sincronizar a injeção sequencial (saber qual cilindro está no tempo de compressão). Trabalha em conjunto com o sensor de rotação (CRP).
+    </div>
+  </div>
+
+  <!-- ============ SENSOR TEMPERATURA INTERCOOLER ============ -->
+  <div class="componente" id="sensor-intercooler">
+    <h2>🌡️ Sensor de Temperatura do Intercooler</h2>
+    <span class="ref">📄 Conector C09 | Sensor NTC</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">THA</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Amarelo</span></td><td class="destino">ECU (C09)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal THA (temperatura)</td></tr>
+          <tr><td><span class="pino">E2</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom</span></td><td class="destino">Terra</td><td><span class="tensao ttr">Terra</span></td><td>Terra do sensor</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> Sensor tipo NTC (resistência negativa) que mede a temperatura do ar após o intercooler. A ECU usa esse sinal para ajustar a massa de ar admitida e o tempo de injeção.
+    </div>
+  </div>
+
+  <!-- ============ SENSOR TEMPERATURA ÁGUA ============ -->
+  <div class="componente" id="sensor-agua">
+    <h2>🌡️ Sensor de Temperatura da Água</h2>
+    <span class="ref">📄 Conector C09 | Sensor NTC</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">THW</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Amarelo/Verde</span></td><td class="destino">ECU (C09)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal THW (temperatura)</td></tr>
+          <tr><td><span class="pino">E2</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom</span></td><td class="destino">Terra</td><td><span class="tensao ttr">Terra</span></td><td>Terra do sensor</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> Sensor tipo NTC que mede a temperatura do líquido de arrefecimento. A ECU usa esse sinal para controle de partida a frio, correção de injeção, acionamento do ventilador e diagnóstico.
+    </div>
+  </div>
+
+  <!-- ============ SENSOR PRESSÃO TURBO ============ -->
+  <div class="componente" id="sensor-turbo">
+    <h2>📊 Sensor de Pressão do Turbo (MAP)</h2>
+    <span class="ref">📄 Conector C18 | Sensor de pressão do coletor</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">VC</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Vermelho/Branco</span></td><td class="destino">ECU (C18)</td><td><span class="tensao t5v">+5V</span></td><td>Alimentação 5V</td></tr>
+          <tr><td><span class="pino">PIM</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom</span></td><td class="destino">ECU (C18)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal de pressão do coletor</td></tr>
+          <tr><td><span class="pino">E2</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>Preto</span></td><td class="destino">Terra</td><td><span class="tensao ttr">Terra</span></td><td>Terra do sensor</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> Sensor de pressão absoluta do coletor de admissão (MAP). A ECU usa esse sinal para calcular a massa de ar admitida e ajustar a injeção, além de controlar a pressão do turbo (wastegate).
+    </div>
+  </div>
+
+  <!-- ============ SENSOR POSIÇÃO ALETAS TURBO ============ -->
+  <div class="componente" id="sensor-aletas">
+    <h2>📊 Sensor de Posição das Aletas do Turbo (VNT)</h2>
+    <span class="ref">📄 Conector C11 | Sensor de posição da geometria variável</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">VTA</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>Violeta</span></td><td class="destino">ECU (C11)</td><td><span class="tensao t5v">+5V</span></td><td>Alimentação 5V</td></tr>
+          <tr><td><span class="pino">VTA1</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>Violeta</span></td><td class="destino">ECU (C15)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal VTA1</td></tr>
+          <tr><td><span class="pino">VTA2</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>Azul</span></td><td class="destino">ECU (C11)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal VTA2 (redundante)</td></tr>
+          <tr><td><span class="pino">E2</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom</span></td><td class="destino">ECU (C17)</td><td><span class="tensao ttr">Terra</span></td><td>Terra do sensor</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> Sensor de posição da haste do atuador VNT (geometria variável do turbo). A ECU usa esse sinal para realimentar o controle de pressão do turbo, garantindo que a posição real das aletas corresponda à desejada.
+    </div>
+  </div>
+
+  <!-- ============ ATUADOR ALETAS TURBO ============ -->
+  <div class="componente" id="atuador-aletas">
+    <h2>🔧 Atuador das Aletas do Turbo (VNT)</h2>
+    <span class="ref">📄 Conector E15 | Atuador da geometria variável</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>Preto</span></td><td class="destino">ECU (E14)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal PWM do atuador</td></tr>
+          <tr><td><span class="pino">−</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>Verde/Branco</span></td><td class="destino">ECU (E15)</td><td><span class="tensao tac">Sinal</span></td><td>Retorno do atuador</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> O atuador VNT (Variable Nozzle Turbine) controla a posição das aletas do turbo por meio de um sinal PWM enviado pela ECU. Isso permite ajustar a pressão do turbo em toda a faixa de rotação, otimizando resposta e consumo.
+    </div>
+  </div>
+
+  <!-- ============ VÁLVULA REGULADORA PRESSÃO RAIL ============ -->
+  <div class="componente" id="valvula-rail">
+    <h2>🎛️ Válvula Reguladora da Pressão do Rail</h2>
+    <span class="ref">📄 Conector F12 | Válvula de controle de pressão</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom</span></td><td class="destino">ECU (F12)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal PWM da válvula</td></tr>
+          <tr><td><span class="pino">−</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>Verde/Branco</span></td><td class="destino">ECU (F12)</td><td><span class="tensao tac">Sinal</span></td><td>Retorno da válvula</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> Válvula solenoide que controla a pressão no rail de injeção. A ECU envia um sinal PWM para abrir/fechar a válvula, mantendo a pressão do rail no valor desejado (até 200 MPa no i-ART). É uma das principais responsáveis pela precisão da injeção.
+    </div>
+  </div>
+
+  <!-- ============ VÁLVULA DE CONTROLE DE PRESSÃO ============ -->
+  <div class="componente" id="valvula-controle">
+    <h2>🎛️ Válvula de Controle de Pressão (Rail)</h2>
+    <span class="ref">📄 Conector Rail | Válvula de alívio do rail</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>Vermelho</span></td><td class="destino">ECU</td><td><span class="tensao tac">Sinal</span></td><td>Comando da válvula</td></tr>
+          <tr><td><span class="pino">−</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>Preto</span></td><td class="destino">Terra</td><td><span class="tensao ttr">Terra</span></td><td>Terra da válvula</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> Válvula instalada no rail que atua como elemento de segurança, aliviando a pressão em caso de falha do sistema. Trabalha em conjunto com a válvula reguladora para manter a pressão estável.
+    </div>
+  </div>
+
+  <!-- ============ CONJUNTO VÁLVULA EGR ============ -->
+  <div class="componente" id="valvula-egr">
+    <h2>🎛️ Conjunto da Válvula EGR</h2>
+    <span class="ref">📄 Conector E01 | Válvula de recirculação de gases</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom</span></td><td class="destino">ECU (E01)</td><td><span class="tensao tac">Sinal</span></td><td>Comando do motor EGR</td></tr>
+          <tr><td><span class="pino">−</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>Azul</span></td><td class="destino">ECU (E01)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal de posição EGR</td></tr>
+          <tr><td><span class="pino">E</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>Azul</span></td><td class="destino">Módulo A/C</td><td><span class="tensao tac">Sinal</span></td><td>Comando do compressor A/C</td></tr>
+          <tr><td><span class="pino">A</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Amarelo</span></td><td class="destino">Terra</td><td><span class="tensao ttr">Terra</span></td><td>Terra do conjunto</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> A válvula EGR (Exhaust Gas Recirculation) recircula parte dos gases de escape para o coletor de admissão, reduzindo a temperatura de combustão e as emissões de NOx. A ECU controla a abertura da válvula via sinal PWM e monitora a posição real para diagnóstico.
+    </div>
+  </div>
+
+  <!-- ============ MÓDULO AR CONDICIONADO ============ -->
+  <div class="componente" id="ar-condicionado">
+    <h2>❄️ Módulo de Controle do Ar Condicionado</h2>
+    <span class="ref">📄 Conector E10 | Interface com o sistema de A/C</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>Vermelho/Azul</span></td><td class="destino">ECU (E10)</td><td><span class="tensao tac">Sinal</span></td><td>Comando do compressor</td></tr>
+          <tr><td><span class="pino">−</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>Amarelo</span></td><td class="destino">ECU (E10)</td><td><span class="tensao tac">Sinal</span></td><td>Retorno do módulo</td></tr>
+          <tr><td><span class="pino">Rosa</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>Rosa</span></td><td class="destino">ECU</td><td><span class="tensao tac">Sinal</span></td><td>Sinal de pressão A/C</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> O módulo de A/C envia sinal para a ECU solicitando o acionamento do compressor. A ECU gerencia o aumento de carga do motor e ajusta a marcha lenta para compensar o esforço do compressor.
+    </div>
+  </div>
+
+  <!-- ============ SENSOR DE VELOCIDADE ============ -->
+  <div class="componente" id="sensor-velocidade">
+    <h2>🏁 Sensor de Velocidade (VSS)</h2>
+    <span class="ref">📄 Conector E16 | Sensor de rotação do eixo de saída</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">SPD</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom/Preto</span></td><td class="destino">ECU (E10)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal de velocidade</td></tr>
+          <tr><td><span class="pino">SPD2</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>Rosa/Azul</span></td><td class="destino">ECU (E16)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal redundante</td></tr>
+          <tr><td><span class="pino">−</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>Preto</span></td><td class="destino">Terra</td><td><span class="tensao ttr">Terra</span></td><td>Terra do sensor</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> Sensor de velocidade do veículo que gera pulsos proporcionais à rotação do eixo de saída da transmissão. A ECU usa esse sinal para limitar a velocidade máxima, controle de marcha lenta em movimento e diagnóstico.
+    </div>
+  </div>
+
+  <!-- ============ PAINEL DE INSTRUMENTOS ============ -->
+  <div class="componente" id="painel">
+    <h2>📟 Painel de Instrumentos</h2>
+    <span class="ref">📄 Conector C01 | Interface com o motorista</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">B16</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Rosa</span></td><td class="destino">ECU (B16)</td><td><span class="tensao tac">Sinal</span></td><td>Comunicação CAN</td></tr>
+          <tr><td><span class="pino">B30</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Rosa/Vermelho</span></td><td class="destino">ECU (B30)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal de velocidade</td></tr>
+          <tr><td><span class="pino">B11</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Branco/Verde</span></td><td class="destino">ECU (B11)</td><td><span class="tensao tac">Sinal</span></td><td>Engine Check (MIL)</td></tr>
+          <tr><td><span class="pino">B06</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Vermelho/Preto</span></td><td class="destino">ECU</td><td><span class="tensao tac">Sinal</span></td><td>Vela de aquecimento</td></tr>
+          <tr><td><span class="pino">D01</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Preto/Branco</span></td><td class="destino">ECU</td><td><span class="tensao tac">Sinal</span></td><td>Sinal de rotação</td></tr>
+          <tr><td><span class="pino">C01</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Amarelo</span></td><td class="destino">ECU (C01)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal de temperatura</td></tr>
+          <tr><td><span class="pino">C03</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>Azul/Vermelho</span></td><td class="destino">ECU (C03)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal de combustível</td></tr>
+          <tr><td><span class="pino">C21</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Vermelho</span></td><td class="destino">ECU (C21)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal de óleo</td></tr>
+          <tr><td><span class="pino">C22</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Preto/Laranja</span></td><td class="destino">ECU</td><td><span class="tensao tac">Sinal</span></td><td>Pré-aquecimento (Vela)</td></tr>
+          <tr><td><span class="pino">C23</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Amarelo</span></td><td class="destino">ECU</td><td><span class="tensao tac">Sinal</span></td><td>Indicador 4x4</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> O painel recebe os sinais da ECU e exibe as informações para o motorista (velocidade, RPM, temperatura, combustível, luzes de advertência, etc.). A comunicação principal é via CAN Bus.
+    </div>
+  </div>
+
+  <!-- ============ CONECTOR DE DIAGNÓSTICO ============ -->
+  <div class="componente" id="conector-diag">
+    <h2>🔌 Conector de Diagnóstico (OBD-II)</h2>
+    <span class="ref">📄 Conector D23 | Interface de diagnóstico</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">D23</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Marrom</span></td><td class="destino">ECU (D23)</td><td><span class="tensao tac">Sinal</span></td><td>CAN HIGH (pino 6)</td></tr>
+          <tr><td><span class="pino">D36</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>Vermelho</span></td><td class="destino">ECU (D36)</td><td><span class="tensao tac">Sinal</span></td><td>CAN LOW (pino 14)</td></tr>
+          <tr><td><span class="pino">E</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Amarelo</span></td><td class="destino">Terra</td><td><span class="tensao ttr">Terra</span></td><td>Terra (pino 4)</td></tr>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>Vermelho</span></td><td class="destino">Bateria</td><td><span class="tensao t30">+30</span></td><td>Positivo (pino 16)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> Conector OBD-II usado para conectar o scanner de diagnóstico. Permite ler códigos de erro, apagar falhas, monitorar dados em tempo real e realizar testes ativos nos atuadores.
+    </div>
+  </div>
+
+  <!-- ============ MÓDULO IMOBILIZADOR ============ -->
+  <div class="componente" id="imobilizador">
+    <h2>🔒 Módulo de Controle (Imobilizador)</h2>
+    <span class="ref">📄 Conector B28 | Sistema antitrão</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">13</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Amarelo/Verde</span></td><td class="destino">ECU (B28)</td><td><span class="tensao tac">Sinal</span></td><td>Comunicação com ECU</td></tr>
+          <tr><td><span class="pino">12</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Amarelo/Preto</span></td><td class="destino">ECU (B29)</td><td><span class="tensao tac">Sinal</span></td><td>Retorno</td></tr>
+          <tr><td><span class="pino">+</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>Vermelho</span></td><td class="destino">Bateria</td><td><span class="tensao t30">+30</span></td><td>Alimentação</td></tr>
+          <tr><td><span class="pino">−</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>Preto</span></td><td class="destino">Terra</td><td><span class="tensao ttr">Terra</span></td><td>Terra</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> O módulo imobilizador se comunica com a ECU para autorizar a partida do motor. Se a chave não for reconhecida, a ECU não libera a injeção e o motor não funciona.
+    </div>
+  </div>
+
+  <!-- ============ TRANSCEPTOR DE TELEFONE ============ -->
+  <div class="componente" id="telefone">
+    <h2>📞 Transceptor de Telefone</h2>
+    <span class="ref">📄 Conector B29 | Sistema hands-free</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">01</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Amarelo/Preto</span></td><td class="destino">ECU (B29)</td><td><span class="tensao tac">Sinal</span></td><td>Comunicação</td></tr>
+          <tr><td><span class="pino">02</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span>Amarelo/Verde</span></td><td class="destino">ECU</td><td><span class="tensao tac">Sinal</span></td><td>Retorno</td></tr>
+          <tr><td><span class="pino">08</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>Amarelo/Preto</span></td><td class="destino">ECU</td><td><span class="tensao tac">Sinal</span></td><td>Sinal de áudio</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> O transceptor de telefone permite a integração do sistema hands-free com o veículo, utilizando o sistema de áudio e o microfone do carro para chamadas telefônicas.
+    </div>
+  </div>
+
+  <!-- ============ INTERRUPTOR BLOQUEIO PARTIDA ============ -->
+  <div class="componente" id="bloqueio-partida">
+    <h2>🚫 Interruptor de Bloqueio de Partida</h2>
+    <span class="ref">📄 Conector A06 | Interruptor de segurança</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">04</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Azul/Amarelo</span></td><td class="destino">ECU (A06)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal de partida permitida</td></tr>
+          <tr><td><span class="pino">03</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Preto/Amarelo</span></td><td class="destino">ECU</td><td><span class="tensao tac">Sinal</span></td><td>Retorno</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> Este interruptor envia um sinal para a ECU indicando que é seguro dar partida (por exemplo, quando o câmbio está em neutro ou a embreagem está pressionada). Impede partidas acidentais.
+    </div>
+  </div>
+
+  <!-- ============ INTERRUPTOR PEDAL DE FREIO ============ -->
+  <div class="componente" id="interruptor-freio">
+    <h2>🛑 Interruptor do Pedal de Freio</h2>
+    <span class="ref">📄 Conector A08 | Sensor do pedal de freio</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">01</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>Verde/Preto</span></td><td class="destino">ECU (A08)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal de freio ativo</td></tr>
+          <tr><td><span class="pino">02</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Preto/Laranja</span></td><td class="destino">ECU</td><td><span class="tensao tac">Sinal</span></td><td>Sinal redundante</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> Interruptor NA acionado pelo pedal de freio. Envia sinal para a ECU indicando que o freio está sendo pressionado. Usado para corte de injeção, desativação do controle de cruzeiro e diagnóstico.
+    </div>
+  </div>
+
+  <!-- ============ ALTERNADOR ============ -->
+  <div class="componente" id="alternador">
+    <h2>⚡ Alternador</h2>
+    <span class="ref">📄 Conector O23 | Gerador de energia</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Pino</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr class="conexao-critica"><td><span class="pino">B+</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>Vermelho (grosso)</span></td><td class="destino">Bateria</td><td><span class="tensao t30">B+</span></td><td>Saída de carga</td></tr>
+          <tr><td><span class="pino">L</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span>Verde</span></td><td class="destino">ECU (O23)</td><td><span class="tensao tac">Sinal</span></td><td>Sinal da luz de carga</td></tr>
+          <tr><td><span class="pino">B−</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>Preto (grosso)</span></td><td class="destino">Terra</td><td><span class="tensao ttr">Terra</span></td><td>Terra de potência</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> O alternador gera energia elétrica para o veículo (aprox. 14V) e mantém a bateria carregada. O terminal L (light) envia sinal para a ECU e para o painel, controlando a luz de advertência de carga.
+    </div>
+  </div>
+
+  <!-- ============ CAIXA DE FUSÍVEIS ============ -->
+  <div class="componente" id="caixa-fusiveis">
+    <h2>🔶 Caixa de Fusíveis e Relés</h2>
+    <span class="ref">📄 Conectores B01, F01, F19 | Distribuição de energia</span>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead><tr><th>Fusível</th><th>Fio</th><th>Conecta em</th><th>Tipo</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pino">EFI 25A</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>Vermelho</span></td><td class="destino">ECU (B01)</td><td><span class="tensao t30">+B</span></td><td>Alimentação principal da ECU</td></tr>
+          <tr><td><span class="pino">EFI 7,5A</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>Preto/Laranja</span></td><td class="destino">ECU (B24)</td><td><span class="tensao t30">+B</span></td><td>Alimentação da ECU (memória)</td></tr>
+          <tr><td><span class="pino">IGN 7,5A</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Preto/Vermelho</span></td><td class="destino">ECU (A24)</td><td><span class="tensao t15">+15</span></td><td>Alimentação de ignição</td></tr>
+          <tr><td><span class="pino">Fusível 7,5A</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span>Vermelho</span></td><td class="destino">ECU (B26)</td><td><span class="tensao t15">+15</span></td><td>Alimentação de ignição (memória)</td></tr>
+          <tr><td><span class="pino">Fusível 15A</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span>Azul/Amarelo</span></td><td class="destino">Painel (A16)</td><td><span class="tensao t15">+15</span></td><td>Alimentação do painel</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="descricao-acao">
+      <strong>Funcionamento:</strong> A caixa de fusíveis distribui energia para todos os circuitos do veículo. Os fusíveis EFI (25A) e IGN (7,5A) são os principais responsáveis pela alimentação da ECU e do sistema de injeção. Se um fusível queimar, verifique o circuito correspondente.
+    </div>
+  </div>
+
+</main>
+
+<!-- BOTÃO VOLTAR AO TOPO -->
+<button class="btn-topo" id="btnTopo" onclick="rolarParaTopo()" title="Voltar ao Topo">⬆️</button>
+
+<script>
+  const menu = document.getElementById('menuLateral');
+  const overlay = document.getElementById('overlay');
+  const body = document.body;
+  const btnMenu = document.getElementById('btnMenu');
+
+  // ---- BOTÃO VOLTAR AO TOPO ----
+  const btnTopo = document.getElementById('btnTopo');
+  
+  function rolarParaTopo() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+      btnTopo.classList.add('visivel');
+    } else {
+      btnTopo.classList.remove('visivel');
+    }
+  });
+
+  function isMobile() { return window.innerWidth < 1024; }
+
+  function initMenu() {
+    if (isMobile()) {
+      menu.classList.add('fechado');
+      body.classList.remove('menu-aberto');
+    } else {
+      menu.classList.remove('fechado');
+      body.classList.add('menu-aberto');
+    }
+  }
+
+  function toggleMenu() {
+    if (isMobile()) {
+      const fechado = menu.classList.toggle('fechado');
+      overlay.classList.toggle('ativo', !fechado);
+      body.classList.toggle('menu-aberto', !fechado);
+    } else {
+      const aberto = body.classList.toggle('menu-aberto');
+      menu.classList.toggle('fechado', !aberto);
+    }
+  }
+
+  document.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (isMobile()) {
+        menu.classList.add('fechado');
+        overlay.classList.remove('ativo');
+        body.classList.remove('menu-aberto');
+      }
+    });
+  });
+
+  overlay.addEventListener('click', () => {
+    menu.classList.add('fechado');
+    overlay.classList.remove('ativo');
+    body.classList.remove('menu-aberto');
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isMobile()) {
+      menu.classList.add('fechado');
+      overlay.classList.remove('ativo');
+      body.classList.remove('menu-aberto');
+    }
+  });
+
+  let ultimoEstadoMobile = isMobile();
+  window.addEventListener('resize', () => {
+    const atualMobile = isMobile();
+    if (atualMobile !== ultimoEstadoMobile) {
+      initMenu();
+      ultimoEstadoMobile = atualMobile;
+    }
+  });
+
+  initMenu();
+</script>
+
+</body>
+</html>
