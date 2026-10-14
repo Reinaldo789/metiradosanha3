@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escolha um Sistema</title>
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc; /* Cor de fundo bem clara */
+            color: #1e293b;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: #0f172a;
+        }
+
+        /* Grid responsivo: 1 coluna no celular, até 4 no desktop */
+        .grid-sistemas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        /* Estilo do Quadro/Card */
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            overflow: hidden;
+            position: relative;
+            /* Borda superior colorida (será sobrescrita por cada card específico) */
+            border-top: 5px solid transparent; 
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-content {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        /* Ícone */
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        /* Títulos e Textos */
+        .card h2 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+
+        .card p {
+            font-size: 0.875rem;
+            color: #64748b;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        /* Tags / Badges */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .tag {
+            background-color: #f1f5f9;
+            color: #475569;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 9999px;
+        }
+
+        /* Link "Ver tudo" */
+        .link-ver-tudo {
+            margin-top: auto;
+            font-size: 0.875rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* =========================================
+           Cores Específicas de cada Card
+           ========================================= */
+        
+        /* Card 1: Azul Roxo */
+        .card-eletrico { border-top-color: #5a45e6; }
+        .card-eletrico .icon-box { background-color: #5a45e6; }
+        .card-eletrico .link-ver-tudo { color: #5a45e6; }
+
+        /* Card 2: Azul Claro */
+        .card-combustivel { border-top-color: #0b88c7; }
+        .card-combustivel .icon-box { background-color: #0b88c7; }
+        .card-combustivel .link-ver-tudo { color: #0b88c7; }
+
+        /* Card 3: Verde Escuro */
+        .card-injecao { border-top-color: #0f6b42; }
+        .card-injecao .icon-box { background-color: #0f6b42; }
+        .card-injecao .link-ver-tudo { color: #0f6b42; }
+
+        /* Card 4: Azul Escuro */
+        .card-motor { border-top-color: #1f1b3e; }
+        .card-motor .icon-box { background-color: #1f1b3e; }
+        .card-motor .link-ver-tudo { color: #1f1b3e; }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Escolha um sistema</h1>
+        
+        <div class="grid-sistemas">
+            
+            <!-- Card 1 -->
+            <a href="pagina1.html" class="card card-eletrico">
+                <div class="card-content">
+                    <div class="icon-box">⚡</div>
+                    <h2>Sistema Elétrico</h2>
+                    <p>Ignição, partida, alternador, iluminação, painel e acessórios.</p>
+                    <div class="tags">
+                        <span class="tag">Ignição e Partida</span>
+                        <span class="tag">Faróis</span>
+                        <span class="tag">Velocidade</span>
+                        <span class="tag">Tomada</span>
+                    </div>
+                    <div class="link-ver-tudo">Ver tudo &rarr;</div>
+                </div>
+            </a>
+
+            <!-- Card 2 -->
+            <a href="pagina2.html" class="card card-combustivel">
+                <div class="card-content">
+                    <div class="icon-box">⛽</div>
+                    <h2>Alimentação de Combustível</h2>
+                    <p>Da linha de baixa pressão até o tubo rail, com esquemas e testes.</p>
+                    <div class="tags">
+                        <span class="tag">Tanque e Filtro</span>
+                        <span class="tag">Bomba Elétrica</span>
+                        <span class="tag">Bomba Alta</span>
+                        <span class="tag">Tubo Rail</span>
+                    </div>
+                    <div class="link-ver-tudo">Ver tudo &rarr;</div>
+                </div>
+            </a>
+
+            <!-- Card 3 -->
+            <a href="pagina3.html" class="card card-injecao">
+                <div class="card-content">
+                    <div class="icon-box">⚙️</div>
+                    <h2>Sistema de Injeção</h2>
+                    <p>Sensores, atuadores, alimentação e diagnose da ECU EDC16.</p>
+                    <div class="tags">
+                        <span class="tag">Sensores</span>
+                        <span class="tag">Bicos</span>
+                        <span class="tag">Bomba</span>
+                        <span class="tag">Acelerador</span>
+                    </div>
+                    <div class="link-ver-tudo">Ver tudo &rarr;</div>
+                </div>
+            </a>
+
+            <!-- Card 4 -->
+            <a href="pagina4.html" class="card card-motor">
+                <div class="card-content">
+                    <div class="icon-box">🔧</div>
+                    <h2>Motor e Chassi</h2>
+                    <p>Arrefecimento, direção e freios: fluidos, regulagens e problemas comuns.</p>
+                    <div class="tags">
+                        <span class="tag">Bomba de Água</span>
+                        <span class="tag">Termostática</span>
+                        <span class="tag">Direção</span>
+                        <span class="tag">Freios</span>
+                    </div>
+                    <div class="link-ver-tudo">Ver tudo &rarr;</div>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+</body>
+</html>
