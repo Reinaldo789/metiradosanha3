@@ -94,6 +94,8 @@
 
 <nav id="menuLateral">
   <h2>📑 Índice do Manual</h2>
+  <a href="#leitura">📖 Introdução e Leitura de Esquemas <span class="pg">Pág. 3-10</span></a>
+  <a href="#simbologia">🔣 Simbologia <span class="pg">Pág. 11-12</span></a>
   <a href="#legenda-cores">🎨 Legenda de Cores <span class="pg">Pág. 8</span></a>
   <a href="#lista-componentes">📋 Lista de Componentes <span class="pg">Pág. 13-16</span></a>
   <a href="#codigos-ligacoes">🔢 Códigos de Ligações <span class="pg">Pág. 17-18</span></a>
@@ -101,18 +103,33 @@
   <a href="#conectores">🔌 Conectores <span class="pg">Pág. 21-24</span></a>
   <a href="#carga-partida">🔋 Sistema de Carga e Partida <span class="pg">Pág. 25-26</span></a>
   <a href="#painel-instrumentos">📊 Painel de Instrumentos <span class="pg">Pág. 27-32</span></a>
+  <a href="#partida-carga-esq">🔧 Esquema de Carga e Partida <span class="pg">Pág. 26</span></a>
+  <a href="#fiacao">🔌 Fiação do Painel (T32/T12) <span class="pg">Pág. 31-36</span></a>
   <a href="#luzes-advertencia">💡 Luzes de Advertência <span class="pg">Pág. 37-39</span></a>
   <a href="#central-reles">🔶 Central de Relés e Fusíveis <span class="pg">Pág. 40-42</span></a>
   <a href="#cores-fusiveis">🎨 Cores dos Fusíveis <span class="pg">Pág. 41</span></a>
   <a href="#posicao-fusiveis">📍 Posicionamento dos Fusíveis <span class="pg">Pág. 41</span></a>
   <a href="#posicao-reles">📍 Posicionamento dos Relés <span class="pg">Pág. 42</span></a>
+  <a href="#divergencias">⚠️ Divergências do Manual <span class="pg">Conferir</span></a>
 </nav>
 
 <main>
   <h1>Sistema Elétrico 4x4 — Volkswagen Caminhões e Ônibus</h1>
   <p class="sub">Caminhões Volkswagen 4x4 — Tecnologia Eletro-Eletrônica Fora-de-Estrada | Material de Treinamento</p>
 
-  <!-- ============ LEGENDA DE CORES DOS CABOS ============ -->
+  <div class="componente" id="leitura">
+<h2>📖 Introdução e Leitura de Esquemas</h2>
+<span class="ref">📄 Páginas 3 a 10 do PDF</span>
+<div class="descricao-acao"><strong>Introdução:</strong> os caminhões VW 4x4 usam eletro-eletrônica voltada ao uso fora-de-estrada. O sistema é formado por circuitos ramificados a partir de uma central de distribuição, o que torna a manutenção prática e rápida. Ler o esquema corretamente ajuda a localizar avarias e a definir serviços para instalar implementos e opcionais sem comprometer os demais componentes.<br><em>Material de treinamento: uso exclusivo para treinamento, sujeito a alterações sem aviso. Consulte sempre a Literatura Técnica atualizada.</em></div><h3 style="color:#f9e2af;font-size:14px;margin:20px 0 10px">📐 Partes de uma página de esquema (pág. 5)</h3><div class="tabela-wrapper"><table class="tabela-pinagem"><thead><tr><th>Nº</th><th>Elemento</th></tr></thead><tbody><tr><td><span class="pino">1</span></td><td>Denominação dos circuitos representados na página</td></tr><tr><td><span class="pino">2</span></td><td>Área reticulada (azul) = caixa de relés e fusíveis</td></tr><tr><td><span class="pino">3</span></td><td>Posição do relé na caixa de relés e fusíveis (ex.: posição 4)</td></tr><tr><td><span class="pino">4</span></td><td>Circuitos conduzidos por cabos. <strong>Todos os interruptores são desenhados em repouso (desligados)</strong></td></tr><tr><td><span class="pino">5</span></td><td>Massa do veículo: os números indicam as localizações das conexões de massa</td></tr><tr><td><span class="pino">6</span></td><td>Número guia das ligações, para localizar ligações e componentes com mais facilidade</td></tr></tbody></table></div><h3 style="color:#f9e2af;font-size:14px;margin:20px 0 10px">🏷️ Legenda do exemplo (lanterna de posição LE)</h3><div class="tabela-wrapper"><table class="tabela-pinagem"><thead><tr><th>Código</th><th>Significado</th></tr></thead><tbody><tr><td><span class="pino">E1</span></td><td>Interruptor de luzes (sempre E1 em todos os esquemas)</td></tr><tr><td><span class="pino">J25</span></td><td>Relé de lanternas</td></tr><tr><td><span class="pino">M1</span></td><td>Lanterna combinada com farol, L.E.</td></tr><tr><td><span class="pino">T42</span></td><td>Conector de 42 vias, localizado atrás da grade frontal</td></tr><tr><td><span class="pino">A4</span></td><td>Conexão à massa</td></tr><tr><td><span class="pino">80</span></td><td>Ligação à massa (olhal), lado direito do veículo</td></tr><tr><td><span class="pino">135</span></td><td>Ligação à massa - 3 - no chicote do painel</td></tr><tr><td><span class="pino">A80</span></td><td>Ligação (x) no chicote do painel</td></tr></tbody></table></div><h3 style="color:#f9e2af;font-size:14px;margin:20px 0 10px">🔎 Como interpretar os elementos do esquema (págs. 7-10)</h3><div class="tabela-wrapper"><table class="tabela-pinagem"><thead><tr><th>Nº</th><th>Elemento</th><th>Como ler</th></tr></thead><tbody><tr><td><span class="pino">1</span></td><td>Fusível</td><td><strong>S15 / 10A</strong> = fusível nº 15 da central de relés e fusíveis, de 10 A</td></tr><tr><td><span class="pino">2</span></td><td>Seção e cor do cabo</td><td>Número = seção em mm²; letras = cor da capa. Ex.: <strong>1,0 az/vm</strong></td></tr><tr><td><span class="pino">3</span></td><td>Conexão de cabos múltiplos</td><td>Ex.: <strong>A20</strong> — ligação não separável; localização na legenda</td></tr><tr><td><span class="pino">4</span></td><td>Ponto de medição</td><td>Número no círculo preto = programa de localização de falhas</td></tr><tr><td><span class="pino">5</span></td><td>Símbolos</td><td>Cada componente tem símbolo padrão universal (ver Simbologia)</td></tr><tr><td><span class="pino">6</span></td><td>Linhas finas</td><td>Condutores internos do componente (não são cabos)</td></tr><tr><td><span class="pino">7 e 13</span></td><td>Seta</td><td>Continuidade do circuito em outra página/local</td></tr><tr><td><span class="pino">8</span></td><td>Posição do relé</td><td>Posição na central; relé na barra adicional recebe sufixo (ex.: <strong>1b</strong>)</td></tr><tr><td><span class="pino">9</span></td><td>Conexão do relé</td><td>Posição do contato no conector múltiplo. Ex.: <strong>K11</strong> = pino 85 do relé 1</td></tr><tr><td><span class="pino">10</span></td><td>Retângulo com número</td><td>O cabo tem continuidade na posição indicada (numeração inferior da barra de massa)</td></tr><tr><td><span class="pino">11</span></td><td>Cabo a componente</td><td>Ex.: <strong>C/w</strong> = componente C (alternador), terminal w</td></tr><tr><td><span class="pino">12</span></td><td>Conexão</td><td>Ex.: <strong>T32/7</strong> = conector de 32 vias, pino 7 (conjunto do painel)</td></tr><tr><td><span class="pino">14</span></td><td>Continuação interna</td><td>Letra/código (ex.: 31, 15a) = a ligação continua no próximo esquema</td></tr><tr><td><span class="pino">15</span></td><td>Componentes</td><td>Descrição na legenda, ao lado direito do esquema</td></tr><tr><td><span class="pino">16</span></td><td>Borne</td><td>Denominações gravadas nos componentes e nos terminais dos conectores</td></tr><tr><td><span class="pino">17</span></td><td>Ponto de massa</td><td>Legenda traz o ponto de massa no veículo e o cabo conectado nele</td></tr></tbody></table></div>
+</div>
+
+<div class="componente" id="simbologia">
+<h2>🔣 Simbologia dos Esquemas</h2>
+<span class="ref">📄 Páginas 11 e 12 do PDF</span>
+<div class="descricao-acao">Esquemas seguem normas internacionais de padronização. Símbolos usados nos caminhões VW (desenhos nas págs. 11-12 do PDF):</div><div class="destaque" style="line-height:1.9;font-size:12px">Fusível · Fusível de temperatura · Cabo fusível · Bateria · Motor de partida · Alternador · Termo-contato temporizado · Regulador de resistência do aquecimento interno da cabina · Válvula eletromagnética · Motor elétrico · Motor do limpador de pára-brisas (2 velocidades) · Motor de regulagem do alcance do farol · Comutador de acionamento manual · Comutador de acionamento por temperatura · Comutador de tecla · Comutador de acionamento mecânico · Comutador de acionamento por pressão · Comutador multipolar manual · Relé · Alarme sonoro · Sensor de PMS (indutivo) · Resistência variável · Resistência variável em função da temperatura · Relé de comando eletrônico · Diodo · Diodo Zener · Diodo luminoso · Instrumento indicador · Unidade de comando eletrônico · Relógio analógico · Relógio digital · Indicador de multifunções · Indicador de consumo (econômetro) · Sensor de velocidade · Lâmpada · Lâmpada de duplo filamento · Luz da cabina · Acendedor de cigarros · Buzina · Conector · Conector múltiplo · União de cabos desconectáveis · União de cabos não desconectáveis · União no interior de um componente · União de múltiplos cabos não desconectáveis · Conta de fricção · Distribuidor de cabos · Válvula solenóide de corte de combustível</div>
+</div>
+
+<!-- ============ LEGENDA DE CORES DOS CABOS ============ -->
   <div class="componente" id="legenda-cores">
     <h2>🎨 Legenda de Cores dos Cabos</h2>
     <span class="ref">📄 Página 8 do PDF | Código de cores dos fios</span>
@@ -124,19 +141,19 @@
             <th>Código</th>
             <th>Cor</th>
             <th>Sigla</th>
-            <th>Aplicação Típica</th>
+            <th>Onde aparece nos esquemas do manual</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td><span class="pino">br</span></td><td><span class="fio"><span class="fio-cor" style="background:#fff; border:1px solid #666;"></span><strong>Branco</strong></span></td><td><strong>BR</strong></td><td>Sinais especiais / Iluminação</td></tr>
-          <tr><td><span class="pino">am</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span><strong>Amarelo</strong></span></td><td><strong>AM</strong></td><td>Ignição (+15) / Sinal analógico</td></tr>
-          <tr><td><span class="pino">vm</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span><strong>Vermelho</strong></span></td><td><strong>VM</strong></td><td>Alimentação direta da bateria (+30 / B+)</td></tr>
-          <tr><td><span class="pino">li</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span><strong>Lilás</strong></span></td><td><strong>LI</strong></td><td>Sinais de comandos / Atuadores</td></tr>
-          <tr><td><span class="pino">az</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span><strong>Azul</strong></span></td><td><strong>AZ</strong></td><td>D+ / W / Sinais de sensores</td></tr>
-          <tr><td><span class="pino">vd</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span><strong>Verde</strong></span></td><td><strong>VD</strong></td><td>Comandos / Sinais de relé</td></tr>
-          <tr><td><span class="pino">cz</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span><strong>Cinza</strong></span></td><td><strong>CZ</strong></td><td>Iluminação / Sinais de sensores</td></tr>
-          <tr><td><span class="pino">pt</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span><strong>Preto</strong></span></td><td><strong>PT</strong></td><td>Terra / Chassi / Comandos de relé</td></tr>
-          <tr><td><span class="pino">ma</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span><strong>Marrom</strong></span></td><td><strong>MA</strong></td><td>Terra de sensores / Instrumentos</td></tr>
+          <tr><td><span class="pino">br</span></td><td><span class="fio"><span class="fio-cor" style="background:#fff; border:1px solid #666;"></span><strong>Branco</strong></span></td><td><strong>BR</strong></td><td>Farol alto (2,5 br, 56a) e 0,35 br/vd ao tacógrafo (T32/11)</td></tr>
+          <tr><td><span class="pino">am</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span><strong>Amarelo</strong></span></td><td><strong>AM</strong></td><td>Faróis baixos (2,5 am, 56b); chave de partida (6,0 vm/am)</td></tr>
+          <tr><td><span class="pino">vm</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span><strong>Vermelho</strong></span></td><td><strong>VM</strong></td><td>Alimentação direta: 10,0 vm do alternador (B+), 5,0/6,0 vm às barras de fusíveis</td></tr>
+          <tr><td><span class="pino">li</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span><strong>Lilás</strong></span></td><td><strong>LI</strong></td><td>Aparece em fio de 0,1 mm² no esquema ilustrativo (pág. 7)</td></tr>
+          <tr><td><span class="pino">az</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span><strong>Azul</strong></span></td><td><strong>AZ</strong></td><td>D+ do alternador → lâmpada K2 (1,0 az, T12/5 e T32/28); 1,0 az/vd e az/am nos sensores</td></tr>
+          <tr><td><span class="pino">vd</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span><strong>Verde</strong></span></td><td><strong>VD</strong></td><td>Terminal W do alternador → tacômetro G5 (1,0 vd, T32/6)</td></tr>
+          <tr><td><span class="pino">cz</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span><strong>Cinza</strong></span></td><td><strong>CZ</strong></td><td>Circuito de lanternas (1,5 cz/az, 1,0 cz/pt — pág. 4)</td></tr>
+          <tr><td><span class="pino">pt</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span><strong>Preto</strong></span></td><td><strong>PT</strong></td><td>Cabos da bateria (50,0 pt) e fio de comando do motor de partida (4,0 pt, terminal 50)</td></tr>
+          <tr><td><span class="pino">ma</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span><strong>Marrom</strong></span></td><td><strong>MA</strong></td><td><strong>Massa (31)</strong> dos circuitos: 6,0 / 2,5 / 1,0 ma</td></tr>
         </tbody>
       </table>
     </div>
@@ -173,7 +190,7 @@
     <span class="ref">📄 Páginas 13 a 16 do PDF | Identificação e descrição dos componentes</span>
 
     <div style="background:#1e1e2e; border-left:3px solid #89b4fa; padding:12px 15px; margin-bottom:15px; border-radius:4px; font-size:12px; color:#cdd6f4; line-height:1.6;">
-      <strong style="color:#89b4fa;">Como usar:</strong> Cada componente do sistema elétrico recebe uma identificação classificada por grupo. Ex: Interruptores – grupo <strong>"E"</strong>; Relés – grupo <strong>"J"</strong>; Sensores – grupo <strong>"G"</strong>; Lâmpadas – grupo <strong>"K"</strong> e <strong>"L"</strong>; Motores – grupo <strong>"M"</strong>; Válvulas – grupo <strong>"N"</strong>; Conectores – grupo <strong>"T"</strong>.
+      <strong style="color:#89b4fa;">Como usar:</strong> Cada componente do sistema elétrico recebe uma identificação classificada por grupo. Ex: Interruptores – grupo <strong>"E"</strong>; Relés – grupo <strong>"J"</strong>; Sensores – grupo <strong>"G"</strong>; Lâmpadas – grupo <strong>"K"</strong> e <strong>"L"</strong>; Lanternas e lâmpadas indicadoras de direção – grupo <strong>"M"</strong>; Motores do limpador/lavador – grupo <strong>"V"</strong>; Válvulas – grupo <strong>"N"</strong>; Conectores – grupo <strong>"T"</strong>.
     </div>
 
     <div class="tabela-wrapper">
@@ -420,7 +437,7 @@
           <tr><td><span class="pino">Z5</span></td><td>0,75 mm²</td><td>Proteção e alimentação de entrada do fusível n° 25 e linha (50) do interruptor de luzes</td></tr>
           <tr><td><span class="pino">Z6</span></td><td>1,0 mm²</td><td>Proteção e alimentação da linha (50) do interruptor de ignição</td></tr>
           <tr><td><span class="pino">Z4</span></td><td>1,5 mm²</td><td>Proteção e alimentação de entrada dos fusíveis 17, 18, 19, 20, 21 e 26</td></tr>
-          <tr><td><span class="pino">Z1</span></td><td>4,0 mm²</td><td>Cabo fusível principal</td></tr>
+          <tr><td><span class="pino">Z1</span></td><td>4,0 mm²</td><td>Cabo fusível de 4,0 mm²; no esquema da pág. 26 liga ao terminal 30 do motor de partida</td></tr>
         </tbody>
       </table>
     </div>
@@ -433,7 +450,13 @@
     </div>
   </div>
 
-  <!-- ============ CONECTORES ============ -->
+  <div class="componente" id="distribuicao">
+<h2>🔀 Distribuição pela Caixa TV2</h2>
+<span class="ref">📄 Página 20 do PDF | Esquema dos cabos fusíveis</span>
+<div class="tabela-wrapper"><table class="tabela-pinagem"><thead><tr><th>Fusível (esquema pág. 20)</th><th>Capacidade</th><th>Observação</th></tr></thead><tbody><tr><td><span class="pino">S17</span></td><td>10 A</td><td></td></tr><tr><td><span class="pino">S18</span></td><td>15 A</td><td></td></tr><tr><td><span class="pino">S19</span></td><td>4 A</td><td></td></tr><tr><td><span class="pino">S20</span></td><td>25 A</td><td></td></tr><tr><td><span class="pino">S21</span></td><td>30 A</td><td></td></tr><tr><td><span class="pino">S26</span></td><td>—</td><td>Vago</td></tr><tr><td><span class="pino">S25</span></td><td>10 A</td><td>Alimentado por 1,5 vm/pt (derivação A32), junto com E1 (T17/46)</td></tr></tbody></table></div><h3 style="color:#f9e2af;font-size:14px;margin:20px 0 10px">🧵 Fios da caixa TV2</h3><div class="tabela-wrapper"><table class="tabela-pinagem"><thead><tr><th>Fio</th><th>Origem / destino</th></tr></thead><tbody><tr><td>10,0 vm (ref. 5)</td><td>Entrada: chicote do motor, borne B+ do alternador</td></tr><tr><td>Z4 → 6,0 vm</td><td>Barra 5,0 vm dos fusíveis S17, S18, S19, S20, S21 e S26</td></tr><tr><td>Z5 → 6,0 vm/am (ref. 10)</td><td>Linha 50 da chave de partida/ignição (continua no esquema da pág. 26)</td></tr><tr><td>Z6 → 1,5 vm/pt</td><td>Fusível S25 e interruptor de luzes E1 (T17/46)</td></tr><tr><td>1,5 vm/br (A1)</td><td>0,5 vm/br ao J285 (T33/40) e 0,35 vm/br ao tacógrafo G24 (T6/4)</td></tr></tbody></table></div><div class="descricao-acao">A distribuição parte da central de relés e fusíveis para os chicotes principais (painel, motor, iluminação), protegidos por tubo corrugado antichama de alta resistência abrasiva. Torque da porca de fixação dos cabos: <strong>6 N.m (0,6 kgf.m)</strong>.</div>
+</div>
+
+<!-- ============ CONECTORES ============ -->
   <div class="componente" id="conectores">
     <h2>🔌 Conectores</h2>
     <span class="ref">📄 Páginas 21 a 24 do PDF | Tipos e identificação</span>
@@ -537,7 +560,13 @@
     </div>
   </div>
 
-  <!-- ============ PAINEL DE INSTRUMENTOS ============ -->
+  <div class="componente" id="partida-carga-esq">
+<h2>🔧 Esquema de Carga e Partida</h2>
+<span class="ref">📄 Página 26 do PDF</span>
+<div class="tabela-wrapper"><table class="tabela-pinagem"><thead><tr><th>Componente</th><th>Ligação</th><th>Fio</th></tr></thead><tbody><tr><td><span class="pino">A</span> Bateria</td><td>12 V / 135 Ah, lado esquerdo do chassi; massa no ponto 13</td><td>50,0 pt</td></tr><tr><td><span class="pino">B</span> Motor de partida</td><td>Terminal 30 via Z1 (4,0 mm²); terminal 50 por T13/4; terminal 31 à massa</td><td>4,0 pt (50); 6,0 ma (31)</td></tr><tr><td><span class="pino">D</span> Chave de partida</td><td>T7/90 (alimentação, ref. 34) e T7/50 (saída)</td><td>6,0 vm/am; 4,0 pt</td></tr><tr><td><span class="pino">C / C1</span> Alternador / regulador</td><td>Terminal 30 (ref. 35) = B+; 31 à massa</td><td>10,0 vm; 6,0 ma</td></tr><tr><td><span class="pino">W</span> (alternador)</td><td>T12/10 → T32/6 → tacômetro G5</td><td>1,0 vd</td></tr><tr><td><span class="pino">D+</span> (alternador)</td><td>T12/5 → T32/28 → lâmpada de carga K2</td><td>1,0 az</td></tr><tr><td><span class="pino">31</span> Massas</td><td>Pontos 43 e 46 (ligados a 6,0 ma via 1,0 ma), 5, 11 e 3</td><td>1,0 ma / 6,0 ma</td></tr></tbody></table></div><div class="descricao-acao">Também no esquema: 0,35 pt ao J285 e 2,5 pt ao "interruptor de partida a frio — não utilizado". Alternador: 14 V / 90 A, acionado por correia.</div>
+</div>
+
+<!-- ============ PAINEL DE INSTRUMENTOS ============ -->
   <div class="componente" id="painel-instrumentos">
     <h2>📊 Painel de Instrumentos</h2>
     <span class="ref">📄 Páginas 27 a 32 do PDF | Composição e módulos</span>
@@ -628,7 +657,13 @@
     </div>
   </div>
 
-  <!-- ============ LUZES DE ADVERTÊNCIA ============ -->
+  <div class="componente" id="fiacao">
+<h2>🔌 Fiação do Painel (T32 e T12)</h2>
+<span class="ref">📄 Páginas 31 a 36 do PDF</span>
+<div class="tabela-wrapper"><table class="tabela-pinagem"><thead><tr><th>Pino T32</th><th>Ligação</th><th>Fio / origem</th></tr></thead><tbody><tr><td><span class="pino">1</span></td><td>Pressão de óleo (indicador)</td><td>az/vd</td></tr><tr><td><span class="pino">2</span></td><td>Temperatura do motor (sensor G27)</td><td>az/ma no texto (pág. 34); am/ma no esquema (pág. 32)</td></tr><tr><td><span class="pino">6</span></td><td>Tacômetro</td><td>1,0 vd (terminal W do alternador)</td></tr><tr><td><span class="pino">9</span></td><td>Nível baixo do arrefecimento (K36)</td><td>am/ma</td></tr><tr><td><span class="pino">10</span></td><td>Positivo (30)</td><td>vm/br, saída do fusível 25</td></tr><tr><td><span class="pino">11</span></td><td>Tacógrafo (K)</td><td>br/vd</td></tr><tr><td><span class="pino">12</span></td><td>Tacógrafo (Vss)</td><td>vm/pt</td></tr><tr><td><span class="pino">15</span></td><td>Lâmpada de pressão de óleo (K3)</td><td>az/vd</td></tr><tr><td><span class="pino">16</span></td><td>Restrição do filtro de ar (K01b)</td><td>0,35 ma/br</td></tr><tr><td><span class="pino">28</span></td><td>Carga da bateria (K2)</td><td>1,0 az (D+)</td></tr></tbody></table></div><h3 style="color:#f9e2af;font-size:14px;margin:20px 0 10px">🌡️ Sensores no conector T12 (esquema pág. 32)</h3><div class="tabela-wrapper"><table class="tabela-pinagem"><thead><tr><th>Sensor</th><th>Sinal</th><th>Pino T12</th><th>Fio</th></tr></thead><tbody><tr><td><span class="pino">Z0</span> Restrição do filtro de ar</td><td>T2/AR</td><td>T12/6</td><td>1,0 ma</td></tr><tr><td><span class="pino">F1</span> Pressão de óleo</td><td>OL</td><td>T12/9</td><td>1,0 az/vd</td></tr><tr><td><span class="pino">G27</span> Temperatura do motor</td><td>TG</td><td>T12/7</td><td>1,0 az/am</td></tr><tr><td><span class="pino">G32</span> Nível do arrefecimento</td><td>T2/NS</td><td>T12/11</td><td>1,0 am</td></tr></tbody></table></div><div class="descricao-acao"><strong>Tacômetro:</strong> escala 1/min x100 (0 a 35). Faixa <strong>verde</strong> = rotação de torque máximo (melhor desempenho, menos emissões e menor consumo); faixa <strong>vermelha</strong> = altas rotações, evitar. Sinal pelo borne W do alternador; leitura analógica.<br><strong>Módulo central:</strong> receptáculo de 32 pinos na tampa traseira; gerencia os alarmes sonoros. <em>A tampa traseira é lacrada e não pode ser violada.</em><br><strong>Velocímetro:</strong> analógico, com odômetro total/parcial e relógio no display digital. O sinal vem de sensor indutivo, vai ao tacógrafo e daí ao velocímetro.<br><strong>Freio:</strong> a lâmpada acende com pressão do ar abaixo de <strong>4,5 bar</strong> (interruptor incorporado no manômetro).<br><strong>Conectores com foto no manual (págs. 22-24):</strong> 32 vias (painel), 42 e 12 vias (principais), tacógrafo (A, B, C, D), 17 vias (interruptor de luzes), 6 vias (painel), 3 vias (válvula solenóide) e 2 vias (chassi).</div>
+</div>
+
+<!-- ============ LUZES DE ADVERTÊNCIA ============ -->
   <div class="componente" id="luzes-advertencia">
     <h2>💡 Conjunto das Luzes de Advertência</h2>
     <span class="ref">📄 Páginas 37 a 39 do PDF | Função e classificação</span>
@@ -670,7 +705,13 @@
     </div>
   </div>
 
-  <!-- ============ CENTRAL DE RELÉS E FUSÍVEIS ============ -->
+  <div class="componente" id="cor-luzes">
+<h2>🎨 Cor de Cada Luz de Advertência</h2>
+<span class="ref">📄 Página 39 do PDF</span>
+<div class="tabela-wrapper"><table class="tabela-pinagem"><thead><tr><th>Cor do ícone (pág. 39)</th><th>Luzes</th></tr></thead><tbody><tr><td>🔴 Vermelho</td><td>Freio de estacionamento, bloqueio entre eixos, baixo nível do arrefecimento, cabina destravada, falta de carga na bateria</td></tr><tr><td>🟡 Amarelo</td><td>Freio motor, filtro de ar obstruído, partida a frio</td></tr><tr><td>🟢 Verde</td><td>Luz de direção esquerda e direita</td></tr><tr><td>🔵 Azul</td><td>Farol alto</td></tr></tbody></table></div>
+</div>
+
+<!-- ============ CENTRAL DE RELÉS E FUSÍVEIS ============ -->
   <div class="componente" id="central-reles">
     <h2>🔶 Central de Relés e Fusíveis</h2>
     <span class="ref">📄 Páginas 40 a 42 do PDF | Distribuição elétrica</span>
@@ -685,7 +726,13 @@
     </div>
   </div>
 
-  <!-- ============ CORES DOS FUSÍVEIS ============ -->
+  <div class="componente" id="layout-central">
+<h2>🗺️ Layout da Central</h2>
+<span class="ref">📄 Página 40 do PDF</span>
+<div class="descricao-acao">Relés (12, em 2 fileiras): superior <strong>1, 3, 5, 7, 9, 11</strong>; inferior <strong>2, 4, 6, 8, 10, 12</strong>.<br>Fusíveis: fileira inferior numerada de <strong>21 (esquerda) a 1 (direita)</strong>; posições <strong>22 a 26</strong> em fileira separada entre os relés e a fileira principal.</div>
+</div>
+
+<!-- ============ CORES DOS FUSÍVEIS ============ -->
   <div class="componente" id="cores-fusiveis">
     <h2>🎨 Cores dos Fusíveis</h2>
     <span class="ref">📄 Página 41 do PDF | Diferenciação por capacidade de corrente</span>
@@ -792,6 +839,12 @@
       <strong>Observação:</strong> Caso sejam necessários relés adicionais para monitoramento de opcionais e/ou equipamentos agregados no beneficiamento, os mesmos poderão ser instalados em barramento complementar fixado ao corpo da central. Poderão ser instalados tantos relés quantos forem necessários, desde que respeitada a intensidade máxima de corrente do sistema.
     </div>
   </div>
+
+<div class="componente" id="divergencias">
+<h2>⚠️ Divergências do Manual</h2>
+<span class="ref">📄 Conferência entre texto, esquemas e fotos</span>
+<div class="descricao-acao" style="border-left-color:#f38ba8;background:#2a1a1a">Pontos em que o próprio manual não bate entre texto, esquemas e fotos. Confirme no veículo antes de decidir.</div><div class="tabela-wrapper"><table class="tabela-pinagem"><thead><tr><th>Assunto</th><th>Diferença</th></tr></thead><tbody><tr><td>Fusíveis 4 A × 10 A</td><td>O quadro da pág. 41 indica 4 A na maioria das posições (luz alta 11/12 e baixa 14/15), mas o esquema da pág. 29 mostra S11, S12, S14 e S15 de 10 A, e a foto da central (pág. 40) mostra fusíveis vermelhos (10 A). <strong>Confira a etiqueta da central antes de trocar e não aumente a amperagem.</strong></td></tr><tr><td>Fusível 25</td><td>Quadro: vago. Esquemas (págs. 20 e 36): S25 de 10 A alimenta o T32/10 e o E1</td></tr><tr><td>Fusíveis S17 a S21</td><td>Quadro: 17 = luz de freio 4 A, 18 = emergência 4 A, 19/20 = vagos, 21 = tacógrafo 4 A. Esquema da pág. 20: 10, 15, 4, 25 e 30 A</td></tr><tr><td>Z5 × Z6</td><td>Texto (pág. 19): Z5 alimenta o fusível 25 e o E1; Z6 alimenta a linha 50. Esquema (pág. 20): Z5 sai em 6,0 vm/am (linha 50) e Z6 em 1,5 vm/pt (S25 e E1)</td></tr><tr><td>12 V × 24 V</td><td>Texto: tensão nominal 12 V, bateria 12 V/135 Ah. Fotos dos módulos do painel (págs. 30-31) e dos relés (pág. 40) trazem etiqueta "24V". Meça a tensão do veículo antes de testar</td></tr><tr><td>F1</td><td>Lista de componentes: interruptor do pedal do freio. Esquema da pág. 32: usado como sensor de pressão de óleo (OL)</td></tr><tr><td>Pino 2 do T32</td><td>Texto: fio az/ma. Esquema: am/ma</td></tr></tbody></table></div>
+</div>
 
 </main>
 
