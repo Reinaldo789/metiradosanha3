@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Manutenção Guardian 25 - Verado 200 HP</title>
+<title>Manual de Manutenção - Mercury Verado 200 HP</title>
 <style>
 :root{
   --azul:#1a3a5c;
@@ -157,8 +157,8 @@ footer{
 <body>
 
 <header>
-  <h1>Manutenção da Embarcação Guardian 25</h1>
-  <p>Guia Técnico — Motor Mercury Verado 200 HP</p>
+  <h1>Manual de Manutenção</h1>
+  <p>Mercury Verado 200 HP — 4 Tempos Supercharged</p>
 </header>
 
 <nav>
@@ -167,106 +167,142 @@ footer{
   <a href="#oleo">Óleo Motor</a>
   <a href="#engrenagens">Caixa Engrenagens</a>
   <a href="#bomba-agua">Bomba d'Água</a>
-  <a href="#helice">Hélice</a>
-  <a href="#eletrico">Sistema Elétrico</a>
+  <a href="#velas">Velas</a>
+  <a href="#combustivel">Combustível</a>
+  <a href="#eletrico">Elétrico</a>
   <a href="#direcao">Direção</a>
-  <a href="#sensores">Sensores</a>
   <a href="#codigos">Códigos Falha</a>
-  <a href="#reboque">Reboque</a>
-  <a href="#cuidados">Cuidados Gerais</a>
+  <a href="#armazenamento">Armazenamento</a>
 </nav>
 
 <main>
 
-<!-- ESPECIFICAÇÕES -->
+<!-- 1. ESPECIFICAÇÕES -->
 <section id="especificacoes">
   <h2>1. Especificações Técnicas — Verado 200 HP</h2>
   <div class="content">
-    <table>
-      <tr><th>Item</th><th>Especificação</th></tr>
-      <tr><td>Motor</td><td>4 tempos, 4 cilindros em linha, sobrealimentado (Supercharger), injeção eletrônica sequencial</td></tr>
-      <tr><td>Cilindrada</td><td>1731 cm³ (105,6 cid)</td></tr>
-      <tr><td>Potência</td><td>200 HP (149 kW) @ 5800–6400 RPM</td></tr>
-      <tr><td>Marcha Lenta</td><td>650 RPM (em ponto morto)</td></tr>
-      <tr><td>Relação de Transmissão</td><td>2,08:1</td></tr>
-      <tr><td>Óleo do Motor</td><td>Sintético SAE 25W-50 Mercury Verado</td></tr>
-      <tr><td>Capacidade de Óleo</td><td>6,0 litros (6.3 qt) com troca de filtro</td></tr>
-      <tr><td>Vela de Ignição</td><td>NGK ILFR6G-E</td></tr>
-      <tr><td>Folga da Vela</td><td>0,8 mm (0.0315 in.)</td></tr>
-      <tr><td>Óleo da Caixa de Engrenagens (Rot. Direita)</td><td>970 ml (32.8 fl. oz.)</td></tr>
-      <tr><td>Óleo da Caixa de Engrenagens (Contra-Rotação)</td><td>900 ml (30.4 fl. oz.)</td></tr>
-      <tr><td>Lubrificante da Caixa de Engrenagens</td><td>SAE 90 High Performance Gear Lube</td></tr>
-      <tr><td>Bateria</td><td>12V, 1000 MCA, 800 CCA, 180 Ah</td></tr>
-      <tr><td>Combustível</td><td>Gasolina sem chumbo, mínimo 87 octanas (90 RON)</td></tr>
-      <tr><td>RPM de Cruzeiro (Norma DME)</td><td>4.500 a 5.500 RPM</td></tr>
-      <tr><td>RPM Máximo (Norma DME)</td><td>Até 6.000 RPM por no máximo 1 minuto</td></tr>
-    </table>
-
+    <div class="spec-grid">
+      <div class="spec-card">
+        <h4>Motor</h4>
+        <p>4 tempos, 4 cilindros em linha (L4) ou 6 cilindros em linha (L6), sobrealimentado (Supercharger), injeção eletrônica sequencial.</p>
+      </div>
+      <div class="spec-card">
+        <h4>Cilindrada</h4>
+        <p>L4: 1732 cc (105.6 cid) — L6: 2598 cc (158.6 cid)</p>
+      </div>
+      <div class="spec-card">
+        <h4>Potência</h4>
+        <p>200 HP (149 kW) @ 5800-6400 RPM</p>
+      </div>
+      <div class="spec-card">
+        <h4>Marcha Lenta</h4>
+        <p>650 RPM (em ponto morto) <sup>1</sup></p>
+      </div>
+      <div class="spec-card">
+        <h4>Relação de Transmissão</h4>
+        <p>2,08:1 <sup>2</sup></p>
+      </div>
+      <div class="spec-card">
+        <h4>Óleo do Motor</h4>
+        <p>Sintético SAE 25W-50 Mercury Verado <sup>3</sup></p>
+      </div>
+      <div class="spec-card">
+        <h4>Capacidade de Óleo</h4>
+        <p>L4: ~6,0 L — L6: ~7,0 L (com troca de filtro) <sup>4</sup></p>
+      </div>
+      <div class="spec-card">
+        <h4>Vela de Ignição</h4>
+        <p>NGK ILFR6G-E <sup>5</sup></p>
+      </div>
+      <div class="spec-card">
+        <h4>Folga da Vela</h4>
+        <p>0,8 mm (0.0315 in.) <sup>5</sup></p>
+      </div>
+      <div class="spec-card">
+        <h4>Óleo da Caixa de Engrenagens (RH)</h4>
+        <p>970 ml (32.8 fl. oz.) <sup>2</sup></p>
+      </div>
+      <div class="spec-card">
+        <h4>Óleo da Caixa de Engrenagens (LH)</h4>
+        <p>900 ml (30.4 fl. oz.) <sup>2</sup></p>
+      </div>
+      <div class="spec-card">
+        <h4>Lubrificante da Caixa de Engrenagens</h4>
+        <p>SAE 90 High Performance Gear Lube</p>
+      </div>
+      <div class="spec-card">
+        <h4>Bateria</h4>
+        <p>12V, 1000 MCA, 800 CCA, 180 Ah <sup>2</sup></p>
+      </div>
+      <div class="spec-card">
+        <h4>Combustível</h4>
+        <p>Gasolina sem chumbo, mínimo 87 octanas (90 RON) <sup>2</sup></p>
+      </div>
+    </div>
     <div class="alert alert-info">
-      <strong>Nota:</strong> Os dados acima servem como referência. Consulte sempre o Manual de Serviço da Mercury para valores exatos do seu modelo/ano.
+      <strong>Fonte:</strong> Dados compilados do manual de serviço Mercury e do catálogo Brunswick Marine <sup>1,2,3,4,5</sup>.
     </div>
   </div>
 </section>
 
-<!-- CRONOGRAMA -->
+<!-- 2. CRONOGRAMA -->
 <section id="cronograma">
   <h2>2. Cronograma de Manutenção</h2>
   <div class="content">
 
-    <h3>A Cada 15 Dias — Giro Técnico</h3>
+    <h3>A Cada 100 Horas ou Anualmente</h3>
     <ul>
-      <li>Funcionar os motores por <strong>1 hora em baixa rotação</strong> (máx. 1500 RPM).</li>
-      <li>Consumo médio: 3,5 L/h.</li>
-      <li>Objetivo: manter a carga das baterias e lubrificar os sistemas internos.</li>
-    </ul>
-
-    <h3>A Cada 100 Horas ou Anualmente (o que ocorrer primeiro)</h3>
-    <ul>
-      <li>Trocar o óleo do motor e o filtro de óleo.</li>
-      <li>Trocar o lubrificante da caixa de engrenagens.</li>
-      <li>Inspecionar as velas de ignição.</li>
+      <li>Trocar o óleo do motor e o filtro de óleo. <sup>2</sup></li>
+      <li>Trocar o lubrificante da caixa de engrenagens. <sup>15</sup></li>
+      <li>Inspecionar as velas de ignição. <sup>2</sup></li>
       <li>Verificar o filtro de combustível separador de água.</li>
-      <li>Inspecionar os ânodos de sacrifício (substituir se corroídos &gt; 50%).</li>
-      <li>Verificar o fluido da direção hidráulica (SAE 0W-30).</li>
-      <li>Verificar o fluido de compensação hidráulica (Trim).</li>
-      <li>Inspecionar a bateria (limpar terminais e verificar carga).</li>
-      <li>Verificar a correia do alternador.</li>
+      <li>Inspecionar os ânodos de sacrifício. <sup>14</sup></li>
+      <li>Verificar o fluido da direção hidráulica (SAE 0W-30). <sup>15</sup></li>
+      <li>Verificar o fluido de compensação hidráulica (Trim). <sup>15</sup></li>
+      <li>Inspecionar a bateria. <sup>14</sup></li>
+      <li>Verificar a correia do alternador. <sup>14</sup></li>
       <li>Lubrificar os pontos de engraxe.</li>
     </ul>
 
     <h3>A Cada 300 Horas ou a Cada 3 Anos</h3>
     <ul>
-      <li>Substituir o rotor da bomba de água.</li>
-      <li>Substituir o filtro de combustível de alta pressão (em linha).</li>
-      <li>Substituir as velas de ignição.</li>
-      <li>Substituir a correia de acessórios (alternador/supercharger).</li>
-      <li>Verificar e trocar o óleo do supercharger (procedimento específico Verado).</li>
+      <li>Substituir o rotor da bomba de água. <sup>2</sup></li>
+      <li>Substituir o filtro de combustível de alta pressão (em linha). <sup>13</sup></li>
+      <li>Substituir as velas de ignição. <sup>2</sup></li>
+      <li>Substituir a correia de acessórios (alternador/supercharger). <sup>13</sup></li>
+      <li><strong>Trocar o óleo do supercharger.</strong> <sup>4</sup></li>
+    </ul>
+
+    <h3>A Cada 25 Horas ou 90 Dias</h3>
+    <ul>
+      <li>Verificar o nível de óleo do motor, fluido da direção hidráulica e óleo da caixa de engrenagens. <sup>14</sup></li>
+      <li>Verificar o nível de ácido da bateria e procurar danos. <sup>14</sup></li>
+      <li>Limpar o filtro de água do mar. <sup>14</sup></li>
     </ul>
 
     <div class="alert alert-danger">
-      <strong>IMPORTANTE:</strong> Para evitar derramamento, o óleo do motor deve ser esvaziado antes de remover o cárter de engrenagens. Realizar a troca programada da bomba de água junto com a troca de óleo do motor.
+      <strong>IMPORTANTE:</strong> O óleo do supercharger do Verado é um item crítico. Verificar a cada 100 horas e trocar a cada 300 horas ou 3 anos. Ignorar este intervalo pode causar danos graves e caros. <sup>4</sup>
     </div>
   </div>
 </section>
 
-<!-- ÓLEO MOTOR -->
+<!-- 3. ÓLEO MOTOR -->
 <section id="oleo">
   <h2>3. Troca de Óleo do Motor</h2>
   <div class="content">
 
-    <h3>Procedimento</h3>
+    <h3>Procedimento (Método de Drenagem)</h3>
     <ol>
-      <li>Incline o motor para fora/cima além da vertical por 1 minuto para drenar o óleo retido no coletor.</li>
-      <li>Coloque o motor na posição vertical.</li>
-      <li>Remova a vareta medidora e deslize o tubo adaptador da <strong>Bomba de Óleo do Cárter (91-90265A 5)</strong> através do orifício da vareta até o fundo do coletor.</li>
-      <li>Bombeie o óleo para um recipiente adequado.</li>
-      <li>Remova o filtro de óleo antigo com a <strong>Chave para Filtros de Óleo (91-802653Q02)</strong>.</li>
-      <li>Limpe a base de montagem do filtro. Aplique óleo limpo na gaxeta do filtro novo (não use graxa).</li>
-      <li>Enrosque o filtro novo até a junta encostar na base e aperte de 3/4 a 1 volta.</li>
-      <li>Adicione <strong>6 litros</strong> de óleo SAE 25W-50.</li>
-      <li>Verifique o nível com a vareta; deve estar na metade da área hachurada (não encher até o topo).</li>
-      <li>Ligue o motor com água de arrefecimento por 5 minutos em marcha lenta e verifique vazamentos.</li>
-      <li>Desligue e verifique novamente o nível.</li>
+      <li>Forneça água de arrefecimento ao motor e ligue-o em marcha lenta até atingir a temperatura normal de operação. <sup>17</sup></li>
+      <li>Desligue o motor, feche a água e remova o(s) fixador(es) de lavagem. <sup>17</sup></li>
+      <li>Remova o tampão do porão. A mangueira de drenagem de óleo está ligada ao tampão. <sup>17</sup></li>
+      <li>Puxe a mangueira de drenagem do óleo pelo flange do dreno do porão. <sup>17</sup></li>
+      <li>Posicione um contêiner adequado sob a mangueira de drenagem. <sup>17</sup></li>
+      <li>Com duas chaves, separe o tampão de drenagem da mangueira e drene o óleo completamente. <sup>17</sup></li>
+      <li>Remova o filtro de óleo antigo e descarte-o com o anel de vedação. <sup>17</sup></li>
+      <li>Cubra o anel de vedação do filtro novo com óleo de motor e instale-o. Aperte seguramente, sem exagerar. <sup>17</sup></li>
+      <li>Remova a tampa do bocal de enchimento e adicione o óleo recomendado até que o nível atinja, mas não ultrapasse, a marca da faixa "FULL" da vareta medidora. <sup>17</sup></li>
+      <li>Use sempre a vareta medidora de nível para determinar a quantidade exata de óleo necessária. <sup>17</sup></li>
     </ol>
 
     <div class="alert alert-info">
@@ -275,7 +311,7 @@ footer{
   </div>
 </section>
 
-<!-- CAIXA DE ENGRENAGENS -->
+<!-- 4. CAIXA DE ENGRENAGENS -->
 <section id="engrenagens">
   <h2>4. Lubrificação da Caixa de Engrenagens</h2>
   <div class="content">
@@ -307,13 +343,14 @@ footer{
 
     <table>
       <tr><th>Modelo</th><th>Capacidade</th></tr>
-      <tr><td>Rotação Direita</td><td>970 ml (32.8 fl. oz.)</td></tr>
-      <tr><td>Contra-Rotação</td><td>900 ml (30.4 fl. oz.)</td></tr>
+      <tr><td>Rotação Direita (RH)</td><td>970 ml (32.8 fl. oz.)</td></tr>
+      <tr><td>Contra-Rotação (LH)</td><td>900 ml (30.4 fl. oz.)</td></tr>
     </table>
+    <p><em>Fonte: Catálogo Sierra 2021 e Manual Mercury <sup>16, 2</sup>.</em></p>
   </div>
 </section>
 
-<!-- BOMBA DE ÁGUA -->
+<!-- 5. BOMBA DE ÁGUA -->
 <section id="bomba-agua">
   <h2>5. Substituição do Rotor da Bomba de Água</h2>
   <div class="content">
@@ -332,37 +369,66 @@ footer{
       <li>Monte novamente, lubrificando com <strong>2-4-C com Teflon</strong>.</li>
       <li>Aperte os parafusos da tampa da bomba em sequência cruzada com torque de <strong>7 Nm (60 lb. in.)</strong>.</li>
     </ol>
+
     <div class="alert alert-info">
-      <strong>Dica:</strong> Ao reinstalar o rotor, mantenha a curvatura das pás no mesmo sentido original. Não instale o rotor invertido.
+      <strong>Kits de Reparo:</strong><br>
+      L6 (6 cilindros): Quicksilver 8M0078858 <sup>18</sup><br>
+      L4 (4 cilindros): Quicksilver 817275A09 <sup>19</sup><br>
+      Impulsor avulso: Quicksilver 47-43026Q02 <sup>5</sup>
     </div>
   </div>
 </section>
 
-<!-- HÉLICE -->
-<section id="helice">
-  <h2>6. Substituição da Hélice</h2>
+<!-- 6. VELAS -->
+<section id="velas">
+  <h2>6. Inspeção e Substituição das Velas</h2>
   <div class="content">
     <ol>
-      <li>Coloque o câmbio em ponto morto.</li>
-      <li>Endireite as linguetas da arruela de retenção da porca da hélice.</li>
-      <li>Bloqueie a hélice com um bloco de madeira entre a caixa de engrenagens e a hélice.</li>
-      <li>Remova a porca da hélice.</li>
-      <li>Puxe a hélice para fora do eixo. Se estiver presa, solicite auxílio de um concessionário.</li>
-      <li>Aplique <strong>Graxa Anticorrosiva (92-802867Q1)</strong> ou <strong>2-4-C com Teflon (92-802859Q1)</strong> nas estrias do eixo.</li>
-      <li>Monte a hélice com o cubo de impulso, a camisa de tração substituível (bucha de sacrifício) e a porca.</li>
-      <li>Torque da porca: <strong>75 Nm (55 lb. ft.)</strong>.</li>
-      <li>Dobre 3 linguetas da arruela para dentro das ranhuras do cubo de impulso.</li>
+      <li>Solte os conectores do cabo das bobinas das velas.</li>
+      <li>Remova os parafusos de montagem que prendem as bobinas. Puxe as bobinas com um movimento de torção.</li>
+      <li>Remova as velas para inspecioná-las. Substitua se o eletrodo estiver gasto, as roscas corroídas, ou o isolador estiver áspero, rachado, quebrado, com bolhas ou fuligem. <sup>22</sup></li>
+      <li>Regule a folga da vela de ignição. <strong>Folga: 0,8 mm (0.0315 in.)</strong>. <sup>5</sup></li>
+      <li><strong>Uso em água salgada:</strong> Aplique uma fina camada de Composto Antigripante (92-881091K1) apenas nas roscas das velas. <sup>22</sup></li>
+      <li>Limpe completamente a sujeira dos suportes das velas. Instale as velas apertando à mão e depois aperte mais 1/4 de volta ou com o torque especificado. <strong>Torque: 27 Nm (20 lb. ft.)</strong>. <sup>22</sup></li>
+      <li>Empurre as bobinas no lugar sobre as velas usando um movimento de torção.</li>
+      <li>Prenda as bobinas com os parafusos de retenção. <strong>Torque: 8 Nm (71 lb. in.)</strong>. <sup>22</sup></li>
+      <li>Volte a conectar os conectores do cabo de ligação às bobinas.</li>
     </ol>
-
-    <div class="alert alert-danger">
-      <strong>ATENÇÃO:</strong> Utilize sempre a <strong>bucha de sacrifício plástica</strong> para missões de rotina. A bucha metálica deve ser guardada para emergências. Isso evita a quebra do eixo em caso de colisão.
-    </div>
+    <p><em>Vela recomendada: NGK ILFR6G-E <sup>5</sup>.</em></p>
   </div>
 </section>
 
-<!-- SISTEMA ELÉTRICO -->
+<!-- 7. COMBUSTÍVEL -->
+<section id="combustivel">
+  <h2>7. Sistema de Combustível</h2>
+  <div class="content">
+
+    <h3>Pressão de Combustível</h3>
+    <ul>
+      <li>O sistema possui uma bomba de recalque (lift pump) e uma bomba de alta pressão.</li>
+      <li>Ao ligar a chave, ambas devem operar por aproximadamente 6 segundos. A pressão deve subir para pelo menos 52 psi e depois cair para cerca de 45 psi após a bomba parar. <sup>8</sup></li>
+      <li>O regulador de pressão de combustível é calibrado para 350 kPa (50 psi). <sup>8</sup></li>
+    </ul>
+
+    <h3>Filtro Separador de Água</h3>
+    <ul>
+      <li>Remove a umidade e resíduos do combustível.</li>
+      <li>Se o suporte do filtro ficar cheio de água, a água pode ser removida.</li>
+      <li>Se o filtro ficar entupido com resíduos, substitua-o.</li>
+    </ul>
+
+    <h3>Bombas de Combustível (L4)</h3>
+    <table>
+      <tr><th>Componente</th><th>Número de Peça</th></tr>
+      <tr><td>Bomba de Alta Pressão</td><td>880596T60 <sup>25</sup></td></tr>
+      <tr><td>Bomba de Recalque (Lift Pump)</td><td>880596T58 <sup>25</sup></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- 8. ELÉTRICO -->
 <section id="eletrico">
-  <h2>7. Sistema Elétrico e Bateria</h2>
+  <h2>8. Sistema Elétrico e Bateria</h2>
   <div class="content">
 
     <h3>Inspeção da Bateria</h3>
@@ -370,7 +436,7 @@ footer{
       <li>Desligue o motor antes de qualquer manutenção na bateria.</li>
       <li>Adicione água destilada se necessário (baterias não seladas).</li>
       <li>Verifique se a bateria está bem presa.</li>
-      <li>Terminais devem estar limpos, apertados e instalados corretamente (positivo no positivo, negativo no negativo).</li>
+      <li>Terminais devem estar limpos, apertados e instalados corretamente.</li>
       <li>Use tampa protetora não-condutiva para evitar curtos.</li>
     </ul>
 
@@ -398,15 +464,13 @@ footer{
       <tr><td>IGN. COILS</td><td>20 A</td><td>Bobinas de ignição</td></tr>
       <tr><td>FUEL</td><td>20 A</td><td>Fornecimento de combustível</td></tr>
       <tr><td>INJ. PWR.</td><td>20 A</td><td>Injetores e válvula de reforço</td></tr>
-      <tr><td>Direção Assistida</td><td>90 A</td><td>Bomba da direção hidráulica</td></tr>
-      <tr><td>Alternador</td><td>150 A</td><td>Elo fusível</td></tr>
     </table>
   </div>
 </section>
 
-<!-- DIREÇÃO -->
+<!-- 9. DIREÇÃO -->
 <section id="direcao">
-  <h2>8. Sistema de Direção</h2>
+  <h2>9. Sistema de Direção</h2>
   <div class="content">
 
     <h3>Fluido da Direção Hidráulica</h3>
@@ -431,39 +495,11 @@ footer{
       <tr><td>Tubo de inclinação</td><td>2-4-C com Teflon ou Special Lubricant 101</td></tr>
       <tr><td>Cabo da direção</td><td>2-4-C com Teflon ou Special Lubricant 101</td></tr>
       <tr><td>Eixo da hélice</td><td>Graxa Anticorrosiva (94) ou 2-4-C (95)</td></tr>
-      <tr><td>Centros de rotação da haste de direção</td><td>Óleo leve</td></tr>
     </table>
   </div>
 </section>
 
-<!-- SENSORES -->
-<section id="sensores">
-  <h2>9. Sensores do Motor</h2>
-  <div class="content">
-    <table>
-      <tr><th>Sensor</th><th>Função</th><th>Localização</th></tr>
-      <tr><td>CPS (Posição do Virabrequim)</td><td>Sincronização da ignição</td><td>Junto ao volante do motor</td></tr>
-      <tr><td>Sensor de Fase (Comando)</td><td>Sincronização da injeção sequencial</td><td>Topo da tampa de válvulas</td></tr>
-      <tr><td>Sensor de Temperatura do Bloco</td><td>Temperatura do motor</td><td>Imerso no refrigerante do bloco</td></tr>
-      <tr><td>Sensor MAP</td><td>Pressão/vácuo no coletor de admissão</td><td>Topo do coletor de admissão</td></tr>
-      <tr><td>Sensor MAT</td><td>Temperatura do ar de admissão</td><td>Centro do coletor de admissão</td></tr>
-      <tr><td>Sensor de Temperatura do Supercharger</td><td>Temperatura do ar na saída do supercharger</td><td>Saída do supercharger (antes do CAC)</td></tr>
-      <tr><td>Sensor de Pressão de Óleo</td><td>Pressão do óleo lubrificante</td><td>Lado de estibordo do sobrealimentador</td></tr>
-      <tr><td>Sensor de Temperatura do Óleo</td><td>Temperatura do óleo</td><td>Lado de estibordo do bloco</td></tr>
-      <tr><td>Sensor de Detonação (Knock)</td><td>Detecção de batida de pino</td><td>Lado de bombordo, atrás do CAC</td></tr>
-      <tr><td>Sensor WIF (Água no Combustível)</td><td>Presença de água no combustível</td><td>Alojamento do filtro de combustível</td></tr>
-      <tr><td>Sensor de Pressão Pitot</td><td>Velocidade do barco</td><td>Sob o tubo frontal do EBC</td></tr>
-      <tr><td>Sensor de Posição de Compensação</td><td>Posição do Trim</td><td>Lado de bombordo do motor</td></tr>
-      <tr><td>Sensor de Posição de Marcha (ESC)</td><td>Posição do câmbio</td><td>Conjunto do ESC</td></tr>
-    </table>
-
-    <div class="alert alert-info">
-      <strong>Dica:</strong> Não inverta as ligações dos sensores. Embora alguns sejam iguais fisicamente, o PCM os interpreta com sensibilidade diferente.
-    </div>
-  </div>
-</section>
-
-<!-- CÓDIGOS DE FALHA -->
+<!-- 10. CÓDIGOS DE FALHA -->
 <section id="codigos">
   <h2>10. Códigos de Falha Comuns (CDS G3)</h2>
   <div class="content">
@@ -480,19 +516,10 @@ footer{
       <tr><td class="codigo">20/21</td><td>Superaquecimento (Bombordo/Estibordo)</td><td>Entupimento, rotor, termostato ou sensor</td></tr>
       <tr><td class="codigo">22</td><td>Saída da buzina de advertência</td><td>Buzina inoperante ou não conectada</td></tr>
       <tr><td class="codigo">23</td><td>Água no combustível</td><td>Combustível contaminado</td></tr>
-      <tr><td class="codigo">24–35</td><td>Injetores diretos (abertos/curto)</td><td>Bico injetor ou chicote</td></tr>
-      <tr><td class="codigo">36/37</td><td>Sensor de pressão de água</td><td>Sensor ou chicote</td></tr>
-      <tr><td class="codigo">59–70</td><td>Injetores de combustível</td><td>Bico injetor ou chicote</td></tr>
-      <tr><td class="codigo">80/81</td><td>Relé de alimentação principal</td><td>Relé, bateria ou chicote</td></tr>
-      <tr><td class="codigo">84/85</td><td>Pressão de óleo (aberto/curto)</td><td>Sensor ou chicote</td></tr>
-      <tr><td class="codigo">91</td><td>Superaquecimento do óleo</td><td>Restrição no resfriador ou baixo nível</td></tr>
+      <tr><td class="codigo">311-6</td><td>Sensores TPS A e B não concordam</td><td>Corpo de borboleta (ETC) ou chicote <sup>26</sup></td></tr>
       <tr><td class="codigo">132</td><td>Falha do CPS</td><td>Motor não funciona — sensor ou chicote</td></tr>
-      <tr><td class="codigo">136/137</td><td>Válvula EBC</td><td>Válvula ou chicote</td></tr>
-      <tr><td class="codigo">197/198</td><td>Sensor de temperatura do supercharger</td><td>Sensor ou chicote</td></tr>
       <tr><td class="codigo">199</td><td>Superaquecimento do supercharger</td><td>Reduza a aceleração</td></tr>
-      <tr><td class="codigo">201/202</td><td>Sensor de temperatura do cabeçote</td><td>Sensor ou chicote</td></tr>
       <tr><td class="codigo">203</td><td>Superaquecimento do cabeçote</td><td>Entupimento, bomba ou sensor</td></tr>
-      <tr><td class="codigo">204/205</td><td>Sensor de temperatura do bloco</td><td>Sensor ou chicote</td></tr>
       <tr><td class="codigo">206</td><td>Superaquecimento do bloco</td><td>Entupimento, bomba ou termostato</td></tr>
     </table>
 
@@ -502,82 +529,32 @@ footer{
   </div>
 </section>
 
-<!-- REBOQUE -->
-<section id="reboque">
-  <h2>11. Manutenção do Reboque</h2>
+<!-- 11. ARMAZENAMENTO -->
+<section id="armazenamento">
+  <h2>11. Armazenamento</h2>
   <div class="content">
-
-    <h3>Pneus</h3>
+    <h3>Preparação para Períodos Prolongados</h3>
     <ul>
-      <li>Não trafegar com carga excessiva acima do previsto.</li>
-      <li>Não usar rodas com medidas diferentes das originais.</li>
-      <li>Calibragem correta (nem baixa, nem alta).</li>
-      <li>Verificar balanceamento e estepe antes das missões.</li>
+      <li>Retire a embarcação da água quando não estiver em uso.</li>
+      <li>Retire o tampão de drenagem e prenda no volante se ficar no reboque.</li>
+      <li>Deixe os motores na vertical para drenar água e óleo.</li>
+      <li>Lave e encerar o casco e os motores.</li>
+      <li>Se ficar na água, deixe a bomba de porão em automático.</li>
+      <li>Drene o máximo possível de combustível do sistema.</li>
+      <li>Inspecione e limpe os filtros de combustível.</li>
     </ul>
 
-    <h3>Cubos e Rolamentos</h3>
+    <h3>Proteção dos Componentes Internos</h3>
     <ul>
-      <li>Manutenção preventiva a cada <strong>10.000 km ou semestral</strong>.</li>
-      <li>Troca de graxa, retentor do cubo e verificação dos rolamentos.</li>
-      <li>Folga do cubo: <strong>0,03 a 0,05 mm</strong> (medida com relógio comparador).</li>
+      <li>Remova as bobinas e as velas de ignição.</li>
+      <li>Borrife aproximadamente 30 ml do Inibidor de Ferrugem Vedante para Armazenagem (92-802878Q56) dentro de cada orifício da vela. <sup>4</sup></li>
+      <li>Acione a chave para girar o motor através de um ciclo de partida, distribuindo o produto.</li>
+      <li>Recoloque as velas e as bobinas.</li>
+      <li>Drene e reabasteça com o lubrificante para caixa de engrenagens.</li>
     </ul>
 
-    <h3>Freios</h3>
-    <ul>
-      <li>Verificar desgaste das pastilhas e discos a cada <strong>5.000 km</strong>.</li>
-      <li>Evitar retífica nos discos — preferir troca.</li>
-      <li>Verificar vazamentos de fluido DOT 4 no cilindro mestre, pinças e flexíveis.</li>
-      <li>Trocar o fluido de freio a cada <strong>2 anos</strong>.</li>
-      <li>Verificar o acionamento do freio da viatura e o chicote elétrico.</li>
-    </ul>
-
-    <div class="alert alert-danger">
-      <strong>IMPORTANTE:</strong> Lavar o reboque após o uso, especialmente em água salgada. Lubrificar rolamentos e partes móveis do sistema de lançamento.
-    </div>
-  </div>
-</section>
-
-<!-- CUIDADOS GERAIS -->
-<section id="cuidados">
-  <h2>12. Cuidados Gerais e Normas Operacionais</h2>
-  <div class="content">
-
-    <h3>Operação (Normas DME)</h3>
-    <ul>
-      <li>Usar aceleração de cruzeiro entre <strong>4.500 e 5.500 RPM</strong>.</li>
-      <li>Acima de 5.500 RPM somente para manobras rápidas, máximo de <strong>1 minuto</strong> e até 6.000 RPM.</li>
-      <li>Os motores são programados para esse limite via tacômetro digital.</li>
-      <li>Dados de uso são rastreados periodicamente pelo CDS.</li>
-    </ul>
-
-    <h3>Consumo de Combustível</h3>
-    <table>
-      <tr><th>Faixa de RPM</th><th>Consumo</th></tr>
-      <tr><td>4.500 a 5.500</td><td>30 a 40 L/h</td></tr>
-      <tr><td>Acima de 5.500</td><td>60 a 72 L/h</td></tr>
-    </table>
-
-    <h3>Armazenamento</h3>
-    <ul>
-      <li>Retirar a embarcação da água quando não estiver em uso.</li>
-      <li>Retirar o tampão de drenagem e prender no volante se ficar no reboque.</li>
-      <li>Deixar os motores na vertical para drenar água e óleo.</li>
-      <li>Lavar e encerar o casco e os motores.</li>
-      <li>Se ficar na água, deixar a bomba de porão em automático.</li>
-    </ul>
-
-    <h3>Cuidados Diários</h3>
-    <ul>
-      <li>Não desligar as chaves gerais com os motores em funcionamento.</li>
-      <li>Usar produto limpa contato e antioxidante nas conexões elétricas.</li>
-      <li>Drenar o máximo possível de combustível do sistema antes do armazenamento.</li>
-      <li>Inspecionar e limpar os filtros de combustível.</li>
-      <li>Ter cuidado ao atracar — sempre em baixa velocidade e com defensas.</li>
-    </ul>
-
-    <h3>Livro Registro</h3>
     <div class="alert alert-success">
-      <strong>OBRIGATÓRIO:</strong> Manter o Livro Registro da Embarcação atualizado. Registrar todas as missões, manutenções, insumos e peças aplicadas. O chefe da seção ou os pilotos devem preencher; os mecânicos devem orientar e complementar. Usar o CDS para verificar as informações preenchidas.
+      <strong>Dica:</strong> Guarde o motor de popa na posição vertical para permitir que a água seja drenada.
     </div>
   </div>
 </section>
@@ -585,8 +562,8 @@ footer{
 </main>
 
 <footer>
-  <p><strong>Manutenção da Embarcação Guardian 25 — Motor Mercury Verado 200 HP</strong></p>
-  <p>Baseado na Nota de Aula do Estágio de Manutenção de Embarcações Guardian 2021 (EMGED) — Exército Brasileiro</p>
+  <p><strong>Manual de Manutenção — Mercury Verado 200 HP</strong></p>
+  <p>Baseado no Manual de Serviço Mercury Marine e em fontes técnicas especializadas.</p>
   <p>Este documento não substitui os manuais originais do fabricante. Utilize-o em conjunto com a documentação oficial.</p>
 </footer>
 
