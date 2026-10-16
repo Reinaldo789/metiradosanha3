@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema Elétrico 4x4 — Volkswagen Caminhões e Ônibus</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 80px; -webkit-text-size-adjust: 100%; -moz-text-size-adjust: 100%; text-size-adjust: 100%; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #1e1e2e; color: #e0e0e0; min-height: 100vh; overflow-x: hidden; }
+  .btn-menu { position: fixed; top: 15px; left: 15px; z-index: 1001; background: #89b4fa; color: #1e1e2e; border: none; width: 45px; height: 45px; border-radius: 8px; font-size: 22px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(137,180,250,0.3); transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+  .btn-menu:hover { background: #b4befe; transform: scale(1.05); }
+  .btn-menu:active { transform: scale(0.95); }
+  .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 998; opacity: 0; visibility: hidden; transition: all 0.3s; }
+  .overlay.ativo { opacity: 1; visibility: visible; }
+  nav { position: fixed; top: 0; left: 0; width: 300px; height: 100vh; background: #181825; padding: 70px 10px 20px 10px; overflow-y: auto; border-right: 2px solid #313244; z-index: 1000; transition: transform 0.3s ease; transform: translateX(0); }
+  nav.fechado { transform: translateX(-100%); }
+  nav h2 { font-size: 13px; color: #89b4fa; text-transform: uppercase; margin-bottom: 15px; padding-left: 10px; letter-spacing: 1px; position: sticky; top: -70px; background: #181825; padding-top: 15px; padding-bottom: 10px; z-index: 1; }
+  nav a { display: block; color: #cdd6f4; text-decoration: none; padding: 8px 10px; border-radius: 6px; font-size: 12px; margin-bottom: 2px; border-left: 3px solid transparent; transition: all 0.2s; }
+  nav a:hover { background: #313244; color: #89b4fa; border-left-color: #89b4fa; }
+  nav a .pg { color: #6c7086; font-size: 10px; margin-left: 5px; }
+  main { padding: 30px 40px; max-width: 1100px; margin: 0 auto; transition: margin-left 0.3s; padding-top: 70px; }
+  @media (min-width: 1024px) { body.menu-aberto main { margin-left: 300px; } body.menu-aberto .btn-menu { left: 315px; } }
+  h1 { color: #89b4fa; font-size: 22px; margin-bottom: 5px; border-bottom: 2px solid #313244; padding-bottom: 10px; }
+  .sub { color: #a6adc8; font-size: 12px; margin-bottom: 30px; }
+  .componente { background: #181825; border: 1px solid #313244; border-radius: 10px; padding: 20px; margin-bottom: 25px; page-break-inside: avoid; overflow: hidden; }
+  .componente h2 { color: #f9e2af; font-size: 16px; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .componente .ref { font-size: 11px; color: #6c7086; margin-bottom: 15px; display: block; }
+  .tabela-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; border-radius: 6px; }
+  .tabela-pinagem { width: 100%; min-width: 650px; border-collapse: collapse; font-size: 12px; }
+  .tabela-pinagem th { background: #313244; color: #89b4fa; padding: 8px 10px; text-align: left; border: 1px solid #45475a; font-weight: 600; white-space: nowrap; }
+  .tabela-pinagem td { padding: 8px 10px; border: 1px solid #45475a; color: #cdd6f4; vertical-align: middle; font-size: 12px; line-height: 1.4; }
+  .tabela-pinagem tr:nth-child(even) { background: #1e1e2e; }
+  .pino { display: inline-block; background: #45475a; color: #f9e2af; padding: 2px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-weight: bold; font-size: 11px; white-space: nowrap; }
+  .fio { display: inline-flex; align-items: center; gap: 6px; font-family: 'Consolas', monospace; font-size: 11px; white-space: nowrap; }
+  .fio-cor { width: 14px; height: 14px; border-radius: 2px; display: inline-block; border: 1px solid #666; flex-shrink: 0; }
+  .destino { color: #94e2d5; font-weight: 600; white-space: nowrap; }
+  .conexao-critica { background: #2a1a1a; border-left: 3px solid #f38ba8; }
+  .conexao-critica td { color: #f38ba8 !important; }
+  .comportamento { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 600; white-space: nowrap; }
+  .com { background: #f9e2af; color: #1e1e2e; }
+  .na  { background: #a6e3a1; color: #1e1e2e; }
+  .nf  { background: #f38ba8; color: #1e1e2e; }
+  .tensao { display: inline-block; font-size: 10px; padding: 2px 6px; border-radius: 3px; font-weight: 600; white-space: nowrap; }
+  .t30 { background: #f38ba8; color: #1e1e2e; }
+  .t15 { background: #f9e2af; color: #1e1e2e; }
+  .t50 { background: #a6e3a1; color: #1e1e2e; }
+  .ttr { background: #6c7086; color: #fff; }
+  .t58 { background: #cba6f7; color: #1e1e2e; }
+  .tac { background: #94e2d5; color: #1e1e2e; }
+  .descricao-acao { background: #1e1e2e; border-left: 3px solid #89b4fa; padding: 12px 15px; margin-top: 15px; border-radius: 4px; font-size: 12px; color: #cdd6f4; line-height: 1.6; }
+  .descricao-acao strong { color: #89b4fa; }
+  .tabela-posicoes { width: 100%; min-width: 500px; border-collapse: collapse; font-size: 11px; margin-top: 10px; background: #1a1a2e; }
+  .tabela-posicoes th { background: #3a2a1a; color: #f9e2af; padding: 6px 8px; border: 1px solid #45475a; }
+  .tabela-posicoes td { padding: 6px 8px; border: 1px solid #45475a; color: #cdd6f4; }
+  .destaque { margin-top: 20px; padding: 15px; background: #1e1e2e; border: 1px solid #45475a; border-radius: 8px; overflow-x: auto; }
+  .destaque table { width: 100%; min-width: 500px; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+  .destaque th, .destaque td { border: 1px solid #45475a; padding: 6px 8px; text-align: left; }
+  .destaque th { background: #313244; color: #89b4fa; }
+  .destaque td { color: #cdd6f4; }
+  .btn-topo { position: fixed; bottom: 20px; right: 20px; background: #89b4fa; color: #1e1e2e; border: none; width: 50px; height: 50px; border-radius: 50%; font-weight: bold; cursor: pointer; font-size: 24px; box-shadow: 0 4px 15px rgba(137,180,250,0.4); z-index: 100; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; opacity: 0; visibility: hidden; transform: translateY(20px); }
+  .btn-topo.visivel { opacity: 1; visibility: visible; transform: translateY(0); }
+  .btn-topo:hover { background: #b4befe; transform: translateY(-3px) scale(1.05); box-shadow: 0 6px 20px rgba(137,180,250,0.6); }
+  .btn-topo:active { transform: translateY(0) scale(0.95); }
+  @media (max-width: 768px) {
+    main { padding: 20px 15px; padding-top: 70px; }
+    h1 { font-size: 18px; }
+    .sub { font-size: 11px; }
+    .componente { padding: 15px 12px; }
+    .componente h2 { font-size: 14px; }
+    .btn-topo { width: 45px; height: 45px; font-size: 20px; bottom: 15px; right: 15px; }
+    .btn-menu { width: 40px; height: 40px; font-size: 20px; top: 12px; left: 12px; }
+    nav { width: 85vw; max-width: 320px; }
+    .tabela-pinagem { min-width: 750px; }
+    .tabela-posicoes { min-width: 550px; }
+  }
+  @media (max-width: 480px) { h1 { font-size: 16px; } .componente h2 { font-size: 13px; } .tabela-pinagem { font-size: 11px; } .btn-topo { width: 42px; height: 42px; font-size: 18px; } }
+  .tabela-wrapper, .destaque { max-height: 999999px; }
+  @media (max-width: 768px) {
+    .tabela-pinagem th, .tabela-pinagem td, .destaque th, .destaque td { font-size: 12px; line-height: 1.4; padding: 7px 8px; }
+    .destaque table { font-size: 12px; min-width: 420px; }
+  }
+  @media (max-width: 480px) {
+    .tabela-pinagem th, .tabela-pinagem td, .destaque th, .destaque td { font-size: 11px; padding: 6px 7px; }
+    .destaque table { font-size: 11px; }
+  }
+  @media print { nav, .btn-topo, .btn-menu, .overlay { display: none !important; } body { background: white; color: black; } main { max-width: 100%; padding: 10px; margin: 0 !important; } .componente { background: white; border: 1px solid #ccc; page-break-inside: avoid; } .tabela-pinagem th { background: #ddd; color: #000; } .tabela-pinagem td { color: #000; } .pino { background: #eee; color: #000; } .destino { color: #000; } .descricao-acao { border-left-color: #000; } .comportamento { border: 1px solid #000; } }
+</style>
+</head>
+<body class="menu-aberto">
+
+<button class="btn-menu" id="btnMenu" onclick="toggleMenu()">☰</button>
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<nav id="menuLateral">
+  <h2>📑 Índice do Manual</h2>
+  <a href="#legenda-cores">🎨 Legenda de Cores <span class="pg">Pág. 8</span></a>
+  <a href="#lista-componentes">📋 Lista de Componentes <span class="pg">Pág. 13-16</span></a>
+  <a href="#codigos-ligacoes">🔢 Códigos de Ligações <span class="pg">Pág. 17-18</span></a>
+  <a href="#sistema-eletrico">⚡ Sistema Elétrico <span class="pg">Pág. 19-20</span></a>
+  <a href="#conectores">🔌 Conectores <span class="pg">Pág. 21-24</span></a>
+  <a href="#carga-partida">🔋 Sistema de Carga e Partida <span class="pg">Pág. 25-26</span></a>
+  <a href="#painel-instrumentos">📊 Painel de Instrumentos <span class="pg">Pág. 27-32</span></a>
+  <a href="#luzes-advertencia">💡 Luzes de Advertência <span class="pg">Pág. 37-39</span></a>
+  <a href="#central-reles">🔶 Central de Relés e Fusíveis <span class="pg">Pág. 40-42</span></a>
+  <a href="#cores-fusiveis">🎨 Cores dos Fusíveis <span class="pg">Pág. 41</span></a>
+  <a href="#posicao-fusiveis">📍 Posicionamento dos Fusíveis <span class="pg">Pág. 41</span></a>
+  <a href="#posicao-reles">📍 Posicionamento dos Relés <span class="pg">Pág. 42</span></a>
+</nav>
+
+<main>
+  <h1>Sistema Elétrico 4x4 — Volkswagen Caminhões e Ônibus</h1>
+  <p class="sub">Caminhões Volkswagen 4x4 — Tecnologia Eletro-Eletrônica Fora-de-Estrada | Material de Treinamento</p>
+
+  <!-- ============ LEGENDA DE CORES DOS CABOS ============ -->
+  <div class="componente" id="legenda-cores">
+    <h2>🎨 Legenda de Cores dos Cabos</h2>
+    <span class="ref">📄 Página 8 do PDF | Código de cores dos fios</span>
+
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Cor</th>
+            <th>Sigla</th>
+            <th>Aplicação Típica</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="pino">br</span></td><td><span class="fio"><span class="fio-cor" style="background:#fff; border:1px solid #666;"></span><strong>Branco</strong></span></td><td><strong>BR</strong></td><td>Sinais especiais / Iluminação</td></tr>
+          <tr><td><span class="pino">am</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span><strong>Amarelo</strong></span></td><td><strong>AM</strong></td><td>Ignição (+15) / Sinal analógico</td></tr>
+          <tr><td><span class="pino">vm</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span><strong>Vermelho</strong></span></td><td><strong>VM</strong></td><td>Alimentação direta da bateria (+30 / B+)</td></tr>
+          <tr><td><span class="pino">li</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span><strong>Lilás</strong></span></td><td><strong>LI</strong></td><td>Sinais de comandos / Atuadores</td></tr>
+          <tr><td><span class="pino">az</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span><strong>Azul</strong></span></td><td><strong>AZ</strong></td><td>D+ / W / Sinais de sensores</td></tr>
+          <tr><td><span class="pino">vd</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span><strong>Verde</strong></span></td><td><strong>VD</strong></td><td>Comandos / Sinais de relé</td></tr>
+          <tr><td><span class="pino">cz</span></td><td><span class="fio"><span class="fio-cor" style="background:#888;"></span><strong>Cinza</strong></span></td><td><strong>CZ</strong></td><td>Iluminação / Sinais de sensores</td></tr>
+          <tr><td><span class="pino">pt</span></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span><strong>Preto</strong></span></td><td><strong>PT</strong></td><td>Terra / Chassi / Comandos de relé</td></tr>
+          <tr><td><span class="pino">ma</span></td><td><span class="fio"><span class="fio-cor" style="background:#8B4513;"></span><strong>Marrom</strong></span></td><td><strong>MA</strong></td><td>Terra de sensores / Instrumentos</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="destaque">
+      <strong style="color: #89b4fa;">📌 Abreviações de Cores (conforme PDF Pág. 8):</strong>
+      <table>
+        <thead><tr><th>Abrev.</th><th>Cor</th><th>Abrev.</th><th>Cor</th></tr></thead>
+        <tbody>
+          <tr><td><strong>br</strong></td><td>Branco</td><td><strong>li</strong></td><td>Lilás</td></tr>
+          <tr><td><strong>am</strong></td><td>Amarelo</td><td><strong>az</strong></td><td>Azul</td></tr>
+          <tr><td><strong>vm</strong></td><td>Vermelho</td><td><strong>vd</strong></td><td>Verde</td></tr>
+          <tr><td><strong>cz</strong></td><td>Cinza</td><td><strong>pt</strong></td><td>Preto</td></tr>
+          <tr><td><strong>ma</strong></td><td>Marrom</td><td></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="descricao-acao">
+      <strong>Como ler a identificação do cabo:</strong><br><br>
+      <code style="background:#313244; padding:6px 10px; border-radius:4px; display:inline-block; font-family:Consolas, monospace; color:#f9e2af;">
+        2,5 pt/am
+      </code><br><br>
+      • <strong>2,5</strong> = bitola (seção transversal em mm²)<br>
+      • <strong>pt</strong> = cor da capa isolante (Preto)<br>
+      • <strong>am</strong> = cor da listra (Amarelo)<br><br>
+      Exemplo: <strong>2,5 pt/am</strong> = cabo com secção de 2,5 mm², capa isolante na cor preta com listra amarela.
+    </div>
+  </div>
+
+  <!-- ============ LISTA DE COMPONENTES ============ -->
+  <div class="componente" id="lista-componentes">
+    <h2>📋 Lista de Componentes</h2>
+    <span class="ref">📄 Páginas 13 a 16 do PDF | Identificação e descrição dos componentes</span>
+
+    <div style="background:#1e1e2e; border-left:3px solid #89b4fa; padding:12px 15px; margin-bottom:15px; border-radius:4px; font-size:12px; color:#cdd6f4; line-height:1.6;">
+      <strong style="color:#89b4fa;">Como usar:</strong> Cada componente do sistema elétrico recebe uma identificação classificada por grupo. Ex: Interruptores – grupo <strong>"E"</strong>; Relés – grupo <strong>"J"</strong>; Sensores – grupo <strong>"G"</strong>; Lâmpadas – grupo <strong>"K"</strong> e <strong>"L"</strong>; Motores – grupo <strong>"M"</strong>; Válvulas – grupo <strong>"N"</strong>; Conectores – grupo <strong>"T"</strong>.
+    </div>
+
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Componente</th>
+            <th>Grupo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="pino">A</span></td><td>Bateria</td><td>Alimentação</td></tr>
+          <tr><td><span class="pino">B</span></td><td>Motor de partida</td><td>Partida</td></tr>
+          <tr><td><span class="pino">C</span></td><td>Alternador</td><td>Carga</td></tr>
+          <tr><td><span class="pino">C1</span></td><td>Regulador de tensão</td><td>Carga</td></tr>
+          <tr><td><span class="pino">D</span></td><td>Chave de partida</td><td>Partida</td></tr>
+          <tr><td><span class="pino">E1</span></td><td>Interruptor de luzes</td><td>Interruptores</td></tr>
+          <tr><td><span class="pino">E2</span></td><td>Interruptor das luzes de direção</td><td>Interruptores</td></tr>
+          <tr><td><span class="pino">E3</span></td><td>Interruptor das luzes de emergência</td><td>Interruptores</td></tr>
+          <tr><td><span class="pino">E4</span></td><td>Comutador dos faróis alto/baixo</td><td>Interruptores</td></tr>
+          <tr><td><span class="pino">E22</span></td><td>Interruptor do limpador/lavador do pára-brisa</td><td>Interruptores</td></tr>
+          <tr><td><span class="pino">E99</span></td><td>Reostato de controle da iluminação do painel</td><td>Interruptores</td></tr>
+          <tr><td><span class="pino">E101</span></td><td>Interruptor de neutro</td><td>Interruptores</td></tr>
+          <tr><td><span class="pino">E205</span></td><td>Interruptor para ativar sistema de freio motor</td><td>Interruptores</td></tr>
+          <tr><td><span class="pino">E235</span></td><td>Interruptor do freio de estacionamento</td><td>Interruptores</td></tr>
+          <tr><td><span class="pino">Exx2</span></td><td>Interruptor da reduzida</td><td>Interruptores</td></tr>
+          <tr><td><span class="pino">F1</span></td><td>Interruptor no pedal do freio de serviço</td><td>Interruptores</td></tr>
+          <tr><td><span class="pino">F18</span></td><td>Interruptor da temperatura/acionamento da embreagem eletromagnética</td><td>Interruptores</td></tr>
+          <tr><td><span class="pino">F41</span></td><td>Interruptor da luz de ré</td><td>Interruptores</td></tr>
+          <tr><td><span class="pino">F63</span></td><td>Interruptor das luzes do freio de serviço</td><td>Interruptores</td></tr>
+          <tr><td><span class="pino">F101</span></td><td>Interruptor de neutro</td><td>Interruptores</td></tr>
+          <tr><td><span class="pino">F232</span></td><td>Interruptor do freio do motor no pedal da embreagem</td><td>Interruptores</td></tr>
+          <tr><td><span class="pino">F233</span></td><td>Interruptor do acelerador freio motor</td><td>Interruptores</td></tr>
+          <tr><td><span class="pino">G</span></td><td>Sensor do nível do combustível</td><td>Sensores</td></tr>
+          <tr><td><span class="pino">G1</span></td><td>Indicador do nível do combustível</td><td>Instrumentos</td></tr>
+          <tr><td><span class="pino">G3</span></td><td>Indicador do nível do combustível</td><td>Instrumentos</td></tr>
+          <tr><td><span class="pino">G5</span></td><td>Tacômetro</td><td>Instrumentos</td></tr>
+          <tr><td><span class="pino">G11</span></td><td>Indicador do nível do combustível</td><td>Instrumentos</td></tr>
+          <tr><td><span class="pino">G21</span></td><td>Velocímetro</td><td>Instrumentos</td></tr>
+          <tr><td><span class="pino">G24</span></td><td>Tacógrafo</td><td>Instrumentos</td></tr>
+          <tr><td><span class="pino">G27</span></td><td>Sensor de temperatura do motor</td><td>Sensores</td></tr>
+          <tr><td><span class="pino">G32</span></td><td>Sensor do nível do arrefecimento</td><td>Sensores</td></tr>
+          <tr><td><span class="pino">G63</span></td><td>Sensor de presença de água no combustível</td><td>Sensores</td></tr>
+          <tr><td><span class="pino">G75</span></td><td>Sensor de velocidade</td><td>Sensores</td></tr>
+          <tr><td><span class="pino">G495</span></td><td>Sensor de restrição do filtro de ar</td><td>Sensores</td></tr>
+          <tr><td><span class="pino">Gx1</span></td><td>Manômetro do sistema de freio</td><td>Instrumentos</td></tr>
+          <tr><td><span class="pino">Gx10</span></td><td>Sensor de rotação do ventilador do sistema de arrefecimento</td><td>Sensores</td></tr>
+          <tr><td><span class="pino">Gxx2</span></td><td>Válvula solenóide de acionamento da reduzida</td><td>Válvulas</td></tr>
+          <tr><td><span class="pino">H</span></td><td>Buzina</td><td>Sinalização</td></tr>
+          <tr><td><span class="pino">H3</span></td><td>Alarme sonoro</td><td>Sinalização</td></tr>
+          <tr><td><span class="pino">J4</span></td><td>Relé de buzinas</td><td>Relés</td></tr>
+          <tr><td><span class="pino">J8b</span></td><td>Relé auxiliar sonoro</td><td>Relés</td></tr>
+          <tr><td><span class="pino">J12</span></td><td>Relé de farol alto</td><td>Relés</td></tr>
+          <tr><td><span class="pino">J20</span></td><td>Relé das luzes direcionais e de emergência</td><td>Relés</td></tr>
+          <tr><td><span class="pino">J25</span></td><td>Relé de lanternas</td><td>Relés</td></tr>
+          <tr><td><span class="pino">J31</span></td><td>Relé temporizador</td><td>Relés</td></tr>
+          <tr><td><span class="pino">J44</span></td><td>Relé da embreagem eletromagnética</td><td>Relés</td></tr>
+          <tr><td><span class="pino">J53</span></td><td>Relé do motor de partida</td><td>Relés</td></tr>
+          <tr><td><span class="pino">J111</span></td><td>Relé auxiliar das luzes do freio</td><td>Relés</td></tr>
+          <tr><td><span class="pino">J122</span></td><td>Unidade de "check" das lâmpadas de advertência</td><td>Relés</td></tr>
+          <tr><td><span class="pino">J201</span></td><td>Diodo</td><td>Relés</td></tr>
+          <tr><td><span class="pino">J207</span></td><td>Relé de neutro</td><td>Relés</td></tr>
+          <tr><td><span class="pino">J285</span></td><td>Unidade de controle eletrônico dos instrumentos do painel</td><td>Relés</td></tr>
+          <tr><td><span class="pino">J341</span></td><td>Relé freio motor/bloqueio de partida</td><td>Relés</td></tr>
+          <tr><td><span class="pino">J482</span></td><td>Relé sonoro auxiliar</td><td>Relés</td></tr>
+          <tr><td><span class="pino">Jx10</span></td><td>Relé do condensador e separador de impurezas CONSEP</td><td>Relés</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Componente</th>
+            <th>Grupo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="pino">K01b</span></td><td>Lâmpada de aviso restrição do filtro de ar</td><td>Lâmpadas de Aviso</td></tr>
+          <tr><td><span class="pino">K1</span></td><td>Lâmpada de aviso farol alto</td><td>Lâmpadas de Aviso</td></tr>
+          <tr><td><span class="pino">K2</span></td><td>Lâmpada de aviso carga do alternador</td><td>Lâmpadas de Aviso</td></tr>
+          <tr><td><span class="pino">K3</span></td><td>Lâmpada de aviso baixa pressão do óleo do motor</td><td>Lâmpadas de Aviso</td></tr>
+          <tr><td><span class="pino">K14</span></td><td>Lâmpada de aviso freio de estacionamento acionado</td><td>Lâmpadas de Aviso</td></tr>
+          <tr><td><span class="pino">K36</span></td><td>Lâmpada de aviso baixo nível do líquido de arrefecimento</td><td>Lâmpadas de Aviso</td></tr>
+          <tr><td><span class="pino">K43</span></td><td>Lâmpada de aviso alta temperatura do motor</td><td>Lâmpadas de Aviso</td></tr>
+          <tr><td><span class="pino">K64</span></td><td>Lâmpada de aviso indicadora de direção e emergência LD</td><td>Lâmpadas de Aviso</td></tr>
+          <tr><td><span class="pino">K65</span></td><td>Lâmpada de aviso indicadora de direção e emergência LE</td><td>Lâmpadas de Aviso</td></tr>
+          <tr><td><span class="pino">K118</span></td><td>Lâmpada de aviso baixa pressão no sistema de freio</td><td>Lâmpadas de Aviso</td></tr>
+          <tr><td><span class="pino">K141</span></td><td>Lâmpada de aviso freio motor ativado</td><td>Lâmpadas de Aviso</td></tr>
+          <tr><td><span class="pino">K295</span></td><td>Lâmpada de aviso restrição do filtro de ar</td><td>Lâmpadas de Aviso</td></tr>
+          <tr><td><span class="pino">Kxx2</span></td><td>Lâmpada de aviso presença de água no combustível</td><td>Lâmpadas de Aviso</td></tr>
+          <tr><td><span class="pino">L1</span></td><td>Lâmpada de duplo filamento do farol LE</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">L2</span></td><td>Lâmpada de duplo filamento do farol LD</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">L6</span></td><td>Lâmpada iluminação do velocímetro</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">L7</span></td><td>Lâmpada de iluminação do indicador de combustível</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">L26</span></td><td>Lâmpada iluminação do tacógrafo</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">L27</span></td><td>Lâmpada iluminação do indicador de pressão de óleo</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">L30</span></td><td>Lâmpada iluminação do indicador temperatura do motor</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">L75</span></td><td>Lâmpada de iluminação do display</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">L103</span></td><td>Lâmpada de iluminação interruptor freio motor</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">Lx2</span></td><td>Lâmpada iluminação do manômetro freio</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">M1</span></td><td>Lanterna combinada com farol LE</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">M2</span></td><td>Lanterna traseira LE</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">M3</span></td><td>Lanterna combinada traseira LD</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">M4</span></td><td>Lanterna traseira LE</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">M5</span></td><td>Lâmpada indicadora direção dianteira LE</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">M6</span></td><td>Lâmpada indicadora direção traseira LE</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">M7</span></td><td>Lâmpada indicadora direção dianteira LD</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">M8</span></td><td>Lâmpada indicadora direção traseira LD</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">M9</span></td><td>Lanterna da luz de freio LE</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">M10</span></td><td>Lanterna luz de freio LD</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">M11</span></td><td>Lâmpada indicadora de direção traseira LE</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">M12</span></td><td>Lâmpada indicadora de direção traseira LD</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">M16</span></td><td>Lanterna luz de marcha a ré LE</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">M17</span></td><td>Lanterna luz de marcha a ré LD</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">M18</span></td><td>Lâmpada indicadora de direção lateral LE</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">M19</span></td><td>Lâmpada indicadora de direção lateral LD</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">M23</span></td><td>Lanterna delineadora do teto LE</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">M24</span></td><td>Lanterna delineadora do teto LD</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">M33</span></td><td>Lanterna delineadora lateral LE</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">M34</span></td><td>Lanterna delineadora lateral LD</td><td>Iluminação</td></tr>
+          <tr><td><span class="pino">N109</span></td><td>Solenóide corte de combustível</td><td>Válvulas</td></tr>
+          <tr><td><span class="pino">N234</span></td><td>Válvula eletromagnética do freio motor</td><td>Válvulas</td></tr>
+          <tr><td><span class="pino">N235</span></td><td>Resistor</td><td>Componentes</td></tr>
+          <tr><td><span class="pino">Nx30</span></td><td>Válvula eletromagnética de sangria do CONSEP</td><td>Válvulas</td></tr>
+          <tr><td><span class="pino">Nxx2</span></td><td>Válvula solenóide do acionamento da reduzida</td><td>Válvulas</td></tr>
+          <tr><td><span class="pino">T2</span></td><td>Conector duplo - conexão com interruptor da porta</td><td>Conectores</td></tr>
+          <tr><td><span class="pino">T2/b7</span></td><td>Conector 2 vias conexão com sensor de velocidade</td><td>Conectores</td></tr>
+          <tr><td><span class="pino">T4/A</span></td><td>Conector auxiliar traseiro</td><td>Conectores</td></tr>
+          <tr><td><span class="pino">T4/B</span></td><td>Conector auxiliar traseiro</td><td>Conectores</td></tr>
+          <tr><td><span class="pino">TA/8</span></td><td>Conector (branco) de 8 vias conectado no tacógrafo</td><td>Conectores</td></tr>
+          <tr><td><span class="pino">TB/8</span></td><td>Conector (marrom) de 8 vias conectado no tacógrafo</td><td>Conectores</td></tr>
+          <tr><td><span class="pino">TD/8</span></td><td>Conector (amarelo) de 8 vias conectado no tacógrafo</td><td>Conectores</td></tr>
+          <tr><td><span class="pino">T6</span></td><td>Conector 6 vias - previsão para cargas adicionais</td><td>Conectores</td></tr>
+          <tr><td><span class="pino">T12</span></td><td>Conector 12 vias - localizado junto ao suporte frontal LD</td><td>Conectores</td></tr>
+          <tr><td><span class="pino">T32</span></td><td>Conector 32 vias - conexão com painel de instrumentos</td><td>Conectores</td></tr>
+          <tr><td><span class="pino">T35</span></td><td>Conector 35 vias conectado na unidade controle da suspensão pneumática</td><td>Conectores</td></tr>
+          <tr><td><span class="pino">T42</span></td><td>Conector 42 vias - localizado no suporte frontal LD</td><td>Conectores</td></tr>
+          <tr><td><span class="pino">TV2</span></td><td>Caixa de distribuição dos cabos fusíveis</td><td>Distribuição</td></tr>
+          <tr><td><span class="pino">TV23</span></td><td>Ponte de conexão</td><td>Distribuição</td></tr>
+          <tr><td><span class="pino">V</span></td><td>Motor do limpador do pára-brisa</td><td>Motores</td></tr>
+          <tr><td><span class="pino">V5</span></td><td>Motor do lavador do pára-brisa</td><td>Motores</td></tr>
+          <tr><td><span class="pino">Y2</span></td><td>Relógio digital</td><td>Instrumentos</td></tr>
+          <tr><td><span class="pino">Y4</span></td><td>Odômetro</td><td>Instrumentos</td></tr>
+          <tr><td><span class="pino">Z0</span></td><td>Interruptor de restrição do filtro de ar</td><td>Interruptores</td></tr>
+          <tr><td><span class="pino">Z1</span></td><td>Cabo fusível 4,0 mm²</td><td>Proteção</td></tr>
+          <tr><td><span class="pino">Z4</span></td><td>Cabo fusível 1,5 mm²</td><td>Proteção</td></tr>
+          <tr><td><span class="pino">Z5</span></td><td>Cabo fusível 0,75 mm²</td><td>Proteção</td></tr>
+          <tr><td><span class="pino">Z6</span></td><td>Cabo fusível 1,0 mm²</td><td>Proteção</td></tr>
+          <tr><td><span class="pino">Z26</span></td><td>Bloco de União</td><td>Distribuição</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ CÓDIGOS DE LIGAÇÕES ============ -->
+  <div class="componente" id="codigos-ligacoes">
+    <h2>🔢 Tabela de Códigos de Ligações</h2>
+    <span class="ref">📄 Páginas 17 e 18 do PDF | Usados em diagramas de circuitos elétricos</span>
+
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Significado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="pino">15</span></td><td>Positivo comutado após o acionamento da chave de partida</td></tr>
+          <tr><td><span class="pino">15a</span></td><td>Positivo comutado após o acionamento da chave de partida protegido por fusível</td></tr>
+          <tr><td><span class="pino">30</span></td><td>Positivo ligado direto na bateria</td></tr>
+          <tr><td><span class="pino">30a</span></td><td>Positivo ligado direto na bateria protegido por fusível</td></tr>
+          <tr><td><span class="pino">31</span></td><td>Retorno ao pólo negativo da bateria (massa)</td></tr>
+          <tr><td><span class="pino">49</span></td><td>Relé emissor de sinal intermitente - entrada</td></tr>
+          <tr><td><span class="pino">49a</span></td><td>Relé emissor de sinal intermitente - saída</td></tr>
+          <tr><td><span class="pino">50</span></td><td>Positivo conectado após o acionamento da chave de partida para o motor de partida</td></tr>
+          <tr><td><span class="pino">53</span></td><td>Positivo conectado após o acionamento do interruptor do limpador de para-brisa</td></tr>
+          <tr><td><span class="pino">53a</span></td><td>Positivo do limpador de para-brisa comutado para o temporizador</td></tr>
+          <tr><td><span class="pino">53e</span></td><td>Positivo comutado para o temporizador</td></tr>
+          <tr><td><span class="pino">53m</span></td><td>Positivo comutado para o temporizador entrada</td></tr>
+          <tr><td><span class="pino">53s</span></td><td>Positivo comutado após o temporizador saída</td></tr>
+          <tr><td><span class="pino">54</span></td><td>Luz do freio</td></tr>
+          <tr><td><span class="pino">54a</span></td><td>Sinal do interruptor do freio de estacionamento</td></tr>
+          <tr><td><span class="pino">56</span></td><td>Positivo comutado após o acionamento do interruptor de luzes (faróis e lanternas)</td></tr>
+          <tr><td><span class="pino">56a</span></td><td>Positivo comutado após o acionamento do comutador na posição de farol alto</td></tr>
+          <tr><td><span class="pino">56b</span></td><td>Positivo comutado após o acionamento do comutador na posição de farol baixo</td></tr>
+          <tr><td><span class="pino">58</span></td><td>Positivo comutado após o acionamento do interruptor de lanternas</td></tr>
+          <tr><td><span class="pino">58L</span></td><td>Positivo conectado após o relé de lanternas lado esquerdo</td></tr>
+          <tr><td><span class="pino">58R</span></td><td>Positivo conectado após o relé de lanternas lado direito</td></tr>
+          <tr><td><span class="pino">71</span></td><td>Circuito para acionamento do relé de buzinas</td></tr>
+          <tr><td><span class="pino">85</span></td><td>Relé entrada da bobina</td></tr>
+          <tr><td><span class="pino">86</span></td><td>Relé entrada da bobina</td></tr>
+          <tr><td><span class="pino">87</span></td><td>Relé saída do contato</td></tr>
+          <tr><td><span class="pino">D+</span></td><td>Sinal de carga da bateria pólo positivo do alternador</td></tr>
+          <tr><td><span class="pino">F</span></td><td>Sinal de falha do sistema de freios</td></tr>
+          <tr><td><span class="pino">G</span></td><td>Sinal do sensor de combustível</td></tr>
+          <tr><td><span class="pino">L</span></td><td>Lanternas e luzes direcionais lado esquerdo</td></tr>
+          <tr><td><span class="pino">OG</span></td><td>Sinal do sensor de pressão de óleo do motor</td></tr>
+          <tr><td><span class="pino">OL</span></td><td>Sinal do interruptor do sensor de pressão do óleo do motor</td></tr>
+          <tr><td><span class="pino">R</span></td><td>Lanternas e luzes direcionais lado direito</td></tr>
+          <tr><td><span class="pino">S</span></td><td>Sinal do interruptor da válvula elétro-pneumática da reduzida saída</td></tr>
+          <tr><td><span class="pino">T</span></td><td>Positivo comutado após o acionamento do motor do lavador do para-brisa</td></tr>
+          <tr><td><span class="pino">TG</span></td><td>Sinal do sensor de temperatura</td></tr>
+          <tr><td><span class="pino">V</span></td><td>Sinal do interruptor para a válvula elétro-magnética da reduzida saída</td></tr>
+          <tr><td><span class="pino">W</span></td><td>Sinal do alternador para o tacógrafo</td></tr>
+          <tr><td><span class="pino">SA</span></td><td>Sinal do sensor de presença de água no combustível</td></tr>
+          <tr><td><span class="pino">AC</span></td><td>Sinal de alarme de presença de água no combustível</td></tr>
+          <tr><td><span class="pino">NS</span></td><td>Sinal de alarme de nível baixo do líquido de arrefecimento</td></tr>
+          <tr><td><span class="pino">CK</span></td><td>Sinal de alarme do circuito de CHECK</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ SISTEMA ELÉTRICO ============ -->
+  <div class="componente" id="sistema-eletrico">
+    <h2>⚡ Sistema Elétrico</h2>
+    <span class="ref">📄 Páginas 19 e 20 do PDF | Visão geral e cabos fusíveis</span>
+
+    <div class="descricao-acao">
+      <strong>Características do Sistema:</strong><br><br>
+      • <strong>Tensão nominal:</strong> 12V<br>
+      • <strong>Proteção geral:</strong> 4 cabos fusíveis<br>
+      • <strong>Conectores:</strong> Tipo NEDS II, com dupla trava e selados quando aplicados externamente<br>
+      • <strong>Distribuição:</strong> Central de relés e fusíveis, com chicotes principais (painel, motor, iluminação)<br>
+      • <strong>Revestimento:</strong> Tubo plástico corrugado antichama e de alta resistência abrasiva
+    </div>
+
+    <h3 style="color: #f9e2af; font-size: 14px; margin: 20px 0 10px 0;">🔌 Cabos Fusíveis</h3>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead>
+          <tr>
+            <th>Cabo</th>
+            <th>Bitola</th>
+            <th>Função</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="pino">Z5</span></td><td>0,75 mm²</td><td>Proteção e alimentação de entrada do fusível n° 25 e linha (50) do interruptor de luzes</td></tr>
+          <tr><td><span class="pino">Z6</span></td><td>1,0 mm²</td><td>Proteção e alimentação da linha (50) do interruptor de ignição</td></tr>
+          <tr><td><span class="pino">Z4</span></td><td>1,5 mm²</td><td>Proteção e alimentação de entrada dos fusíveis 17, 18, 19, 20, 21 e 26</td></tr>
+          <tr><td><span class="pino">Z1</span></td><td>4,0 mm²</td><td>Cabo fusível principal</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="descricao-acao">
+      <strong>Caixa de Distribuição dos Cabos Fusíveis:</strong><br><br>
+      • <strong>Porca de fixação:</strong> Torque: 6 N.m (0,6 kgf.m)<br>
+      • <strong>Chicote do motor:</strong> Cabo (vm) conectado no borne B+ do alternador<br>
+      • <strong>Chicote do painel:</strong> Cabo (vm/pt) entrada na caixa de fusível n° 25 e linha (50) do interruptor de luzes
+    </div>
+  </div>
+
+  <!-- ============ CONECTORES ============ -->
+  <div class="componente" id="conectores">
+    <h2>🔌 Conectores</h2>
+    <span class="ref">📄 Páginas 21 a 24 do PDF | Tipos e identificação</span>
+
+    <div class="descricao-acao">
+      <strong>Identificação:</strong> A identificação dos conectores nos diagramas se dá pela letra <strong>T</strong>, mais a quantidade de pinos do conector, bem como do número do pino usado naquele circuito.<br><br>
+      Exemplo: <strong>T32/10</strong> = Conector de 32 vias, pino 10.
+    </div>
+
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead>
+          <tr>
+            <th>Conector</th>
+            <th>Vias</th>
+            <th>Localização / Aplicação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="pino">T32</span></td><td>32 vias</td><td>Conector do painel de instrumentos (azul)</td></tr>
+          <tr><td><span class="pino">T42</span></td><td>42 vias</td><td>Conector principal - localizado no suporte frontal LD</td></tr>
+          <tr><td><span class="pino">T12</span></td><td>12 vias</td><td>Conector principal - localizado junto ao suporte frontal LD</td></tr>
+          <tr><td><span class="pino">TA/8</span></td><td>8 vias</td><td>Conector branco - conectado no tacógrafo eletrônico</td></tr>
+          <tr><td><span class="pino">TB/8</span></td><td>8 vias</td><td>Conector marrom - conectado no tacógrafo eletrônico</td></tr>
+          <tr><td><span class="pino">TD/8</span></td><td>8 vias</td><td>Conector amarelo - conectado no tacógrafo eletrônico</td></tr>
+          <tr><td><span class="pino">T6</span></td><td>6 vias</td><td>Conector do painel de instrumentos - previsão para cargas adicionais</td></tr>
+          <tr><td><span class="pino">T2</span></td><td>2 vias</td><td>Conector do chassi - conexão com interruptor da porta</td></tr>
+          <tr><td><span class="pino">T2/b7</span></td><td>2 vias</td><td>Conector do chassi - conexão com sensor de velocidade</td></tr>
+          <tr><td><span class="pino">T35</span></td><td>35 vias</td><td>Conector conectado na unidade controle da suspensão pneumática</td></tr>
+          <tr><td><span class="pino">T4/A</span></td><td>4 vias</td><td>Conector auxiliar traseiro</td></tr>
+          <tr><td><span class="pino">T4/B</span></td><td>4 vias</td><td>Conector auxiliar traseiro</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="descricao-acao">
+      <strong>Características dos Conectores:</strong><br><br>
+      • <strong>Dupla trava:</strong> Garante a manutenção do acoplamento sob vibração e estiramento<br>
+      • <strong>Vedação:</strong> Conectores situados em locais expostos são vedados contra água e poeira<br>
+      • <strong>Posição única de montagem:</strong> Evita inversões de ligações<br>
+      • <strong>Controle dimensional rígido:</strong> Assegura a efetividade dos contatos
+    </div>
+  </div>
+
+  <!-- ============ SISTEMA DE CARGA E PARTIDA ============ -->
+  <div class="componente" id="carga-partida">
+    <h2>🔋 Sistema de Carga e Partida</h2>
+    <span class="ref">📄 Páginas 25 e 26 do PDF</span>
+
+    <h3 style="color: #f9e2af; font-size: 14px; margin: 15px 0 10px 0;">🔋 Bateria</h3>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead>
+          <tr>
+            <th>Característica</th>
+            <th>Descrição</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Posição</strong></td><td>Lado esquerdo do chassi do veículo</td></tr>
+          <tr><td><strong>Acesso</strong></td><td>Fácil acesso para manutenção</td></tr>
+          <tr><td><strong>Tipo</strong></td><td>"Livre de manutenção" — dispensa verificações constantes</td></tr>
+          <tr><td><strong>Capacidade</strong></td><td>Dimensionada para atender caminhão básico e opcionais civis ou militares</td></tr>
+          <tr><td><strong>Tensão</strong></td><td>12V</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="color: #f9e2af; font-size: 14px; margin: 20px 0 10px 0;">⚡ Alternador</h3>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead>
+          <tr>
+            <th>Característica</th>
+            <th>Descrição</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Acionamento</strong></td><td>Por correia</td></tr>
+          <tr><td><strong>Tensão de geração</strong></td><td>14V</td></tr>
+          <tr><td><strong>Capacidade</strong></td><td>90A</td></tr>
+          <tr><td><strong>Função</strong></td><td>Assegura a completa reposição de carga da bateria e alimentação do sistema</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="color: #f9e2af; font-size: 14px; margin: 20px 0 10px 0;">🔧 Motor de Partida</h3>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead>
+          <tr>
+            <th>Característica</th>
+            <th>Descrição</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Potência</strong></td><td>Dimensionada para cada tipo de chassi</td></tr>
+          <tr><td><strong>Função</strong></td><td>Garantir partidas rápidas com baixo consumo de energia</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ PAINEL DE INSTRUMENTOS ============ -->
+  <div class="componente" id="painel-instrumentos">
+    <h2>📊 Painel de Instrumentos</h2>
+    <span class="ref">📄 Páginas 27 a 32 do PDF | Composição e módulos</span>
+
+    <div class="descricao-acao">
+      <strong>Composição:</strong> O conjunto de instrumentos combinados é composto por 3 módulos independentes:<br><br>
+      • <strong>Módulo lateral esquerdo:</strong> Tacômetro (contagiros)<br>
+      • <strong>Módulo central:</strong> Gerenciamento do painel, quadro das luzes de advertência, velocímetro, odômetro (total e parcial) e relógio<br>
+      • <strong>Módulo lateral direito:</strong> Indicadores de temperatura e nível de combustível
+    </div>
+
+    <h3 style="color: #f9e2af; font-size: 14px; margin: 20px 0 10px 0;">🔢 Descrição do Painel de Instrumentos</h3>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead>
+          <tr>
+            <th>Nº</th>
+            <th>Componente</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="pino">01</span></td><td>Contagiros (Tacômetro)</td></tr>
+          <tr><td><span class="pino">02</span></td><td>Luzes de aviso</td></tr>
+          <tr><td><span class="pino">03</span></td><td>Indicador da pressão do ar dos freios</td></tr>
+          <tr><td><span class="pino">04</span></td><td>Indicador da temperatura do líquido de arrefecimento</td></tr>
+          <tr><td><span class="pino">05</span></td><td>Interruptor do freio motor</td></tr>
+          <tr><td><span class="pino">06</span></td><td>Interruptor das luzes de emergência</td></tr>
+          <tr><td><span class="pino">07</span></td><td>Interruptor de acionamento da tomada de força (opcional)</td></tr>
+          <tr><td><span class="pino">08</span></td><td>Interruptor do bloqueio do diferencial traseiro</td></tr>
+          <tr><td><span class="pino">09</span></td><td>Interruptor de acionamento da reduzida</td></tr>
+          <tr><td><span class="pino">10</span></td><td>Interruptor de engate do eixo dianteiro</td></tr>
+          <tr><td><span class="pino">11</span></td><td>Indicador do nível de combustível</td></tr>
+          <tr><td><span class="pino">12</span></td><td>Indicador da pressão do óleo do motor</td></tr>
+          <tr><td><span class="pino">13</span></td><td>Velocímetro</td></tr>
+          <tr><td><span class="pino">14</span></td><td>Odômetro parcial, total e relógio</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="color: #f9e2af; font-size: 14px; margin: 20px 0 10px 0;">🎛️ Interruptor de Luzes (E1)</h3>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead>
+          <tr>
+            <th>Estágio</th>
+            <th>Função</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="pino">O</span></td><td>Desligado</td></tr>
+          <tr><td><span class="pino">☐</span></td><td>Luzes de segurança (lanternas) e iluminação do painel</td></tr>
+          <tr><td><span class="pino">≡D</span></td><td>Luzes principais (faróis alto e baixo)</td></tr>
+          <tr><td><span class="pino">🔆</span></td><td>Regulador da iluminação do painel (reostato)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="color: #f9e2af; font-size: 14px; margin: 20px 0 10px 0;">🔌 Receptáculo de 32 Pinos — Conexões</h3>
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead>
+          <tr>
+            <th>Pino</th>
+            <th>Ligação</th>
+            <th>Pino</th>
+            <th>Ligação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="pino">01</span></td><td>Pressão de óleo</td><td><span class="pino">17</span></td><td>Positivo via chave de contato (15)</td></tr>
+          <tr><td><span class="pino">02</span></td><td>Temperatura do motor</td><td><span class="pino">18</span></td><td>Livre</td></tr>
+          <tr><td><span class="pino">03</span></td><td>Nível de combustível</td><td><span class="pino">19</span></td><td>Livre</td></tr>
+          <tr><td><span class="pino">04</span></td><td>Terra</td><td><span class="pino">20</span></td><td>Livre</td></tr>
+          <tr><td><span class="pino">05</span></td><td>Iluminação do painel</td><td><span class="pino">21</span></td><td>Luz de direção LE</td></tr>
+          <tr><td><span class="pino">06</span></td><td>Tacômetro</td><td><span class="pino">22</span></td><td>Freio motor</td></tr>
+          <tr><td><span class="pino">07</span></td><td>Massa Eletrônica</td><td><span class="pino">23</span></td><td>Luz alta</td></tr>
+          <tr><td><span class="pino">08</span></td><td>Água no combustível</td><td><span class="pino">24</span></td><td>Livre</td></tr>
+          <tr><td><span class="pino">09</span></td><td>Nível de água</td><td><span class="pino">25</span></td><td>Livre</td></tr>
+          <tr><td><span class="pino">10</span></td><td>Positivo (30)</td><td><span class="pino">26</span></td><td>Livre</td></tr>
+          <tr><td><span class="pino">11</span></td><td>Tacógrafo MTCO</td><td><span class="pino">27</span></td><td>Livre</td></tr>
+          <tr><td><span class="pino">12</span></td><td>Tacógrafo MTCO</td><td><span class="pino">28</span></td><td>Carga bateria</td></tr>
+          <tr><td><span class="pino">13</span></td><td>Check de luzes (50)</td><td><span class="pino">29</span></td><td>Livre</td></tr>
+          <tr><td><span class="pino">14</span></td><td>Livre</td><td><span class="pino">30</span></td><td>Freio estacionamento</td></tr>
+          <tr><td><span class="pino">15</span></td><td>Pressão de óleo (lâmpada)</td><td><span class="pino">31</span></td><td>Livre</td></tr>
+          <tr><td><span class="pino">16</span></td><td>Restrição do filtro de ar</td><td><span class="pino">32</span></td><td>Luz de direção LD</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ LUZES DE ADVERTÊNCIA ============ -->
+  <div class="componente" id="luzes-advertencia">
+    <h2>💡 Conjunto das Luzes de Advertência</h2>
+    <span class="ref">📄 Páginas 37 a 39 do PDF | Função e classificação</span>
+
+    <div class="descricao-acao">
+      <strong>Classificação por cores:</strong><br><br>
+      • <strong style="color: #f38ba8;">🔴 Vermelho:</strong> Luz de alerta. Dano ou falha grave. Pare imediatamente o veículo e solicite auxílio.<br>
+      • <strong style="color: #f9e2af;">🟡 Amarelo:</strong> Luz de advertência. Dano ou falha leve. O veículo pode ser levado até uma Concessionária autorizada para providenciar o reparo.<br>
+      • <strong style="color: #a6e3a1;">🟢 Verde ou Azul:</strong> Indica uma ação tomada ou componente ativado. Estará acesa enquanto a ação está sendo executada.
+    </div>
+
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead>
+          <tr>
+            <th>Símbolo</th>
+            <th>Indicação</th>
+            <th>Observação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="text-align:center;">⛽</td><td>Presença de água no combustível</td><td>Indica que o filtro separador de água deve ser drenado</td></tr>
+          <tr><td style="text-align:center;">⚠️</td><td>Baixa pressão de ar no freio de serviço</td><td>Acende-se caso a pressão caia abaixo de 4,5 bar</td></tr>
+          <tr><td style="text-align:center;">🛢️</td><td>Baixa pressão de óleo do motor</td><td>Indica baixa pressão de óleo do motor, deve-se parar o veículo</td></tr>
+          <tr><td style="text-align:center;">🌡️</td><td>Superaquecimento do motor</td><td>Indica que o motor está superaquecido, deve-se parar o veículo</td></tr>
+          <tr><td style="text-align:center;">🅿️</td><td>Freio de estacionamento acionado</td><td>Indica que o freio de estacionamento está aplicado</td></tr>
+          <tr><td style="text-align:center;">🔒</td><td>Bloqueio entre eixos</td><td>Não aplicado para este modelo</td></tr>
+          <tr><td style="text-align:center;">💧</td><td>Baixo nível de líquido de arrefecimento</td><td>Indica que o nível de água do reservatório de expansão está baixo</td></tr>
+          <tr><td style="text-align:center;">⬅️</td><td>Luz de direção esquerda</td><td>Indica que a seta esquerda está ativada</td></tr>
+          <tr><td style="text-align:center;">🔧</td><td>Freio motor acionado</td><td>Indica que o freio motor está ativado (tecla do painel está na posição ligado)</td></tr>
+          <tr><td style="text-align:center;">🔵</td><td>Farol alto acionado</td><td>Indica que o farol alto está aceso</td></tr>
+          <tr><td style="text-align:center;">🌬️</td><td>Filtro de ar obstruído</td><td>Indica que o filtro de ar deve ser substituído</td></tr>
+          <tr><td style="text-align:center;">🔓</td><td>Cabina destravada</td><td>Indica que o sistema de trava da cabina não está devidamente aplicado</td></tr>
+          <tr><td style="text-align:center;">🔋</td><td>Falta de carga na bateria</td><td>Indica que a bateria está com o sistema de carga deficiente</td></tr>
+          <tr><td style="text-align:center;">❄️</td><td>Partida a frio</td><td>Não aplicado para este modelo</td></tr>
+          <tr><td style="text-align:center;">➡️</td><td>Luz de direção direita</td><td>Indica que a seta direita está ativada</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ CENTRAL DE RELÉS E FUSÍVEIS ============ -->
+  <div class="componente" id="central-reles">
+    <h2>🔶 Central de Relés e Fusíveis</h2>
+    <span class="ref">📄 Páginas 40 a 42 do PDF | Distribuição elétrica</span>
+
+    <div class="descricao-acao">
+      <strong>Características:</strong><br><br>
+      • <strong>Função:</strong> Central de distribuição elétrica — dela partem os circuitos elétricos que acionarão os componentes do sistema<br>
+      • <strong>Fusíveis:</strong> 31 posições, sendo 26 ativas e 5 de reserva<br>
+      • <strong>Relés:</strong> Podem ser instalados 12 relés no corpo da central<br>
+      • <strong>Relés adicionais:</strong> Podem ser instalados em barramento complementar fixado ao corpo da central<br>
+      • <strong>Diferenciação:</strong> Os fusíveis são diferenciados em sua capacidade de corrente através de cores
+    </div>
+  </div>
+
+  <!-- ============ CORES DOS FUSÍVEIS ============ -->
+  <div class="componente" id="cores-fusiveis">
+    <h2>🎨 Cores dos Fusíveis</h2>
+    <span class="ref">📄 Página 41 do PDF | Diferenciação por capacidade de corrente</span>
+
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead>
+          <tr>
+            <th>Capacidade</th>
+            <th>Cor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="pino">30A</span></td><td><span class="fio"><span class="fio-cor" style="background:#0a0;"></span><strong>Verde</strong></span></td></tr>
+          <tr><td><span class="pino">10A</span></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span><strong>Vermelho</strong></span></td></tr>
+          <tr><td><span class="pino">25A</span></td><td><span class="fio"><span class="fio-cor" style="background:#fff; border:1px solid #666;"></span><strong>Branco</strong></span></td></tr>
+          <tr><td><span class="pino">5A</span></td><td><span class="fio"><span class="fio-cor" style="background:#cd7f32;"></span><strong>Bronze</strong></span></td></tr>
+          <tr><td><span class="pino">20A</span></td><td><span class="fio"><span class="fio-cor" style="background:#f9e2af;"></span><strong>Amarelo</strong></span></td></tr>
+          <tr><td><span class="pino">4A</span></td><td><span class="fio"><span class="fio-cor" style="background:#f5a0c0;"></span><strong>Rosa</strong></span></td></tr>
+          <tr><td><span class="pino">15A</span></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span><strong>Azul</strong></span></td></tr>
+          <tr><td><span class="pino">3A</span></td><td><span class="fio"><span class="fio-cor" style="background:#8A2BE2;"></span><strong>Violeta</strong></span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ POSICIONAMENTO DOS FUSÍVEIS ============ -->
+  <div class="componente" id="posicao-fusiveis">
+    <h2>📍 Posicionamento dos Fusíveis</h2>
+    <span class="ref">📄 Página 41 do PDF | 26 posições ativas</span>
+
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead>
+          <tr>
+            <th>Posição</th>
+            <th>Circuito</th>
+            <th>Capacidade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="pino">1</span></td><td>Luzes direcionais</td><td><strong style="color:#f5a0c0;">4A</strong></td></tr>
+          <tr><td><span class="pino">2</span></td><td>Limpador e lavador do pára-brisas e temporizador (opcional)</td><td><strong style="color:#f00;">10A</strong></td></tr>
+          <tr><td><span class="pino">3</span></td><td>Vago</td><td>—</td></tr>
+          <tr><td><span class="pino">4</span></td><td>Freio motor, luz de marcha a ré</td><td><strong style="color:#f5a0c0;">4A</strong></td></tr>
+          <tr><td><span class="pino">5</span></td><td>Vago</td><td>—</td></tr>
+          <tr><td><span class="pino">6</span></td><td>Instrumento e luzes de aviso</td><td><strong style="color:#f5a0c0;">4A</strong></td></tr>
+          <tr><td><span class="pino">7</span></td><td>Vago</td><td>—</td></tr>
+          <tr><td><span class="pino">8</span></td><td>Buzinas</td><td><strong style="color:#f5a0c0;">4A</strong></td></tr>
+          <tr><td><span class="pino">9</span></td><td>Lanternas lado esquerdo</td><td><strong style="color:#f5a0c0;">4A</strong></td></tr>
+          <tr><td><span class="pino">10</span></td><td>Lanternas lado direito</td><td><strong style="color:#f5a0c0;">4A</strong></td></tr>
+          <tr><td><span class="pino">11</span></td><td>Luz alta lado esquerdo</td><td><strong style="color:#f5a0c0;">4A</strong></td></tr>
+          <tr><td><span class="pino">12</span></td><td>Luz alta lado direito</td><td><strong style="color:#f5a0c0;">4A</strong></td></tr>
+          <tr><td><span class="pino">13</span></td><td>Farol Interno</td><td><strong style="color:#f5a0c0;">4A</strong></td></tr>
+          <tr><td><span class="pino">14</span></td><td>Luz baixa lado esquerdo</td><td><strong style="color:#f5a0c0;">4A</strong></td></tr>
+          <tr><td><span class="pino">15</span></td><td>Luz baixa lado direito</td><td><strong style="color:#f5a0c0;">4A</strong></td></tr>
+          <tr><td><span class="pino">16</span></td><td>Iluminação dos Instrumentos do painel</td><td><strong style="color:#f5a0c0;">4A</strong></td></tr>
+          <tr><td><span class="pino">17</span></td><td>Luz de freio</td><td><strong style="color:#f5a0c0;">4A</strong></td></tr>
+          <tr><td><span class="pino">18</span></td><td>Luzes de emergência</td><td><strong style="color:#f5a0c0;">4A</strong></td></tr>
+          <tr><td><span class="pino">19</span></td><td>Vago</td><td>—</td></tr>
+          <tr><td><span class="pino">20</span></td><td>Vago</td><td>—</td></tr>
+          <tr><td><span class="pino">21</span></td><td>Tacógrafo</td><td><strong style="color:#f5a0c0;">4A</strong></td></tr>
+          <tr><td><span class="pino">22</span></td><td>Vago</td><td>—</td></tr>
+          <tr><td><span class="pino">23</span></td><td>Vago</td><td>—</td></tr>
+          <tr><td><span class="pino">24</span></td><td>Lanternas adicionais</td><td><strong style="color:#f00;">10A</strong></td></tr>
+          <tr><td><span class="pino">25</span></td><td>Vago</td><td>—</td></tr>
+          <tr><td><span class="pino">26</span></td><td>Vago</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ POSICIONAMENTO DOS RELÉS ============ -->
+  <div class="componente" id="posicao-reles">
+    <h2>📍 Posicionamento dos Relés</h2>
+    <span class="ref">📄 Página 42 do PDF | 12 posições</span>
+
+    <div class="tabela-wrapper">
+      <table class="tabela-pinagem">
+        <thead>
+          <tr>
+            <th>Posição</th>
+            <th>Relé</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="pino">1</span></td><td>Vago</td></tr>
+          <tr><td><span class="pino">2</span></td><td>Vago</td></tr>
+          <tr><td><span class="pino">3</span></td><td>Relé do farol alto</td></tr>
+          <tr><td><span class="pino">4</span></td><td>Relé de lanternas</td></tr>
+          <tr><td><span class="pino">5</span></td><td>Vago</td></tr>
+          <tr><td><span class="pino">6</span></td><td>Vago</td></tr>
+          <tr><td><span class="pino">7</span></td><td>Vago</td></tr>
+          <tr><td><span class="pino">8</span></td><td>Vago</td></tr>
+          <tr><td><span class="pino">9</span></td><td>Vago</td></tr>
+          <tr><td><span class="pino">10</span></td><td>Vago</td></tr>
+          <tr><td><span class="pino">11</span></td><td>Relé do temporizador</td></tr>
+          <tr><td><span class="pino">12</span></td><td>Relé de luzes direcionais</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="descricao-acao">
+      <strong>Observação:</strong> Caso sejam necessários relés adicionais para monitoramento de opcionais e/ou equipamentos agregados no beneficiamento, os mesmos poderão ser instalados em barramento complementar fixado ao corpo da central. Poderão ser instalados tantos relés quantos forem necessários, desde que respeitada a intensidade máxima de corrente do sistema.
+    </div>
+  </div>
+
+</main>
+
+<!-- BOTÃO VOLTAR AO TOPO -->
+<button class="btn-topo" id="btnTopo" onclick="rolarParaTopo()" title="Voltar ao Topo">⬆️</button>
+
+<script>
+  const menu = document.getElementById('menuLateral');
+  const overlay = document.getElementById('overlay');
+  const body = document.body;
+  const btnMenu = document.getElementById('btnMenu');
+
+  const btnTopo = document.getElementById('btnTopo');
+  
+  function rolarParaTopo() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+      btnTopo.classList.add('visivel');
+    } else {
+      btnTopo.classList.remove('visivel');
+    }
+  });
+
+  function isMobile() { return window.innerWidth < 1024; }
+
+  function initMenu() {
+    if (isMobile()) {
+      menu.classList.add('fechado');
+      body.classList.remove('menu-aberto');
+    } else {
+      menu.classList.remove('fechado');
+      body.classList.add('menu-aberto');
+    }
+  }
+
+  function toggleMenu() {
+    if (isMobile()) {
+      const fechado = menu.classList.toggle('fechado');
+      overlay.classList.toggle('ativo', !fechado);
+      body.classList.toggle('menu-aberto', !fechado);
+    } else {
+      const aberto = body.classList.toggle('menu-aberto');
+      menu.classList.toggle('fechado', !aberto);
+    }
+  }
+
+  document.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (isMobile()) {
+        menu.classList.add('fechado');
+        overlay.classList.remove('ativo');
+        body.classList.remove('menu-aberto');
+      }
+    });
+  });
+
+  overlay.addEventListener('click', () => {
+    menu.classList.add('fechado');
+    overlay.classList.remove('ativo');
+    body.classList.remove('menu-aberto');
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isMobile()) {
+      menu.classList.add('fechado');
+      overlay.classList.remove('ativo');
+      body.classList.remove('menu-aberto');
+    }
+  });
+
+  let ultimoEstadoMobile = isMobile();
+  window.addEventListener('resize', () => {
+    const atualMobile = isMobile();
+    if (atualMobile !== ultimoEstadoMobile) {
+      initMenu();
+      ultimoEstadoMobile = atualMobile;
+    }
+  });
+
+  initMenu();
+</script>
+
+</body>
+</html>
