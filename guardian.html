@@ -1,790 +1,512 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Manual de Manutenção — Embarcação Guardian 25</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Manual de consulta técnica para manutenção da embarcação Guardian 25 com motor Mercury Verado 200 HP, baseado na apostila EMEGD 2021 e complementado com pesquisa em documentação Mercury Marine.">
+<title>Manual Técnico de Manutenção — Guardian 25 / Mercury Verado</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; scroll-padding-top: 80px; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: #1e1e2e; color: #e0e0e0; min-height: 100vh; overflow-x: hidden; }
-  .btn-menu { position: fixed; top: 15px; left: 15px; z-index: 1001; background: #89b4fa; color: #1e1e2e; border: none; width: 45px; height: 45px; border-radius: 8px; font-size: 22px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(137,180,250,0.3); transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
-  .btn-menu:hover { background: #b4befe; transform: scale(1.05); }
-  .btn-menu:active { transform: scale(0.95); }
-  .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 998; opacity: 0; visibility: hidden; transition: all 0.3s; }
-  .overlay.ativo { opacity: 1; visibility: visible; }
-  nav { position: fixed; top: 0; left: 0; width: 300px; height: 100vh; background: #181825; padding: 70px 10px 20px 10px; overflow-y: auto; border-right: 2px solid #313244; z-index: 1000; transition: transform 0.3s ease; transform: translateX(0); }
-  nav.fechado { transform: translateX(-100%); }
-  nav h2 { font-size: 13px; color: #89b4fa; text-transform: uppercase; margin-bottom: 15px; padding-left: 10px; letter-spacing: 1px; position: sticky; top: -70px; background: #181825; padding-top: 15px; padding-bottom: 10px; z-index: 1; }
-  nav a { display: block; color: #cdd6f4; text-decoration: none; padding: 8px 10px; border-radius: 6px; font-size: 12px; margin-bottom: 2px; border-left: 3px solid transparent; transition: all 0.2s; }
-  nav a:hover { background: #313244; color: #89b4fa; border-left-color: #89b4fa; }
-  nav a .pg { color: #6c7086; font-size: 10px; margin-left: 5px; }
-  main { padding: 30px 40px; max-width: 1100px; margin: 0 auto; transition: margin-left 0.3s; padding-top: 70px; }
-  @media (min-width: 1024px) { body.menu-aberto main { margin-left: 300px; } body.menu-aberto .btn-menu { left: 315px; } }
-  h1 { color: #89b4fa; font-size: 22px; margin-bottom: 5px; border-bottom: 2px solid #313244; padding-bottom: 10px; }
-  .sub { color: #a6adc8; font-size: 12px; margin-bottom: 30px; }
-  .componente { background: #181825; border: 1px solid #313244; border-radius: 10px; padding: 20px; margin-bottom: 25px; page-break-inside: avoid; overflow: hidden; }
-  .componente h2 { color: #f9e2af; font-size: 16px; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-  .componente .ref { font-size: 11px; color: #6c7086; margin-bottom: 15px; display: block; }
-  .tabela-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; border-radius: 6px; }
-  .tabela-pinagem { width: 100%; min-width: 650px; border-collapse: collapse; font-size: 12px; }
-  .tabela-pinagem th { background: #313244; color: #89b4fa; padding: 8px 10px; text-align: left; border: 1px solid #45475a; font-weight: 600; white-space: nowrap; }
-  .tabela-pinagem td { padding: 8px 10px; border: 1px solid #45475a; color: #cdd6f4; vertical-align: middle; font-size: 12px; line-height: 1.4; }
-  .tabela-pinagem tr:nth-child(even) { background: #1e1e2e; }
-  .pino { display: inline-block; background: #45475a; color: #f9e2af; padding: 2px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-weight: bold; font-size: 11px; white-space: nowrap; }
-  .fio { display: inline-flex; align-items: center; gap: 6px; font-family: 'Consolas', monospace; font-size: 11px; white-space: nowrap; }
-  .fio-cor { width: 14px; height: 14px; border-radius: 2px; display: inline-block; border: 1px solid #666; flex-shrink: 0; }
-  .destino { color: #94e2d5; font-weight: 600; white-space: nowrap; }
-  .conexao-critica { background: #2a1a1a; border-left: 3px solid #f38ba8; }
-  .conexao-critica td { color: #f38ba8 !important; }
-  .comportamento { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 600; white-space: nowrap; }
-  .com { background: #f9e2af; color: #1e1e2e; }
-  .na  { background: #a6e3a1; color: #1e1e2e; }
-  .nf  { background: #f38ba8; color: #1e1e2e; }
-  .tensao { display: inline-block; font-size: 10px; padding: 2px 6px; border-radius: 3px; font-weight: 600; white-space: nowrap; }
-  .t30 { background: #f38ba8; color: #1e1e2e; }
-  .t15 { background: #f9e2af; color: #1e1e2e; }
-  .t50 { background: #a6e3a1; color: #1e1e2e; }
-  .ttr { background: #6c7086; color: #fff; }
-  .t58 { background: #cba6f7; color: #1e1e2e; }
-  .tac { background: #94e2d5; color: #1e1e2e; }
-  .descricao-acao { background: #1e1e2e; border-left: 3px solid #89b4fa; padding: 12px 15px; margin-top: 15px; border-radius: 4px; font-size: 12px; color: #cdd6f4; line-height: 1.6; }
-  .descricao-acao strong { color: #89b4fa; }
-  .tabela-posicoes { width: 100%; min-width: 500px; border-collapse: collapse; font-size: 11px; margin-top: 10px; background: #1a1a2e; }
-  .tabela-posicoes th { background: #3a2a1a; color: #f9e2af; padding: 6px 8px; border: 1px solid #45475a; }
-  .tabela-posicoes td { padding: 6px 8px; border: 1px solid #45475a; color: #cdd6f4; }
-  .destaque { margin-top: 20px; padding: 15px; background: #1e1e2e; border: 1px solid #45475a; border-radius: 8px; overflow-x: auto; }
-  .destaque table { width: 100%; min-width: 500px; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
-  .destaque th, .destaque td { border: 1px solid #45475a; padding: 6px 8px; text-align: left; }
-  .destaque th { background: #313244; color: #89b4fa; }
-  .destaque td { color: #cdd6f4; }
-  .btn-topo { position: fixed; bottom: 20px; right: 20px; background: #89b4fa; color: #1e1e2e; border: none; width: 50px; height: 50px; border-radius: 50%; font-weight: bold; cursor: pointer; font-size: 24px; box-shadow: 0 4px 15px rgba(137,180,250,0.4); z-index: 100; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; opacity: 0; visibility: hidden; transform: translateY(20px); }
-  .btn-topo.visivel { opacity: 1; visibility: visible; transform: translateY(0); }
-  .btn-topo:hover { background: #b4befe; transform: translateY(-3px) scale(1.05); box-shadow: 0 6px 20px rgba(137,180,250,0.6); }
-  .btn-topo:active { transform: translateY(0) scale(0.95); }
-  @media (max-width: 768px) {
-    main { padding: 20px 15px; padding-top: 70px; }
-    h1 { font-size: 18px; }
-    .sub { font-size: 11px; }
-    .componente { padding: 15px 12px; }
-    .componente h2 { font-size: 14px; }
-    .btn-topo { width: 45px; height: 45px; font-size: 20px; bottom: 15px; right: 15px; }
-    .btn-menu { width: 40px; height: 40px; font-size: 20px; top: 12px; left: 12px; }
-    nav { width: 85vw; max-width: 320px; }
-    .tabela-pinagem { min-width: 750px; }
-    .tabela-posicoes { min-width: 550px; }
-  }
-  @media (max-width: 480px) { h1 { font-size: 16px; } .componente h2 { font-size: 13px; } .tabela-pinagem { font-size: 11px; } .btn-topo { width: 42px; height: 42px; font-size: 18px; } }
-  .tabela-wrapper, .destaque { max-height: 999999px; }
-  @media (max-width: 768px) {
-    .tabela-pinagem th, .tabela-pinagem td, .destaque th, .destaque td { font-size: 12px; line-height: 1.4; padding: 7px 8px; }
-    .destaque table { font-size: 12px; min-width: 420px; }
-  }
-  @media (max-width: 480px) {
-    .tabela-pinagem th, .tabela-pinagem td, .destaque th, .destaque td { font-size: 11px; padding: 6px 7px; }
-    .destaque table { font-size: 11px; }
-  }
-  @media print { nav, .btn-topo, .btn-menu, .overlay { display: none !important; } body { background: white; color: black; } main { max-width: 100%; padding: 10px; margin: 0 !important; } .componente { background: white; border: 1px solid #ccc; page-break-inside: avoid; } .tabela-pinagem th { background: #ddd; color: #000; } .tabela-pinagem td { color: #000; } .pino { background: #eee; color: #000; } .destino { color: #000; } .descricao-acao { border-left-color: #000; } .comportamento { border: 1px solid #000; } }
+:root{--bg:#f3f5f7;--panel:#fff;--ink:#18212b;--muted:#596777;--navy:#102a43;--blue:#1769aa;--line:#d8e0e8;--warn:#fff1d6;--red:#8c2020;--green:#176b48}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.58 system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+header{background:var(--navy);color:#fff;padding:26px max(18px,calc((100% - 1200px)/2));border-bottom:5px solid #f0a329}
+header h1{margin:0;font-size:clamp(1.5rem,3vw,2.25rem);line-height:1.2}header p{margin:8px 0 0;color:#d9e6f2;max-width:900px}
+.shell{max-width:1200px;margin:auto;padding:18px;display:grid;grid-template-columns:260px minmax(0,1fr);gap:20px}
+aside{align-self:start;position:sticky;top:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;max-height:calc(100vh - 24px);overflow:auto}
+aside strong{display:block;margin:0 0 10px;color:var(--navy)}aside a{display:block;padding:7px 9px;border-radius:7px;color:#23445f;text-decoration:none;font-size:.94rem}aside a:hover{background:#eaf2f9}
+main{min-width:0}.searchbox{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:16px;display:flex;gap:8px}
+input[type=search]{width:100%;padding:11px 12px;border:1px solid #aebdca;border-radius:8px;font:inherit}button{font:inherit;cursor:pointer;border:0;border-radius:8px;padding:10px 13px;background:var(--blue);color:white;font-weight:650}button.secondary{background:#e7edf3;color:#18364f}
+section,.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:16px;scroll-margin-top:14px}
+h2{font-size:1.45rem;color:var(--navy);margin:0 0 10px;border-bottom:1px solid var(--line);padding-bottom:8px}h3{font-size:1.08rem;margin:18px 0 6px;color:#1e4b70}h4{margin:12px 0 4px}
+p{margin:8px 0}ul,ol{padding-left:24px}li{margin:5px 0}.tag{display:inline-block;border-radius:5px;padding:2px 7px;font-size:.78rem;font-weight:750;background:#e6f0f8;color:#174b73}.warn{background:var(--warn);border-left:4px solid #d18b18;padding:12px 14px;border-radius:6px;margin:12px 0}.danger{background:#fff0f0;border-left:4px solid var(--red);padding:12px 14px;border-radius:6px;margin:12px 0}.good{background:#eaf7f0;border-left:4px solid var(--green);padding:12px 14px;border-radius:6px;margin:12px 0}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:.94rem}th,td{border:1px solid var(--line);padding:9px;text-align:left;vertical-align:top}th{background:#edf3f8;color:#173c5a}tr:nth-child(even) td{background:#fafbfd}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.mini{border:1px solid var(--line);border-radius:9px;padding:13px;background:#fbfcfd}.mini h3{margin-top:0}
+details{border:1px solid var(--line);border-radius:8px;margin:8px 0;padding:10px 12px;background:#fcfdfe}summary{cursor:pointer;font-weight:700;color:#214d70}
+.ref{font-size:.88rem;color:var(--muted)}.hidden{display:none!important}.result{padding:10px;border-bottom:1px solid var(--line)}.result:last-child{border:0}.footer{color:var(--muted);font-size:.88rem;text-align:center;padding:12px}
+@media(max-width:850px){.shell{grid-template-columns:1fr;padding:10px}aside{position:static;max-height:none}aside nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px}.grid{grid-template-columns:1fr}section,.card{padding:15px}table{display:block;overflow-x:auto;white-space:normal}}
+@media print{body{background:#fff;font-size:11pt}.shell{display:block;max-width:none;padding:0}aside,.searchbox,button{display:none!important}section,.card{break-inside:avoid;border:1px solid #aaa;box-shadow:none}.hidden{display:block!important}header{background:#fff;color:#000;border-bottom:2px solid #000;padding:12px}header p{color:#333}a{color:#000}}
 </style>
 </head>
-<body class="menu-aberto">
-
-<button class="btn-menu" id="btnMenu" onclick="toggleMenu()">☰</button>
-<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-
-<nav id="menuLateral">
-  <h2>📑 Índice do Manual</h2>
-  <a href="#especificacoes-embarcacao">🚤 Especificações da Guardian 25 <span class="pg">Pág. 4-6</span></a>
-  <a href="#especificacoes-motor">⚙️ Especificações do Motor Verado 200 <span class="pg">Pág. 16-17</span></a>
-  <a href="#memento-operacao">📋 Memento de Operação <span class="pg">Pág. 10</span></a>
-  <a href="#oleos-fluidos">🛢️ Óleos e Fluidos <span class="pg">Pág. 8</span></a>
-  <a href="#manutencao-preventiva">🔧 Manutenção Preventiva <span class="pg">Pág. 8</span></a>
-  <a href="#sistema-combustivel">⛽ Sistema de Combustível <span class="pg">Pág. 19-21</span></a>
-  <a href="#sistema-direcao">🎯 Sistema de Direção Hidráulica <span class="pg">Doc. Direção</span></a>
-  <a href="#modulo-impulsor">⚡ Módulo Impulsor (D.E.H.) <span class="pg">Doc. Direção</span></a>
-  <a href="#purgar-direcao">🔄 Purgar Sistema de Direção <span class="pg">Doc. Direção</span></a>
-  <a href="#tirante-direcao">🔗 Tirante de Ligação da Direção <span class="pg">Doc. Direção</span></a>
-  <a href="#sistema-eletrico">🔌 Sistema Elétrico e Baterias <span class="pg">Pág. 61-63</span></a>
-  <a href="#alternador">⚡ Alternador <span class="pg">Pág. 62-63</span></a>
-  <a href="#sistema-smartcraft">📊 SmartCraft <span class="pg">Pág. 79-108</span></a>
-  <a href="#sistema-cds">💻 CDS G3 <span class="pg">Pág. 123-134</span></a>
-  <a href="#codigos-falha">⚠️ Códigos de Falha PCM <span class="pg">Pág. 109-124</span></a>
-  <a href="#manutencao-reboque">🚛 Manutenção do Reboque <span class="pg">Pág. 135-136</span></a>
-  <a href="#resolucao-problemas">🔍 Resolução de Problemas <span class="pg">Pág. 77-78</span></a>
+<body>
+<header>
+  <h1>Manual Técnico de Manutenção — Guardian 25</h1>
+  <p>Consulta de oficina para embarcação Guardian 25 com motores Mercury Verado 200 HP, 4 tempos. Conteúdo organizado a partir da apostila <strong>Estágio de Manutenção de Embarcações Guardian (EMEGD), 2021</strong>, complementado por pesquisa em documentação técnica Mercury Marine e manuais de serviço independentes.</p>
+</header>
+<div class="shell">
+<aside>
+<strong>Índice técnico</strong>
+<nav>
+<a href="#identificacao">Identificação e limites</a>
+<a href="#oleo">Lubrificação e óleo</a>
+<a href="#torques">Tabela de torques confirmados</a>
+<a href="#graxas">Graxas e pontos de lubrificação</a>
+<a href="#bombaagua">Bomba d’água / rotor</a>
+<a href="#velas">Velas e ignição</a>
+<a href="#filtros">Filtros e combustível</a>
+<a href="#bombaporao">Bombas de porão</a>
+<a href="#rabeta">Rabeta / caixa de engrenagens</a>
+<a href="#ebc">EcoBooster / EBC e supercharger</a>
+<a href="#combustivel">Combustível</a>
+<a href="#pcm">PCM e alimentação elétrica</a>
+<a href="#cps">Sensor de rotação CPS</a>
+<a href="#fase">Sensor de fase</a>
+<a href="#temperatura">Temperatura e arrefecimento</a>
+<a href="#map">Sensores MAP / MAT / óleo</a>
+<a href="#codigos">Códigos de falha PCM</a>
+<a href="#direcao">Direção hidráulica</a>
+<a href="#smartcraft">SmartCraft e CDS</a>
+<a href="#roteiro">Roteiro de diagnóstico</a>
+<a href="#pesquisa">Dados complementares de pesquisa</a>
+<a href="#fontes">Fonte e limites</a>
 </nav>
-
+</aside>
 <main>
-  <h1>Manual de Manutenção — Embarcação Guardian 25</h1>
-  <p class="sub">EMEGD 2021 — Estágio de Manutenção de Embarcações Guardian | Motores Mercury Verado 200 HP 4 Tempos</p>
+<div class="searchbox">
+<input id="busca" type="search" placeholder="Buscar sintoma, código, sensor ou procedimento… (ex.: pressão baixa)">
+<button id="limpar" class="secondary" type="button">Limpar</button>
+<button type="button" onclick="window.print()">Imprimir</button>
+</div>
+<div id="resultados" class="card hidden" aria-live="polite"></div>
 
-  <!-- ============ ESPECIFICAÇÕES DA EMBARCAÇÃO ============ -->
-  <div class="componente" id="especificacoes-embarcacao">
-    <h2>🚤 Especificações da Embarcação Guardian 25</h2>
-    <span class="ref">📄 Nota de Aula EMEGD 2021 | Páginas 4-6</span>
+<section id="identificacao">
+<h2>1. Identificação e limites de aplicação</h2>
+<div class="grid">
+<div class="mini"><h3>Aplicação principal</h3><p>Embarcação tática de grupo Guardian 25, casco Brunswick / Boston Whaler, equipada na configuração descrita pela apostila com dois motores Mercury Verado 200 HP, 4 tempos.</p></div>
+<div class="mini"><h3>Diagnóstico eletrônico</h3><p>A apostila cita o sistema PCM, ferramentas DDT e CDS, além do SmartCraft. O PCM monitora entradas de sensores e comanda diversos atuadores do motor.</p></div>
+</div>
+<div class="warn"><strong>Antes de iniciar:</strong> confirme geração da Guardian, identificação e número de série do motor. A apostila também menciona embarcações com motores Optimax 2 tempos; dados de uma versão não devem ser aplicados automaticamente à outra.</div>
+<p><strong>Como usar esta página:</strong> comece pelo sintoma, confira o código no CDS, faça inspeção visual e elétrica, e só então avance para testes de componente. Os valores abaixo são apresentados apenas quando aparecem na apostila EMEGD-2021 ou em fonte técnica identificada.</p>
+</section>
 
-    <div class="tabela-wrapper">
-      <table class="tabela-pinagem">
-        <thead>
-          <tr><th>Característica</th><th>Especificação</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>Nomenclatura</strong></td><td>Embarcação Tática de Grupo GUARDIAN 25' (Patrol Boat Light Guardian 25')</td></tr>
-          <tr><td><strong>Fabricante</strong></td><td>Brunswick Commercial & Government Products, Inc., EUA (divisão de produtos militares e comerciais da Boston Whaler)</td></tr>
-          <tr><td><strong>Preço Unitário (Aprox.)</strong></td><td>US$ 300,000.00 (1 Emb + 1 Rbq + Kit peças)</td></tr>
-          <tr><td><strong>Comprimento</strong></td><td>7,62 metros</td></tr>
-          <tr><td><strong>Boca</strong></td><td>2,44 metros</td></tr>
-          <tr><td><strong>Calado Mínimo</strong></td><td>0,50 metro</td></tr>
-          <tr><td><strong>Casco</strong></td><td>Fibra de vidro injetado, insubmergível (10 anos de garantia)</td></tr>
-          <tr><td><strong>Motorização</strong></td><td>02 motores de popa de 200 HP 25" (Mercury Verado 4 Tempos)</td></tr>
-          <tr><td><strong>Sistema de Armas (Prev.)</strong></td><td>02 suportes para Mtr 7,62mm e 02 para Mtr.50 ou Lç Granada 40 mm</td></tr>
-          <tr><td><strong>Sistema de Comunicação (Prev.)</strong></td><td>Rádio VHF (náutico) e espera para Rádio Tático Harris Falcon II e III</td></tr>
-          <tr><td><strong>Sistema de Navegação Integrado</strong></td><td>GPS (com chartplotter e carta náutica digital), Sonda e Radar</td></tr>
-          <tr><td><strong>Capacidade</strong></td><td>12 pessoas, sendo: 2 Tripulantes, 4 Atiradores e até 6 militares armados e equipados</td></tr>
-        </tbody>
-      </table>
-    </div>
+<section id="oleo">
+<h2>2. Lubrificação — especificações e inspeção</h2>
+<p class="ref">Fonte: EMEGD-2021, seção de normatização/manutenção (pág. 6) e seção de manutenção do motor (págs. 19–22).</p>
+<table><thead><tr><th>Item</th><th>Informação transcrita da apostila</th><th>Uso na oficina</th></tr></thead><tbody>
+<tr><td>Óleo do motor Verado 4T</td><td>Mercury Verado sintético SAE 25W-50; capacidade indicada pela apostila: 6 litros por motor.</td><td>Confirmar aplicação no manual Mercury correspondente ao número de série antes da troca.</td></tr>
+<tr><td>Alternativa citada no trecho de manutenção</td><td>Óleo Mercury/Quicksilver para motor de popa 4 tempos, mistura sintética SAE 25W-40, certificado FC-W NMMA.</td><td>Não substituir por óleo automotivo sem confirmação da especificação exigida pelo fabricante.</td></tr>
+<tr><td>Óleo da caixa de engrenagens Verado 4T</td><td>SAE 90 High Performance Gear Lubricant Mercury; 900 ml motor de bombordo (esquerdo) e 970 ml motor de boreste (direito), conforme tabela da apostila.</td><td>Identificar lado e configuração antes de abastecer; confirmar capacidade no manual específico.</td></tr>
+</tbody></table>
+<h3>Verificação do nível do óleo do motor</h3>
+<ol>
+<li>Com o motor frio ou parado há pelo menos uma hora, incline-o para fora/acima da vertical por aproximadamente um minuto para permitir o retorno do óleo ao cárter.</li>
+<li>Coloque o motor na posição vertical de funcionamento.</li>
+<li>Retire a tampa superior e a vareta; limpe a vareta, reinsira completamente e retire novamente.</li>
+<li>Confira se o nível está dentro da faixa de operação indicada na vareta. Não tente completar até o limite superior da faixa.</li>
+<li>Se estiver abaixo da faixa, a apostila orienta adicionar aproximadamente 500 ml do óleo especificado, aguardar e medir novamente; repetir somente conforme necessário.</li>
+<li>Inspecione a aparência e o odor: óleo leitoso pode indicar água; cheiro forte de combustível pode indicar contaminação. Nesses casos, não trate como simples consumo: investigue a causa conforme o manual de serviço.</li>
+</ol>
+<div class="danger"><strong>Não operar sem esclarecer:</strong> pressão de óleo baixa, óleo com água/combustível ou ruído mecânico anormal. Para pressão de óleo baixa, o código 12 da tabela da apostila orienta desligar o motor e verificar o nível.</div>
+</section>
 
-    <div class="destaque">
-      <strong style="color:#89b4fa;">📌 Gerações da Guardian 25 no EB:</strong>
-      <table>
-        <thead><tr><th>Geração</th><th>Ano</th><th>Motorização</th><th>Equipamentos</th></tr></thead>
-        <tbody>
-          <tr><td><strong>1ª Geração</strong></td><td>2011</td><td>200 HP 2T Optimax</td><td>GPS, ecossonda e toldo</td></tr>
-          <tr><td><strong>2ª Geração</strong></td><td>2013/14</td><td>200 HP 4T Verado</td><td>GPS, radar, ecossonda e sem toldo</td></tr>
-          <tr><td><strong>3ª Geração</strong></td><td>2015</td><td>200 HP 4T Verado</td><td>GPS, radar, ecossonda, toldo e para-brisa</td></tr>
-        </tbody>
-      </table>
-    </div>
+<section id="combustivel">
+<h2>3. Sistema de combustível — inspeção antes da partida</h2>
+<p class="ref">Fonte: EMEGD-2021, págs. 17–19.</p>
+<ul>
+<li>Inspecione linhas, conexões, mangueiras e componentes quanto a vazamento, corrosão, amolecimento, endurecimento, dilatação ou deterioração, principalmente após armazenamento.</li>
+<li>Se houver sinal de vazamento ou deterioração, substitua o componente afetado antes de acionar o motor.</li>
+<li>A apostila informa que os componentes do sistema suportam gasolina com até 10% de álcool, mas alerta para maior risco de corrosão, deterioração de borracha/plástico, infiltração e dificuldade de partida. Verifique também a especificação do fabricante do barco e do motor.</li>
+<li>Ao abastecer: motor desligado, área ventilada, sem cigarro, chama ou fonte de faísca. Não encha completamente o tanque; a apostila recomenda deixar cerca de 10% de volume livre para expansão.</li>
+</ul>
+<div class="danger"><strong>Risco de incêndio/explosão:</strong> não procure vazamento com o motor funcionando e não acione a ignição se houver cheiro forte ou combustível visível. Ventile a área e elimine a fonte de ignição conforme o procedimento de segurança aplicável.</div>
+</section>
 
-    <div class="descricao-acao">
-      <strong>Emprego:</strong> A Embarcação Guardian 25 integra mobilidade tática (velocidade e manobrabilidade) com poder de fogo, sendo equipada também com modernos sistemas eletrônicos de auxílio à navegação e comunicações. Requer capacitação específica para operação e manutenção.
-    </div>
-  </div>
+<section id="pcm">
+<h2>4. PCM — alimentação e estados de funcionamento</h2>
+<p class="ref">Fonte: EMEGD-2021, págs. 51–52.</p>
+<div class="good"><strong>Dado técnico da apostila:</strong> o PCM requer pelo menos <strong>8 VCC</strong> para operar. As entradas podem ser monitoradas/testadas usando DDT ou CDS. Durante a posição de ignição ligada, o PCM ativa relés e fornece referência de 5 V aos sensores conforme a descrição da apostila.</div>
+<h3>Sequência funcional descrita</h3>
+<table><thead><tr><th>Estado</th><th>Comportamento descrito</th><th>Implicação para diagnóstico</th></tr></thead><tbody>
+<tr><td>Desligado</td><td>O sistema de compensação pode funcionar por até 15 minutos; a apostila menciona 12 V disponíveis na bateria no terminal positivo da caixa elétrica e alternador.</td><td>Considere consumo residual e alimentação principal ao investigar bateria descarregada.</td></tr>
+<tr><td>Ignição ligada / parado</td><td>PCM e relés principais são ativados; a alimentação da bomba é descrita por cerca de cinco segundos; sensores recebem referência de 5 V.</td><td>Verifique alimentação, aterramentos, fusíveis/relés e referências com o diagrama correto da versão.</td></tr>
+<tr><td>Partida</td><td>O PCM controla a ativação do relé de partida; durante o giro recebe sinal do sensor do virabrequim e aciona alimentação da bomba e bobinas conforme a descrição do sistema.</td><td>Se não há partida, compare RPM/sinal de rotação no CDS e verifique circuito de partida e alimentação antes de condenar o PCM.</td></tr>
+<tr><td>Funcionamento</td><td>Por volta de 500 RPM, a descrição indica transição ao modo de funcionamento; sensores de fase, MAT, TPS e MAP são usados no controle.</td><td>Analise dados ao vivo e códigos presentes/registrados. Confirme os valores esperados no manual de serviço do motor.</td></tr>
+</tbody></table>
+<div class="warn"><strong>Atenção à medição:</strong> o valor de 8 VCC é requisito mínimo do PCM indicado pela apostila, não uma especificação universal para todos os pinos. Não aplique tensão de bateria em terminais de sensores ou PCM. Use pinagem e procedimento do manual de serviço.</div>
+</section>
 
-  <!-- ============ ESPECIFICAÇÕES DO MOTOR ============ -->
-  <div class="componente" id="especificacoes-motor">
-    <h2>⚙️ Especificações do Motor Mercury Verado 200 HP</h2>
-    <span class="ref">📄 Nota de Aula EMEGD 2021 | Páginas 16-17 | Motor 4 Tempos</span>
+<section id="cps">
+<h2>5. Sensor de posição do virabrequim — CPS / rotação</h2>
+<p class="ref">Fonte: EMEGD-2021, pág. 52.</p>
+<h3>Princípio de funcionamento descrito</h3>
+<p>O sensor fica junto ao volante do motor. A passagem dos dentes da roda fônica altera o campo magnético e gera um sinal utilizado pelo PCM para calcular rotação e reconhecer a referência angular. A apostila descreve um volante com 54 posições, com seis dentes ausentes organizados em três grupos, para identificação da posição do motor.</p>
+<h3>Procedimento de inspeção indicado pela apostila</h3>
+<ol>
+<li>Inspecione a ponta do sensor: deve estar nivelada na extremidade e limpa, sem resíduos metálicos aderidos. O sensor contém ímã; se estiver faltando, a apostila indica que o funcionamento será incorreto.</li>
+<li>Inspecione a roda fônica/volante: sem corrosão excessiva, dentes com bordas retangulares e padrão de dentes ausentes compatível com o desenho da apostila.</li>
+<li>Inspecione pinos e chicote: procure pinos quebrados, tortos ou corroídos, fios soltos, cortados ou corroídos.</li>
+<li>Desconecte o sensor e meça a resistência nos pinos do próprio sensor.</li>
+<li>Compare o valor medido com a especificação do manual de serviço aplicável. A apostila consultada não apresenta o valor numérico de resistência neste trecho; portanto não use um valor presumido.</li>
+</ol>
+<h3>Se não houver RPM no CDS durante a partida</h3>
+<ul><li>Confirmar bateria e velocidade de giro do motor de partida.</li><li>Verificar conexão, corrosão e continuidade do circuito conforme o diagrama específico.</li><li>Inspecionar sensor e roda fônica conforme a sequência acima.</li><li>Não substituir o sensor antes de confirmar alimentação/condição do circuito e a especificação de teste.</li></ul>
+</section>
 
-    <div class="tabela-wrapper">
-      <table class="tabela-pinagem">
-        <thead>
-          <tr><th>Item</th><th>Especificação</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>Modelo</strong></td><td>Verado 200 HP 4 Tempos</td></tr>
-          <tr><td><strong>Potência</strong></td><td>200 HP (149 kW)</td></tr>
-          <tr><td><strong>Número de Cilindros</strong></td><td>4</td></tr>
-          <tr><td><strong>Cilindrada</strong></td><td>1731 cm³ (105.6 cid)</td></tr>
-          <tr><td><strong>Diâmetro Interno do Cilindro</strong></td><td>82 mm (3.23 in.)</td></tr>
-          <tr><td><strong>Curso</strong></td><td>82 mm (3.23 in.)</td></tr>
-          <tr><td><strong>Faixa de RPM à Aceleração Máxima</strong></td><td>5800 - 6400 RPM</td></tr>
-          <tr><td><strong>Velocidade de Marcha Lenta</strong></td><td>650 RPM (em ponto morto, motor aquecido)</td></tr>
-          <tr><td><strong>Vela de Ignição Recomendada</strong></td><td>NGK ILFR6G-E</td></tr>
-          <tr><td><strong>Abertura da Vela</strong></td><td>0,8 mm (0.0315 in.)</td></tr>
-          <tr><td><strong>Tamanho Hexagonal da Vela</strong></td><td>16 mm</td></tr>
-          <tr><td><strong>Relação de Marchas</strong></td><td>2,08:1</td></tr>
-          <tr><td><strong>Gasolina Recomendada</strong></td><td>Gasolina (mín. 87 octanas (R+M)/2 ou 90 RON)</td></tr>
-          <tr><td><strong>Óleo Recomendado</strong></td><td>SAE 25W-50 (Mercury Verado)</td></tr>
-          <tr><td><strong>Capacidade de Óleo do Motor</strong></td><td>6,0 litros (6.3 qt.) com substituição do filtro</td></tr>
-          <tr><td><strong>Capacidade da Caixa de Engrenagens (Rotação Direita)</strong></td><td>970 ml (32.8 fl. oz.)</td></tr>
-          <tr><td><strong>Capacidade da Caixa de Engrenagens (Rotação Esquerda)</strong></td><td>900 ml (30.4 fl. oz.)</td></tr>
-          <tr><td><strong>Bateria</strong></td><td>1000 MCA, 800 CCA ou 180 Ah (mínimo)</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+<section id="fase">
+<h2>6. Sensor de fase — posição da árvore de comando</h2>
+<p class="ref">Fonte: EMEGD-2021, pág. 53.</p>
+<p>A apostila informa que o sensor fica no topo da tampa de válvulas e permite ao PCM reconhecer a fase do cilindro para sequenciar a injeção. O sinal descrito varia entre <strong>0 V e +5 V</strong> quando o primeiro ou quarto cilindro atinge o PMS, sendo acompanhado pelo CDS.</p>
+<h3>Teste documentado</h3>
+<ol>
+<li>Conecte o CDS/ ferramenta de diagnóstico e monitore a leitura do sensor durante o giro/funcionamento conforme procedimento do fabricante.</li>
+<li>Se a mudança de tensão não ocorrer, movimente cuidadosamente o chicote enquanto observa a leitura.</li>
+<li>Se a leitura variar com o movimento do chicote, inspecione fio rompido, conexão frouxa, terminal corroído ou mau contato.</li>
+<li>Confirme continuidade e pinagem com o diagrama de serviço antes de reparar o circuito.</li>
+</ol>
+<div class="warn">A faixa de 0–5 V é a variação descrita para o sinal neste procedimento; não significa que todos os pinos do sensor devam medir essa tensão em qualquer condição.</div>
+</section>
 
-  <!-- ============ MEMENTO DE OPERAÇÃO ============ -->
-  <div class="componente" id="memento-operacao">
-    <h2>📋 Memento de Operação da Embarcação Guardian</h2>
-    <span class="ref">📄 Nota de Aula EMEGD 2021 | Página 10</span>
+<section id="temperatura">
+<h2>7. Sensor de temperatura do bloco e sistema de arrefecimento</h2>
+<p class="ref">Fonte: EMEGD-2021, pág. 53.</p>
+<p>O sensor descrito é um termistor imerso no líquido refrigerante do bloco. Conforme a apostila, resistência alta corresponde a temperatura baixa e resistência baixa corresponde a temperatura alta.</p>
+<table><thead><tr><th>Temperatura</th><th>Resistência indicada</th></tr></thead><tbody>
+<tr><td>−10 °C</td><td>20 kΩ</td></tr><tr><td>21 °C</td><td>11,3 kΩ</td></tr><tr><td>38 °C</td><td>5,7 kΩ</td></tr><tr><td>65 °C</td><td>2,1 kΩ</td></tr>
+</tbody></table>
+<h3>Quando há indicação de superaquecimento</h3>
+<p>A apostila lista como causas possíveis: obstrução na captação/tubo de água por areia, restos de rotor ou corpos estranhos; rotor da bomba d'água; sensor com problema; válvula termostática com defeito ou demora para abrir.</p>
+<ol>
+<li>Interrompa a operação se houver alerta de superaquecimento e siga o procedimento de segurança do fabricante.</li>
+<li>Com o motor desligado e seguro para inspeção, verifique visualmente a entrada de água e sinais de obstrução.</li>
+<li>Inspecione o sistema de captação, rotor da bomba e termostato segundo o manual de serviço.</li>
+<li>Compare a leitura do CDS com a temperatura real e, se necessário, teste o termistor com instrumento adequado e motor frio.</li>
+<li>Não conclua que o sensor está defeituoso antes de descartar problema real de circulação de água.</li>
+</ol>
+</section>
 
-    <div class="destaque">
-      <strong style="color:#f9e2af;">PRÉ-OPERAÇÃO</strong>
-      <table>
-        <thead><tr><th>Item</th><th>Verificação</th></tr></thead>
-        <tbody>
-          <tr><td>1</td><td>Checar o registro de manutenção da embarcação</td></tr>
-          <tr><td>2</td><td>Verificar o uso da bucha de sacrifício (plástica) da hélice para missões de rotina ou adestramento</td></tr>
-          <tr><td>3</td><td>Verificar se o tampão de drenagem está instalado</td></tr>
-          <tr><td>4</td><td>Subir os motores no trim para entrar na água</td></tr>
-          <tr><td>5</td><td>Verificar se o manual de operação está a bordo</td></tr>
-          <tr><td>6</td><td>Checar os equipamentos de segurança</td></tr>
-          <tr><td>7</td><td>Verificar se o casco está em condições</td></tr>
-          <tr><td>8</td><td>Verificar o funcionamento do GPS, Radar e Sonda</td></tr>
-          <tr><td>9</td><td>Testar as luzes de navegação, buzina, luz de estrobo e megafone</td></tr>
-          <tr><td>10</td><td>Verificar os níveis de óleo e combustível</td></tr>
-          <tr><td>11</td><td>Verificar o funcionamento das bombas de porão</td></tr>
-          <tr><td>12</td><td>Verificar as baterias e sistemas elétricos</td></tr>
-          <tr><td>13</td><td>Verificar os filtros Racor separadores de água</td></tr>
-          <tr><td>14</td><td>Manter o cabo do reboque preso à embarcação até o funcionamento dos motores</td></tr>
-          <tr><td>15</td><td>Soltar as travas dos motores</td></tr>
-          <tr><td>16</td><td>Abaixar os motores completamente</td></tr>
-        </tbody>
-      </table>
-    </div>
+<section id="map">
+<h2>8. Sensores MAP, MAT, pressão e outros sensores</h2>
+<p class="ref">Fonte: EMEGD-2021, seção elétrica/injeção e direção hidráulica, págs. 51–76.</p>
+<details><summary>MAP — pressão absoluta do coletor</summary><p>A apostila descreve que o CDS/DDT apresenta uma leitura numérica do MAP. Use o dado ao vivo e o procedimento do manual de serviço para comparar a leitura com a condição do motor. Se o valor não responder conforme esperado, verifique conector, chicote, alimentação/referência e continuidade antes de substituir o sensor.</p></details>
+<details><summary>MAT — temperatura do ar de admissão</summary><p>O MAT participa da estratégia de controle do PCM. A apostila orienta observar a leitura com CDS/DDT. Compare a leitura a frio com a temperatura ambiente e siga a curva/especificação do fabricante para teste elétrico; não há uma curva numérica completa reproduzida aqui.</p></details>
+<details><summary>Sensor de pressão do óleo</summary><p>A apostila orienta usar CDS/DDT para avaliar o funcionamento do sensor. Se houver código de baixa pressão, desligue o motor e verifique primeiro o nível de óleo. A leitura eletrônica não substitui a confirmação da pressão real pelo procedimento e instrumento especificados pelo fabricante.</p></details>
+<details><summary>Sensor de pressão Pitot</summary><p>A apostila orienta comparar a leitura numérica antes da partida e com a embarcação em movimento na água. Ela alerta para não inverter as conexões das tomadas dos sensores, pois, embora sejam semelhantes, o PCM interpreta as entradas com sensibilidades diferentes.</p></details>
+<details><summary>Sensor de detonação</summary><p>A apostila informa que não há procedimento prático de teste de campo disponível para esse dispositivo. Inspecione conectores e pinos; verifique continuidade entre sensor e PCM e consulte os códigos registrados. A apostila cita, para o circuito descrito: conector A, pino 29 do PCM ao fio branco/azul do sensor com 20 kΩ ±10%; conector A, pino 19 ao fio preto/vermelho com menos de 1 Ω. Confirme a identificação dos pinos e a versão do chicote no diagrama antes de medir.</p></details>
+</section>
 
-    <div class="destaque">
-      <strong style="color:#a6e3a1;">PRÉ-FUNCIONAMENTO</strong>
-      <table>
-        <thead><tr><th>Item</th><th>Verificação</th></tr></thead>
-        <tbody>
-          <tr><td>1</td><td>Checar baterias de arranque em condições</td></tr>
-          <tr><td>2</td><td>Checar interruptores de partida na posição ligado</td></tr>
-          <tr><td>3</td><td>Interruptor do sistema na posição ligado</td></tr>
-          <tr><td>4</td><td>Colocar a chave dos dois motores na posição ON</td></tr>
-          <tr><td>5</td><td>Mover as alavancas de controle para posição ponto morto</td></tr>
-          <tr><td>6</td><td>Prender o grampo e cordão de parada da ignição</td></tr>
-          <tr><td>7</td><td>Dar a partida nos motores utilizando as chaves (START)</td></tr>
-          <tr><td>8</td><td>Caso necessário, utilize o interruptor em paralelo para auxiliar a partida</td></tr>
-          <tr><td>9</td><td>Soltar o cabo do reboque assim que estiver tudo OK</td></tr>
-          <tr><td>10</td><td>Verificar os indicadores de refrigeração dos motores</td></tr>
-          <tr><td>11</td><td>Verificar todos os sistemas dos motores nos relógios</td></tr>
-          <tr><td>12</td><td>Deixar os motores funcionando por cinco minutos</td></tr>
-          <tr><td>13</td><td>Checar a distribuição da carga antes da partida</td></tr>
-          <tr><td>14</td><td>Verificar se todos estão com coletes salva-vidas</td></tr>
-          <tr><td>15</td><td>Informar à base: destino, missão e hora retorno previsto</td></tr>
-        </tbody>
-      </table>
-    </div>
+<section id="codigos">
+<h2>9. Códigos de falha PCM — tabela de triagem</h2>
+<p class="ref">Fonte principal: EMEGD-2021, pág. 107 (tabela intitulada “Códigos de Falha PCM 09 Verado e Optimax”). Linhas complementares indicadas com fonte adicional. É uma triagem inicial, não substitui o diagnóstico completo nem confirma sozinho a peça defeituosa.</p>
+<table id="tabelaCodigos"><thead><tr><th>Código</th><th>Descrição no CDS</th><th>Verificações/causas citadas</th></tr></thead><tbody>
+<tr><td>1</td><td>Bateria com tensão elevada</td><td>Tensão acima do limite normal; a apostila aponta alternador ou fio sensor com problema.</td></tr>
+<tr><td>2</td><td>Bateria com tensão baixa</td><td>Verificar bateria, correia do alternador, alternador, conexões e excesso de consumidores elétricos.</td></tr>
+<tr><td>3</td><td>Pressão de água do bloco baixa</td><td>Verificar obstrução na entrada de água; bomba/rotor/tubo; vazamento entre bloco e sensor; sensor de pressão de água.</td></tr>
+<tr><td>4</td><td>Superaquecimento do compressor de ar</td><td>Verificar obstrução da entrada de água para o compressor e sensor de temperatura do bloco.</td></tr>
+<tr><td>5</td><td>Perda de controle do ETC (corpo de borboleta)</td><td>Verificar corpo de borboleta, TPS do sistema e conexões elétricas.</td></tr>
+<tr><td>6</td><td>ETC (corpo de borboleta) prendendo</td><td>Verificar corrosão nos pinos, movimento obstruído da borboleta, baixa tensão da bateria e chicote do ETC.</td></tr>
+<tr><td>7</td><td>Circuito do sensor de pressão de combustível indica pressão elevada</td><td>Verificar sensor e chicote do circuito de pressão de combustível.</td></tr>
+<tr><td>8</td><td>Circuito do sensor de pressão de combustível indica pressão baixa</td><td>Verificar sensor e chicote do circuito de pressão de combustível.</td></tr>
+<tr><td>9</td><td>Estratégia Guardian</td><td>Potência limitada para reduzir danos. Verificar outras falhas no CDS; a estratégia pode ser consequência de outras falhas/sensores.</td></tr>
+<tr><td>10</td><td>Sensor de detonação 1</td><td>Possível sensor, chicote ou montagem; evitar potência máxima até diagnóstico.</td></tr>
+<tr><td>11</td><td>Sensor de detonação 2</td><td>Possível sensor, chicote ou montagem; evitar potência máxima até diagnóstico.</td></tr>
+<tr><td>12</td><td>Pressão do óleo baixa</td><td>Desligar o motor e verificar nível de óleo; a apostila também cita captação de óleo bloqueada ou sensor com problema.</td></tr>
+<tr><td>13</td><td>Nível de óleo baixo no tanque primário (sistema 2T)</td><td>Aplicável à descrição de tanque remoto/primário do Optimax 2T; verificar consumo, boia e vazamento. <strong>Não aplicar automaticamente ao Verado 4T.</strong>[reference:0]</td></tr>
+<tr><td>15</td><td>Sinal do MAP alto (circuito aberto/curto para tensão)</td><td>Leitura próxima de 5 V; verificar sensor MAP, circuito e PCM. Pode causar limite de potência.[reference:1]</td></tr>
+<tr><td>16</td><td>Sinal do MAP baixo (curto para massa)</td><td>Leitura próxima de 0 V; verificar sensor MAP, circuito e PCM. Pode causar limite de potência.[reference:2]</td></tr>
+<tr><td>20</td><td>Superaquecimento da bancada de bombordo</td><td>Verificar entrada de água obstruída, vedação/bomba d’água fraca e termostato.[reference:3]</td></tr>
+</tbody></table>
+<div class="danger"><strong>Prioridade:</strong> códigos 3, 4, 12 e 20 envolvem pressão de água, superaquecimento ou pressão de óleo. Não continue operando para “ver se passa”. Siga o procedimento do fabricante e confirme a causa antes de liberar a embarcação.</div>
+</section>
 
-    <div class="descricao-acao">
-      <strong>⚠️ Regras de Operação:</strong><br>
-      • <strong>Faixa de cruzeiro:</strong> 4.500 - 5.500 RPM (consumo: 30-40 l/h)<br>
-      • <strong>Acima de 5.500 RPM:</strong> Apenas para manobras rápidas esporádicas, máximo 1 minuto (consumo: 60-72 l/h)<br>
-      • <strong>Limite máximo:</strong> 6.000 RPM<br>
-      • <strong>Bucha de sacrifício:</strong> Utilizar a camisa plástica da hélice para evitar quebra do eixo em caso de colisão<br>
-      • <strong>Uso de EPI:</strong> Óculos de proteção obrigatório para piloto em embarcações sem para-brisa
-    </div>
-  </div>
+<section id="direcao">
+<h2>10. Direção hidráulica — diagnóstico e segurança</h2>
+<p class="ref">A apostila reserva as págs. 64–76 para direção hidráulica e sensores relacionados.</p>
+<ul>
+<li>Antes de desmontar, identifique se o sintoma é assistência ausente, assistência intermitente, ruído, vazamento ou esforço desigual.</li>
+<li>Inspecione vazamentos, conexões, chicote e conectores relacionados ao sistema; confira códigos e dados do CDS quando aplicável.</li>
+<li>Não desconecte linhas pressurizadas nem procure vazamento com as mãos junto a um jato hidráulico.</li>
+<li>Para pressão de trabalho, fluido, sangria, torque e sequência de desmontagem, consultar o procedimento específico da direção e do motor. Esses valores não devem ser presumidos a partir desta página.</li>
+</ul>
+</section>
 
-  <!-- ============ ÓLEOS E FLUIDOS ============ -->
-  <div class="componente" id="oleos-fluidos">
-    <h2>🛢️ Óleos e Fluidos — Especificações e Capacidades</h2>
-    <span class="ref">📄 Nota de Aula EMEGD 2021 | Páginas 8</span>
+<section id="smartcraft">
+<h2>11. SmartCraft e CDS — como conduzir o diagnóstico</h2>
+<p class="ref">A apostila possui capítulos dedicados ao SmartCraft (págs. 77–122) e ao CDS (págs. 123–132).</p>
+<h3>Antes de apagar códigos</h3>
+<ol>
+<li>Registre o código, a descrição exibida, as condições do sintoma e se a falha está ativa ou armazenada (conforme o que a ferramenta disponibilizar).</li>
+<li>Registre os dados ao vivo pertinentes: tensão, RPM durante a partida, temperatura, pressão e posição dos sensores disponíveis na ferramenta.</li>
+<li>Faça inspeção visual dos conectores e chicote antes de desconectar componentes.</li>
+<li>Execute o teste dirigido pelo código e confirme a causa com medição/inspeção física.</li>
+<li>Depois do reparo, apague os códigos conforme o procedimento da ferramenta, repita a condição de teste e confirme que a falha não retornou.</li>
+</ol>
+<div class="warn">A apostila é uma nota de aula e declara que não substitui os manuais originais da embarcação e dos componentes. A tela, os nomes dos parâmetros e os procedimentos podem variar conforme versão de CDS/SmartCraft e número de série.</div>
+</section>
 
-    <div class="tabela-wrapper">
-      <table class="tabela-pinagem">
-        <thead>
-          <tr><th>Sistema</th><th>Tipo de Óleo/Fluido</th><th>Quantidade</th><th>Observação</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>Óleo do Motor (Verado 4T)</strong></td><td>Sintético SAE 25W-50 Mercury Verado</td><td>6 litros por motor</td><td>Substituir nas trocas previstas no manual</td></tr>
-          <tr><td><strong>Caixa de Engrenagens (Rotação Direita)</strong></td><td>SAE 90 High Performance Gear Lube (Mercury/Quicksilver)</td><td>970 ml por motor</td><td>Motor de bombordo (E)</td></tr>
-          <tr><td><strong>Caixa de Engrenagens (Rotação Esquerda)</strong></td><td>SAE 90 High Performance Gear Lube (Mercury/Quicksilver)</td><td>900 ml por motor</td><td>Motor de boreste (D)</td></tr>
-          <tr><td><strong>Sistema de Direção Hidráulica</strong></td><td>SAE 0W-30 Sintético para Direção Assistida</td><td>2 - 2,5 litros</td><td>Depende do comprimento das mangueiras</td></tr>
-          <tr><td><strong>Compensação Hidráulica (Trim)</strong></td><td>Líquido para Direção e Compensação Hidráulicas ou ATF Dexron II/III</td><td>Conforme necessidade</td><td>Verificar nível com motor inclinado</td></tr>
-        </tbody>
-      </table>
-    </div>
+<section id="roteiro">
+<h2>12. Roteiro de diagnóstico por sintoma</h2>
+<details open><summary>Motor não pega / não entra em funcionamento</summary>
+<ol><li>Verificar segurança, combustível disponível e ausência de vazamentos.</li><li>Verificar condição da bateria e conexões; conferir códigos antes de apagá-los.</li><li>Conectar CDS/DDT e observar se há RPM durante o giro de partida.</li><li>Se não há RPM, seguir o diagnóstico do CPS, chicote e roda fônica descrito nesta página.</li><li>Se há RPM, seguir os códigos ativos e dados ao vivo para investigar alimentação, sincronismo e demais entradas/saídas segundo o manual do fabricante.</li></ol></details>
+<details><summary>Alerta de superaquecimento / baixa pressão de água</summary>
+<ol><li>Interromper a operação e deixar o conjunto seguro para inspeção.</li><li>Conferir código CDS e condição da captação de água.</li><li>Inspecionar obstruções, rotor da bomba, tubo e termostato conforme manual.</li><li>Comparar temperatura/pressão indicada com testes físicos e especificações oficiais.</li><li>Não liberar o motor até confirmar circulação e eliminar a causa.</li></ol></details>
+<details><summary>Potência limitada / estratégia Guardian</summary>
+<ol><li>Ler todos os códigos presentes antes de apagar qualquer falha.</li><li>Tratar a estratégia Guardian como possível consequência; localizar a falha primária.</li><li>Verificar especialmente códigos de tensão, pressão de água, temperatura, ETC, pressão de combustível e detonação, conforme os registros do motor.</li><li>Reparar a causa, limpar códigos pelo procedimento correto e confirmar funcionamento.</li></ol></details>
+<details><summary>Leitura de sensor oscila quando o chicote é movimentado</summary>
+<ol><li>Registrar qual parâmetro varia e em que condição.</li><li>Inspecionar trava do conector, pinos, corrosão, fio rompido internamente e emendas.</li><li>Fazer teste de continuidade/queda de tensão conforme diagrama e com o circuito desenergizado quando o procedimento exigir.</li><li>Reparar o circuito e repetir o teste de movimentação antes de condenar o sensor.</li></ol></details>
+</section>
 
-    <div class="descricao-acao">
-      <strong>Óleo do Motor:</strong> Utilizar exclusivamente óleo Mercury Verado SAE 25W-50 ou equivalente certificado FC-W NMMA. Não usar óleos não-detergentes ou de baixa qualidade.
-    </div>
-  </div>
+<section id="rabeta">
+<h2>13. Rabeta — caixa de engrenagens, hélice e bomba d’água</h2>
+<p class="ref">Complemento de pesquisa externa: documentação Mercury Marine e manual de operação/manutenção Verado. A configuração exata depende da geração, rotação, relação de transmissão e número de série.</p>
+<h3>Inspeção de oficina</h3>
+<ul>
+<li>Com o motor desligado e a chave isolada, inspecione carcaça, skeg, hélice, eixo visível, anodos, entrada de água e região dos retentores.</li>
+<li>Procure impacto, trinca, corrosão, hélice deformada, linha de pesca enrolada no eixo e marcas de vazamento junto ao eixo da hélice.</li>
+<li>Se houver vibração, ruído de engrenagens, dificuldade de engate ou perda de propulsão, não conclua que a hélice é a única causa: verifique cubo da hélice, eixo, mecanismo de mudança, rolamentos e engrenagens conforme o manual de serviço.</li>
+<li>Não opere o motor sem circulação de água. A Mercury alerta que funcionar a seco pode danificar rapidamente o rotor da bomba d’água.</li>
+</ul>
+<h3>Troca do lubrificante da rabeta — procedimento geral</h3>
+<ol>
+<li>Deixe a rabeta na posição vertical de funcionamento e coloque recipiente apropriado sob a caixa de engrenagens.</li>
+<li>Remova a hélice, seguindo o procedimento seguro de bloqueio/isolamento indicado pelo fabricante.</li>
+<li>Remova o bujão de nível/respiro e o bujão inferior de enchimento/drenagem; deixe o lubrificante escoar completamente.[reference:4]</li>
+<li>Observe o fluido drenado. Aspecto branco/cremoso persistente pode indicar água; limalha fina em pequena quantidade pode ocorrer por desgaste, mas lascas ou fragmentos metálicos exigem investigação.</li>
+<li>Abasteça pelo orifício inferior com lubrificante Mercury/Quicksilver High Performance Gear Lube recomendado para aquela caixa, até o fluido sair pelo orifício de nível/respiro conforme o manual aplicável.[reference:5]</li>
+<li>Instale bujões com arruelas de vedação em boas condições; substitua as arruelas danificadas. Use torque e sequência do manual específico — não aperte por estimativa.</li>
+<li>Reinstale a hélice e verifique travamento, folga anormal e condição do cubo conforme a especificação.</li>
+</ol>
+<div class="danger"><strong>Água no óleo da rabeta:</strong> se o lubrificante estiver leitoso ou houver água separada, não basta trocar o óleo. A Mercury recomenda teste de pressão da caixa e inspeção de retentores, superfícies de vedação, O-rings, juntas e componentes internos por técnico qualificado.</div>
+<h3>Capacidade: não usar um único valor sem confirmar a versão</h3>
+<p>A apostila EMEGD-2021 indica 900 ml para o motor de bombordo e 970 ml para o motor de boreste. Catálogos de componentes independentes (ex.: Sierra) listam <strong>970 mL (32,8 oz)</strong> para o Verado 200 FourStroke de rotação direita (RH), alinhado ao valor de boreste da apostila.[reference:6] Outras fontes indicam aproximadamente 887 mL para a faixa 200–300 HP, reforçando que a capacidade varia com a geração e o tipo de caixa.[reference:7] Portanto, confirme o número de série, a rotação e o tipo de rabeta antes do abastecimento. A capacidade é referência; o procedimento de enchimento e o nível especificado no manual têm prioridade.</p>
+<h3>Diagnóstico por sintoma</h3>
+<table><thead><tr><th>Sintoma</th><th>Verificações iniciais</th><th>Próxima etapa</th></tr></thead><tbody>
+<tr><td>Óleo leitoso / água na rabeta</td><td>Conferir amostra drenada, bujões e arruelas.</td><td>Teste de pressão/estanqueidade; inspecionar retentores e superfícies de vedação.</td></tr>
+<tr><td>Limalha grossa ou lascas</td><td>Guardar amostra e registrar quantidade/tamanho.</td><td>Suspender uso e inspecionar engrenagens, rolamentos e dentes internamente.</td></tr>
+<tr><td>Vibração ao acelerar</td><td>Inspecionar hélice, cubo, danos por impacto e linhas no eixo.</td><td>Verificar empeno/runout e eixo de hélice conforme manual; não operar se houver suspeita de dano.</td></tr>
+<tr><td>Superaquecimento / jato de água fraco</td><td>Verificar entrada de água e obstrução visível; confirmar indicação de temperatura/pressão no CDS.</td><td>Inspecionar rotor da bomba d’água, carcaça, tubo de água e termostatos conforme manual específico.</td></tr>
+</tbody></table>
+</section>
 
-  <!-- ============ MANUTENÇÃO PREVENTIVA ============ -->
-  <div class="componente" id="manutencao-preventiva">
-    <h2>🔧 Manutenção Preventiva — Cronograma</h2>
-    <span class="ref">📄 Nota de Aula EMEGD 2021 | Páginas 8 e 30-31</span>
+<section id="ebc">
+<h2>14. “EcoBooster” — controle eletrônico de sobrealimentação EBC do Verado</h2>
+<p class="ref">Pesquisa externa: manual de serviço Mercury Verado 200–275 HP (geração antiga, documento 90-896580) e material técnico Mercury sobre o sistema de admissão. Nesta página interpreto “Ecobooster” como o <strong>Electronic Boost Control (EBC)</strong>. Se o termo se refere a outro equipamento instalado na Guardian, a identificação/foto da peça é necessária.</p>
+<h3>Como o sistema funciona</h3>
+<p>Nos Verado supercharged abrangidos pelo manual de serviço consultado, o compressor mecânico (supercharger) é acionado por correia. O ar comprimido passa pelo resfriador de ar de admissão (CAC) antes de seguir ao coletor. A válvula EBC controla o desvio/recirculação de ar: o PCM usa posição do acelerador, MAP, MAT e rotação para comandar a válvula conforme a demanda. A lógica exata e a calibração dependem da geração do motor.</p>
+<div class="warn"><strong>Não confundir:</strong> EBC é o controle eletrônico de pressão/sobrealimentação; não é sinônimo de todo o supercharger, nem necessariamente o nome oficial “EcoBooster”. A apostila EMEGD-2021 deve ser conferida para confirmar a nomenclatura usada naquela configuração.</div>
+<h3>Identificação da válvula EBC</h3>
+<p>O conjunto da válvula de controle eletrônico de boost é listado sob o número de peça <strong>884408A08</strong> (kit) ou <strong>884408A07</strong> (versões anteriores) para aplicações Verado 135–300 HP.[reference:8] A placa de montagem da válvula tem referência <strong>887939007</strong>.[reference:9] Confirme a aplicação exata pelo número de série antes de adquirir ou substituir o componente.</p>
+<h3>Sintomas que justificam investigar EBC / admissão</h3>
+<ul>
+<li>Motor perde potência ou não entrega a potência nominal, especialmente sob carga.</li>
+<li>Falha eletrônica ou código relacionado ao controle de boost, acelerador eletrônico, MAP/MAT ou pressão de admissão.</li>
+<li>Mangueira de admissão deslocada, rachada, colapsada ou com abraçadeira solta.</li>
+<li>Ruído incomum na região da correia/supercharger ou sinais de óleo/vazamento na região de montagem.</li>
+</ul>
+<h3>Sequência de diagnóstico antes de trocar peças</h3>
+<ol>
+<li>Ler e registrar todos os códigos e dados congelados/ao vivo pelo CDS antes de apagar falhas.</li>
+<li>Conferir tensão de alimentação, aterramentos e conectores conforme diagrama e manual correspondentes ao número de série.</li>
+<li>Inspecionar correia, tensionador, mangueiras do supercharger, conexões do CAC e abraçadeiras; procurar rachaduras, soltura ou obstrução.</li>
+<li>Comparar no CDS as leituras de MAP, MAT, rotação e posição do acelerador com o procedimento oficial. Uma leitura implausível pode causar comando incorreto de boost sem que a válvula EBC seja a causa primária.</li>
+<li>Executar teste de atuador/diagnóstico EBC somente se disponível no CDS e previsto para aquela versão. Verificar chicote, conector e mecanismo sem forçar manualmente a válvula.</li>
+<li>Se alimentação, entradas, mangueiras e chicote estiverem corretos, seguir o teste de serviço da válvula e do supercharger. Não desmontar nem condenar o compressor por tentativa.</li>
+<li>Após reparo, apagar códigos somente conforme o procedimento e repetir a verificação sob condições controladas e seguras.</li>
+</ol>
+<h3>Cuidados importantes</h3>
+<ul>
+<li>Não alterar, bloquear ou ajustar a válvula EBC para “ganhar potência”. O manual de serviço consultado alerta que adulterar o controle pode gerar erro e impedir que o motor desenvolva a potência nominal.</li>
+<li>O supercharger pode ter procedimento de reparo limitado à substituição do conjunto, conforme a geração; confirme no manual aplicável antes de abrir.</li>
+<li>A correia de acionamento do supercharger em alguns Verado utiliza <strong>tensionador automático</strong>, não exigindo ajuste manual de tensão; inspecione o estado da correia, do tensionador e do rolamento guia.[reference:10]</li>
+<li>Valores de pressão, resistência, tensão por pino e torques não foram generalizados aqui porque variam por versão. Use os diagramas e limites do manual de serviço identificado pelo número de série.</li>
+</ul>
+</section>
 
-    <div class="destaque">
-      <strong style="color:#89b4fa;">Funcionamento Periódico dos Motores (Giro Técnico)</strong>
-      <table>
-        <thead><tr><th>Periodicidade</th><th>Tempo de Funcionamento</th><th>Rotação</th><th>Observação</th></tr></thead>
-        <tbody>
-          <tr><td>A cada 15 dias</td><td>1 hora</td><td>Baixa (Máximo 1500 RPM)</td><td>Consumo médio de 3,5 l/h</td></tr>
-        </tbody>
-      </table>
-    </div>
+<section id="torques">
+<h2>15. Tabela de torques confirmados na documentação</h2>
+<p>Valores transcritos da apostila EMEGD-2021 (manual Mercury Verado associado) ou de fontes técnicas Mercury identificadas. Antes de usar, confirme que a peça, rosca e geração correspondem ao seu motor. Não aplicar um torque de um parafuso a outro só porque ambos usam a mesma chave.</p>
+<table><thead><tr><th>Componente / fixador</th><th>Torque</th><th>Fonte e observação</th></tr></thead><tbody>
+<tr><td>Vela NGK ILFR6G-E</td><td><strong>27 Nm (20 lb·ft)</strong></td><td>EMEGD-2021, pág. impressa 49; confirmado em manual de operação Verado 200 (27 Nm).[reference:11] Roscas limpas; antigripante apenas nas condições indicadas pelo manual.</td></tr>
+<tr><td>Parafuso de retenção da bobina da vela</td><td><strong>8 Nm (71 lb·in)</strong></td><td>EMEGD-2021, pág. 49.</td></tr>
+<tr><td>Porca da hélice</td><td><strong>75 Nm (55 lb·ft)</strong></td><td>EMEGD-2021, pág. 42; travar o retentor dobrando as abas conforme o procedimento.</td></tr>
+<tr><td>Porcas sextavadas dos terminais da bateria do motor</td><td><strong>13,5 Nm (120 lb·in)</strong></td><td>EMEGD-2021, pág. 32. Não confundir com parafusos de terminais de outros acessórios.</td></tr>
+<tr><td>Parafusos dos três pontos da tampa do filtro de ar / volante</td><td><strong>6 Nm (53 lb·in)</strong></td><td>EMEGD-2021, pág. 35.</td></tr>
+<tr><td>Parafusos traseiros da tampa do volante</td><td><strong>10 Nm (88,5 lb·in)</strong></td><td>EMEGD-2021, pág. 35.</td></tr>
+<tr><td>Parafusos traseiros da trava da tampa</td><td><strong>15 Nm</strong></td><td>EMEGD-2021, pág. 49; confirmar posição e tipo do fixador.</td></tr>
+<tr><td>Parafusos superiores com porcas sextavadas da trava da tampa traseira</td><td><strong>25 Nm</strong></td><td>EMEGD-2021, pág. 49.</td></tr>
+<tr><td>Parafusos da tampa traseira</td><td><strong>15 Nm</strong></td><td>EMEGD-2021, pág. 49.</td></tr>
+<tr><td>Parafuso da articulação da tampa</td><td><strong>15 Nm</strong></td><td>EMEGD-2021, pág. 49.</td></tr>
+<tr><td>Parafusos do coletor do charge-air cooler (manual Verado 200–275 HP, geração antiga)</td><td><strong>10 Nm (88 lb·in)</strong></td><td>Manual de serviço Mercury 90-896580300, procedimento de admissão. Confirmar que é o conjunto correspondente.</td></tr>
+<tr><td>Parafuso inferior do coletor (M10 × 30; geração antiga)</td><td><strong>32,5 Nm (24 lb·ft)</strong></td><td>Manual de serviço Mercury 90-896580300.</td></tr>
+<tr><td>Parafuso dianteiro do charge-air cooler (M10 × 30; geração antiga)</td><td><strong>32,5 Nm (24 lb·ft)</strong></td><td>Manual de serviço Mercury 90-896580300.</td></tr>
+<tr><td><strong>Porcas de montagem da rabeta (quatro porcas de 19 mm) e parafuso de montagem</strong></td><td><strong>55 lb·ft (≈74,6 Nm)</strong></td><td>Fonte independente (Boats.net, procedimento de reinstalação da rabeta Verado 200).[reference:12] Use como referência e confirme no manual do seu número de série.</td></tr>
+<tr><td><strong>Parafuso do ânodo</strong></td><td><strong>40 lb·ft (≈54,2 Nm)</strong></td><td>Fonte independente (Boats.net).[reference:13] Confirmar aplicação.</td></tr>
+<tr><td><strong>Parafusos da carcaça da bomba d’água</strong></td><td><strong>30–40 in·lb (≈3,4–4,5 Nm)</strong></td><td>Referência genérica para Mercury; a fonte ressalva que os valores devem ser confirmados por número de série.[reference:14] Não usar como torque definitivo sem verificação.</td></tr>
+</tbody></table>
+<div class="danger"><strong>Torques que não devem ser adivinhados:</strong> os trechos da EMEGD fornecidos não informam torque para os quatro parafusos de fixação da rabeta, os quatro parafusos do conjunto da bomba d’água, os bujões da caixa de engrenagens ou os parafusos da bomba elétrica de combustível. Esses valores ficam pendentes de confirmação no manual de serviço correspondente ao número de série e à caixa de engrenagens. Não usar “torque padrão” por diâmetro de parafuso em componentes de alumínio.</div>
+</section>
 
-    <div class="tabela-wrapper">
-      <table class="tabela-pinagem">
-        <thead>
-          <tr><th>Intervalo</th><th>Serviço</th><th>Observação</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>Antes de cada uso</strong></td><td>Verificar nível de óleo do motor; interruptor de parada de emergência; sistema de combustível; fixação do motor; sistema de direção; hélices</td><td>Inspeção visual</td></tr>
-          <tr><td><strong>Depois de cada uso</strong></td><td>Lavar sistema de refrigeração (água salgada/poluída); lavar saída do escapamento e caixa de engrenagens</td><td>Água doce abundante</td></tr>
-          <tr><td><strong>A cada 100 horas ou 1 ano</strong></td><td>Trocar óleo e filtro do motor; verificar termostato; filtro separador de água; ânodos; lubrificante da caixa de engrenagens; fluido de compensação; fluido da direção; bateria; velas de ignição; fiação e conectores; aperto de parafusos</td><td>O que ocorrer primeiro</td></tr>
-          <tr><td><strong>A cada 300 horas ou 3 anos</strong></td><td>Substituir rotor da bomba de água; filtro de combustível de alta pressão; velas de ignição; correia de tração auxiliar</td><td>O que ocorrer primeiro</td></tr>
-        </tbody>
-      </table>
-    </div>
+<section id="graxas">
+<h2>16. Graxas, óleos e pontos de lubrificação</h2>
+<table><thead><tr><th>Ponto</th><th>Produto indicado na apostila / manual consultado</th><th>Procedimento de oficina</th></tr></thead><tbody>
+<tr><td>Estrias do eixo da hélice</td><td>Graxa anticorrosão Mercury/Quicksilver (92-802867Q1) ou lubrificante marinho 2-4-C com Teflon (92-802859Q1)</td><td>Remover a hélice, limpar e inspecionar as estrias; aplicar camada generosa sem contaminar as superfícies de atrito do cubo. Reinstalar e torquear a porca conforme a especificação.</td></tr>
+<tr><td>Extremidades esféricas do tirante de compensação</td><td>Special Lubricant 101 (92-802865Q02)</td><td>Girar as extremidades para permitir que o lubrificante penetre nos soquetes esféricos.</td></tr>
+<tr><td>Suporte giratório, alavanca de suporte de inclinação e tubo de inclinação</td><td>Special Lubricant 101 (92-802865Q02) ou Marine 2-4-C com Teflon (92-802859Q1), conforme a tabela da apostila</td><td>Aplicar nos pontos de lubrificação indicados; limpar excesso e verificar movimento livre, sem folgas anormais.</td></tr>
+<tr><td>Centros de rotação da haste de articulação da direção</td><td>Óleo leve</td><td>Aplicar pouco produto nos pontos de articulação especificados.</td></tr>
+<tr><td>Arruela de vedação do bujão de drenagem do óleo do motor</td><td>Óleo limpo do motor</td><td>Lubrificar a arruela antes da reinstalação; substituir se danificada.</td></tr>
+<tr><td>Junta do filtro de óleo</td><td>Óleo limpo do motor — <strong>não usar graxa</strong></td><td>Aplicar filme fino na junta antes da instalação; apertar conforme o procedimento do filtro.</td></tr>
+<tr><td>Caixa de engrenagens/rabeta</td><td>Mercury/Quicksilver High Performance Gear Lube</td><td>Não substituir por graxa. Encher pelo orifício inferior conforme o procedimento e a capacidade da versão.</td></tr>
+<tr><td>Rolamentos do cubo do reboque</td><td>Graxa para rolamento apropriada ao conjunto do reboque</td><td>A EMEGD recomenda manutenção preventiva a cada 10.000 km ou semestral, com inspeção dos rolamentos e retentor; não é uma especificação de lubrificação do motor de popa.</td></tr>
+</tbody></table>
+<p class="ref">Fonte principal: EMEGD-2021, páginas impressas 24–26, 41 e 65–67; reboque, pág. 133. Os códigos de produto são os que aparecem na apostila e podem ter sido substituídos por referências comerciais atuais.</p>
+<div class="danger"><strong>Direção hidráulica:</strong> a apostila alerta que lubrificar incorretamente o cabo pode causar travamento hidráulico. Recolha completamente a extremidade do cabo para dentro do tubo de inclinação antes de aplicar o lubrificante.</div>
+</section>
 
-    <div class="descricao-acao">
-      <strong>Cuidados Gerais:</strong><br>
-      • Tirar a embarcação da água quando não for utilizá-la<br>
-      • Retirar o tampão e prender no volante se ficar no reboque por longo período<br>
-      • Deixar bomba de porão em automático se ficar na água<br>
-      • Lavar, limpar casco e motores para evitar corrosão<br>
-      • Fazer laminação com frequência desde pequenos danos<br>
-      • Realizar o "Giro Técnico" regularmente<br>
-      • Não desligar as chaves gerais com os motores em funcionamento<br>
-      • Deixar os motores na vertical quando armazenados
-    </div>
-  </div>
+<section id="bombaagua">
+<h2>17. Bomba d’água de arrefecimento — rotor, carcaça e diagnóstico</h2>
+<p><strong>Fonte principal:</strong> EMEGD-2021, procedimento de substituição do rotor, páginas impressas 42–45. <strong>Complemento:</strong> procedimento ilustrado de fonte independente (Boats.net) para Verado 200, que detalha a sequência de remoção e instalação.[reference:15]</p>
+<h3>Inspeção antes de desmontar</h3>
+<ol>
+<li>Registrar temperatura, alarmes e leituras de pressão/temperatura no SmartCraft/CDS. Confirmar que o motor estava submerso ou conectado ao sistema de irrigação adequado durante o teste.</li>
+<li>Com o motor desligado, verificar entradas de água obstruídas por detritos, lodo ou material estranho.</li>
+<li>Se houver jato de água fraco, alarme de temperatura ou pressão de água baixa, não continuar operando para “ver se melhora”. Um rotor gasto, danificado ou operado a seco pode não fornecer vazão suficiente.</li>
+<li>Conferir o histórico de substituição do rotor e a presença de areia, sal ou detritos no sistema.</li>
+</ol>
+<h3>Remoção conforme a apostila EMEGD</h3>
+<ol>
+<li>Remover o bujão de borracha na borda traseira e retirar o parafuso de fixação da placa do ânodo conforme a ilustração da apostila.</li>
+<li>Remover a placa de ânodo da caixa de engrenagens e elevar o motor com o trim.</li>
+<li>Remover o parafuso localizado na cavidade indicada na figura e desconectar o tubo do velocímetro/Pitot quando aplicável à versão.</li>
+<li>Remover uniformemente os quatro parafusos de fixação da rabeta. Apoiar a rabeta em suporte estável; a apostila avisa que pode sair pequena quantidade de óleo durante a separação.</li>
+<li>Remover o selo de água e os quatro parafusos do conjunto da bomba d’água (a fonte independente especifica parafusos de <strong>10 mm</strong>).[reference:16]</li>
+<li>Deslizar a carcaça cuidadosamente pelo eixo de transmissão. Se for necessário fazer alavanca, apoiar apenas as flanges adequadas, sem marcar a superfície de vedação.</li>
+<li>Retirar rotor/impulsor, chaveta (woodruff key), placa da bomba, junta da tampa e junta da base. Manter a chaveta identificada e não a perder.</li>
+<li>Inspecionar rotor, pás, placa, carcaça, copo interno, juntas e sinais de derretimento, trinca, abrasão ou desgaste. <strong>Se alguma pá do rotor estiver faltando ou quebrada, os fragmentos estão em algum lugar do sistema de arrefecimento e devem ser removidos antes de causar obstrução; será necessário lavar/fluir o sistema para extraí-los.</strong>[reference:17] Substituir peças danificadas; instalar juntas/vedações novas conforme o kit aplicável.</li>
+</ol>
+<h3>Montagem e verificação — passos detalhados</h3>
+<ul>
+<li>Lubrificar o rotor apenas com o produto e método indicados no manual/kit de serviço; não usar graxa genérica que possa atacar elastômeros ou contaminar o circuito. A fonte independente sugere uma fina camada de graxa na placa e na parte interna da carcaça para acomodar o rotor.[reference:18]</li>
+<li>Alinhar corretamente a chaveta do eixo com o rasgo do rotor. Uma pequena quantidade de graxa na chaveta ajuda a mantê-la no lugar durante a instalação.[reference:19]</li>
+<li>Instalar a junta superior com a face cinza voltada para cima, conforme indicado na fonte independente.[reference:20]</li>
+<li>Ao colocar a carcaça sobre o eixo, <strong>girar o eixo no sentido horário</strong> enquanto empurra a carcaça sobre o rotor, para garantir que as pás fiquem na direção correta dentro da carcaça.[reference:21]</li>
+<li>Confirmar que o tubo de água encaixa corretamente na bomba e no alojamento superior; desalinhamento pode causar perda de arrefecimento logo após a montagem. A fonte independente detalha a substituição dos O-rings do tubo: o O-ring laranja vai na extremidade inferior e o preto na superior, ambos levemente engraxados.[reference:22]</li>
+<li>Reinstalar a rabeta conforme sequência e torques do manual específico, reconectar o tubo Pitot e recolocar ânodo e tampões. Não improvisar torque.</li>
+<li>Testar com fornecimento correto de água; verificar vazamentos, indicador de refrigeração, pressão de água e temperatura no CDS. Desligar imediatamente se a pressão não subir ou a temperatura disparar.</li>
+</ul>
+<h3>Intervalo</h3>
+<p>A apostila orienta substituir o rotor em intervalos de manutenção e mais cedo se houver superaquecimento ou redução da pressão da água. O plano citado para a configuração da Guardian recomenda substituição a cada 300 horas ou três anos, o que ocorrer primeiro; confirmar o cronograma vigente do manual do proprietário pelo número de série e reduzir o intervalo em uso severo, areia ou água com detritos.</p>
+</section>
 
-  <!-- ============ SISTEMA DE COMBUSTÍVEL ============ -->
-  <div class="componente" id="sistema-combustivel">
-    <h2>⛽ Sistema de Combustível — Manutenção</h2>
-    <span class="ref">📄 Nota de Aula EMEGD 2021 | Páginas 19-21</span>
+<section id="velas">
+<h2>18. Velas, bobinas e ignição</h2>
+<table><thead><tr><th>Item</th><th>Especificação confirmada</th></tr></thead><tbody>
+<tr><td>Vela indicada</td><td>NGK ILFR6G-E[reference:23]</td></tr><tr><td>Folga do eletrodo</td><td>0,8 mm (0,0315 in)[reference:24]</td></tr><tr><td>Torque da vela</td><td>27 Nm (20 lb·ft)[reference:25]</td></tr><tr><td>Parafuso de retenção da bobina</td><td>8 Nm (71 lb·in)</td></tr><tr><td>Ordem de ignição indicada no manual de serviço Verado 200–275 HP antigo</td><td>1–3–5–6–4–2 no manual de serviço; a apostila EMEGD também contém uma referência 1–3–4–2 em outro trecho. Não usar a sequência de um documento sem confirmar o diagrama específico da versão.</td></tr>
+</tbody></table>
+<h3>Procedimento</h3>
+<ol>
+<li>Desligar a ignição e isolar a alimentação conforme o procedimento de segurança. Remover as tampas de acesso.</li>
+<li>Desconectar os seis conectores das bobinas e retirar os parafusos de retenção; puxar cada bobina com movimento de torção, sem puxar pelos fios.</li>
+<li>Remover e identificar cada vela pela posição do cilindro. Verificar eletrodo gasto, rosca corroída, isolador rachado, bolhas, fuligem ou contaminação por óleo/combustível.</li>
+<li>Conferir a folga com calibrador apropriado. Não forçar o eletrodo fino nem ajustar vela danificada.</li>
+<li>Limpar os assentos das velas e instalar cada vela primeiro à mão para evitar cruzar a rosca. Aplicar 27 Nm conforme a EMEGD e o manual de operação Verado.</li>
+<li>Em uso em água salgada, a apostila indica camada fina de antigripante nas roscas. Confirmar a orientação do manual específico e considerar que lubrificar roscas altera a relação torque/tensão; não combinar instruções de manuais diferentes sem validação.</li>
+<li>Reinstalar bobinas, apertar seus parafusos a 8 Nm, reconectar e conferir falhas de ignição no CDS.</li>
+</ol>
+<div class="danger">Não condenar uma bobina apenas pela aparência da vela. Relacionar a falha com o cilindro, códigos, conectores, alimentação, compressão e condição da vela. Não trocar cabos/conectores entre cilindros sem identificar a posição original.</div>
+</section>
 
-    <div class="tabela-wrapper">
-      <table class="tabela-pinagem">
-        <thead>
-          <tr><th>Componente</th><th>Procedimento</th><th>Observação</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>Tanque de Combustível</strong></td><td>Encher com combustível tratado (estabilizador)</td><td>Evitar formação de verniz e goma</td></tr>
-          <tr><td><strong>Filtro Separador de Água (Racor)</strong></td><td>Drenar água acumulada; substituir filtro se entupido</td><td>Sistema de advertência ativa quando água atinge nível máximo</td></tr>
-          <tr><td><strong>Linha de Combustível</strong></td><td>Inspecionar visualmente rachaduras, vazamentos, endurecimento</td><td>Substituir se encontrar qualquer condição anormal</td></tr>
-          <tr><td><strong>Válvula de Alívio de Purga</strong></td><td>Liberar pressão lentamente antes de manutenção</td><td>Cobrir com pano para evitar respingos</td></tr>
-        </tbody>
-      </table>
-    </div>
+<section id="filtros">
+<h2>19. Filtros, alimentação e bomba elétrica de combustível</h2>
+<h3>Filtros identificados para Verado 200 HP</h3>
+<table><thead><tr><th>Componente</th><th>Informação técnica</th><th>Rotina de diagnóstico</th></tr></thead><tbody>
+<tr><td>Separador de água/combustível na entrada</td><td>Filtragem de 2 microns no manual de serviço Verado 200–275 HP consultado.</td><td>Inspecionar água e sedimentos; drenar em recipiente aprovado. Se contaminado por detritos ou entupido, substituir pelo elemento correto.</td></tr>
+<tr><td>Filtro de alta pressão</td><td>Filtragem de 20 microns no manual de serviço Verado 200–275 HP consultado.</td><td>Substituir conforme o intervalo aplicável e verificar restrição/pressão antes e depois apenas com instrumentos e procedimento aprovados.</td></tr>
+<tr><td>Filtro de ar</td><td>Localizado no conjunto da tampa do volante; remove partículas que poderiam danificar o motor.</td><td>Inspecionar sujeira, dano, umidade e restrição. Não operar sem o elemento instalado.</td></tr>
+<tr><td>Filtro de óleo</td><td>A EMEGD orienta aplicar óleo limpo à junta; não usar graxa. Instalar até a junta tocar a base e apertar mais 3/4 a 1 volta.</td><td>Após a troca, ligar em marcha lenta com água de arrefecimento garantida por cinco minutos, procurar vazamentos, desligar e conferir nível.</td></tr>
+</tbody></table>
+<h3>Segurança antes de abrir o circuito de combustível</h3>
+<ul><li>Motor desligado, chave em OFF, bateria desconectada conforme o procedimento de serviço e área ventilada.</li><li>Sem cigarro, chama, faísca ou equipamento que possa produzir ignição. Usar recipiente aprovado e limpar derramamentos imediatamente.</li><li>O circuito de vapor/combustível pode permanecer pressurizado mesmo com o motor desligado; aliviar a pressão conforme o procedimento do fabricante antes de desconectar linhas.</li></ul>
+</section>
 
-    <div class="descricao-acao">
-      <strong>⚠️ Segurança no Sistema de Combustível:</strong><br>
-      • Desligar o motor e desconectar a bateria antes de qualquer manutenção<br>
-      • Realizar manutenção em área bem ventilada<br>
-      • Não fumar ou permitir chamas/faíscas na área<br>
-      • Usar recipiente aprovado para armazenar combustível<br>
-      • Limpar imediatamente qualquer derramamento
-    </div>
-  </div>
+<section id="pesquisa">
+<h2>20. Dados complementares de pesquisa</h2>
+<p>Esta seção reúne informações obtidas em fontes públicas (documentação Mercury Marine, catálogos de componentes e manuais de serviço independentes) que complementam a apostila EMEGD-2021. <strong>Não substituem a confirmação pelo número de série e pelo manual de serviço oficial.</strong></p>
 
-  <!-- ============ SISTEMA DE DIREÇÃO ============ -->
-  <div class="componente" id="sistema-direcao">
-    <h2>🎯 Sistema de Direção Hidráulica — Diagrama e Conexões</h2>
-    <span class="ref">📄 Documento "sistema de direção.docx" | Páginas 1-2</span>
+<h3>20.1 Especificações do casco Guardian 25</h3>
+<table><thead><tr><th>Parâmetro</th><th>Valor aproximado</th><th>Fonte / observação</th></tr></thead><tbody>
+<tr><td>Comprimento total (LOA)</td><td>25' 8" (7,62 m)</td><td>Anúncios e fichas técnicas de Boston Whaler Guardian 25.[reference:26]</td></tr>
+<tr><td>Boca (beam)</td><td>8' 6" (2,59 m)</td><td>Ficha técnica.[reference:27]</td></tr>
+<tr><td>Calado (draft)</td><td>16" (0,40 m)</td><td>Ficha técnica.[reference:28]</td></tr>
+<tr><td>Peso (aprox.)</td><td>3.575 lb (1.621 kg) a 5.500 lb (2.494 kg)</td><td>Varia conforme versão, equipamentos e motores instalados. Fontes divergem; usar o valor do casco específico.[reference:29]</td></tr>
+<tr><td>Capacidade de combustível</td><td>130 gal (492 L) a 159 gal (601 L)</td><td>Varia com o ano/modelo e configuração do tanque. Confirmar na placa de capacidade da embarcação.[reference:30]</td></tr>
+</tbody></table>
+<div class="warn">Os dados de peso e capacidade de combustível variam significativamente entre fontes e versões da Guardian 25. Para fins de estabilidade, autonomia e segurança, prevalecem as informações da placa de capacidade e do manual do proprietário da embarcação específica.</div>
 
-    <div class="tabela-wrapper">
-      <table class="tabela-pinagem">
-        <thead>
-          <tr><th>Componente</th><th>Descrição</th><th>Conexão</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>Timão</strong></td><td>Bomba de direção manual</td><td>Conexões P (pressão) e T (retorno)</td></tr>
-          <tr><td><strong>Mangueira de Pressão (P)</strong></td><td>Mangueira grossa de pressão</td><td>Vem do tanque/bomba para o timão</td></tr>
-          <tr><td><strong>Mangueira do Depósito (T)</strong></td><td>Mangueira grossa de retorno</td><td>Retorna ao tanque</td></tr>
-          <tr><td><strong>Mangueira Amortecedora de Som</strong></td><td>Mangueira com supressor de ruído</td><td>Instalada na linha de pressão</td></tr>
-          <tr><td><strong>Mangueira Boreste (R-STAR)</strong></td><td>Mangueira fina para cilindro de boreste</td><td>Conecta ao lado direito do cilindro de direção</td></tr>
-          <tr><td><strong>Mangueira Bombordo (L-PORT)</strong></td><td>Mangueira fina para cilindro de bombordo</td><td>Conecta ao lado esquerdo do cilindro de direção</td></tr>
-          <tr><td><strong>Cilindro de Direção Boreste</strong></td><td>Cilindro hidráulico do motor de boreste</td><td>Recebe mangueiras R e L</td></tr>
-          <tr><td><strong>Cilindro de Direção Bombordo</strong></td><td>Cilindro hidráulico do motor de bombordo</td><td>Recebe mangueiras R e L</td></tr>
-          <tr><td><strong>Módulo da Bomba de Direção Assistida</strong></td><td>Bomba elétrica hidráulica</td><td>Alimenta o sistema com fluido pressurizado</td></tr>
-          <tr><td><strong>Fusível da Direção Assistida</strong></td><td>90 Amp</td><td>Protege o circuito da bomba</td></tr>
-        </tbody>
-      </table>
-    </div>
+<h3>20.2 Identificação de gerações do Mercury Verado 200 (L6)</h3>
+<p>O Verado 200 HP de 6 cilindros em linha foi produzido em diferentes gerações. A identificação correta é essencial porque procedimentos, torques e componentes variam.</p>
+<table><thead><tr><th>Geração</th><th>Faixa de número de série (referência)</th><th>Observação</th></tr></thead><tbody>
+<tr><td>Gen I</td><td>0T980000 – 1B517433 (aproximado)</td><td>Catálogo de remanufaturados Mercury lista esta faixa para o powerhead 200/225/250/275 L6 Gen I.[reference:31]</td></tr>
+<tr><td>Gen II</td><td>1B517434 e acima</td><td>Faixa de início da Gen II; confirmar com o número de série exato no catálogo de peças ou com um revendedor Mercury.[reference:32]</td></tr>
+</tbody></table>
+<p>Além disso, a Mercury diferencia motores de 4 cilindros (L4) e 6 cilindros (L6). O Verado 200 pode ser encontrado em ambas as configurações, com capacidades de óleo e procedimentos distintos. Confirme sempre o número de série antes de aplicar qualquer especificação.</p>
 
-    <div class="descricao-acao">
-      <strong>⚠️ Importante:</strong> As conexões das mangueiras devem ser feitas com o sistema limpo. Ao tender as mangueiras, manter as tampas protetoras até o momento da conexão. Remover as tampas somente ao efetuar cada conexão.
-    </div>
-  </div>
+<h3>20.3 Capacidade de óleo do motor — variação L4 / L6</h3>
+<p>A apostila EMEGD indica 6 litros por motor. A pesquisa complementar mostra que essa é a capacidade típica do <strong>Verado L4</strong> (4 cilindros). Para o <strong>Verado L6</strong> (6 cilindros), a capacidade com troca de filtro é frequentemente citada em torno de <strong>7 a 7,4 quarts (≈6,6 a 7,0 litros)</strong>.[reference:33][reference:34]</p>
+<div class="danger"><strong>Não use 6 litros como valor universal para qualquer Verado 200.</strong> Identifique se o motor é L4 ou L6 e confirme a capacidade exata no manual do proprietário correspondente ao número de série. O nível deve ser verificado pela vareta, não apenas pela quantidade abastecida.</div>
 
-  <!-- ============ MÓDULO IMPULSOR ============ -->
-  <div class="componente" id="modulo-impulsor">
-    <h2>⚡ Módulo Impulsor da Direção Assistida (D.E.H.) — Verificação</h2>
-    <span class="ref">📄 Documento "sistema de direção.docx" | Páginas 4-6</span>
+<h3>20.4 Termostato — temperatura de abertura</h3>
+<p>Há variação nas especificações conforme a fonte. Peças de reposição para a família Verado 135–300 HP são oferecidas com diferentes temperaturas de abertura, incluindo <strong>60 °C (140 °F)</strong> e <strong>160 °F (≈71 °C)</strong>.[reference:35][reference:36] A escolha correta depende da aplicação e da calibração do motor.</p>
+<div class="warn">Não substitua o termostato por um de temperatura diferente da especificada para o seu motor. A temperatura de abertura afeta diretamente o controle de emissões, o desempenho e a proteção contra superaquecimento. Consulte o manual de serviço pelo número de série.</div>
 
-    <div class="tabela-wrapper">
-      <table class="tabela-pinagem">
-        <thead>
-          <tr><th>Pino</th><th>Cor do Fio</th><th>Função</th><th>Tensão Esperada</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>A</strong></td><td><span class="fio"><span class="fio-cor" style="background:#000;"></span>Preto</span></td><td>Terra do Sistema</td><td>0V (contínuo)</td></tr>
-          <tr><td><strong>B</strong></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>Vermelho</span></td><td>Voltagem da Bateria (interruptor da chave)</td><td>12V com chave ligada</td></tr>
-          <tr><td><strong>C</strong></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>Azul/Branco</span></td><td>Sinal de Funcionamento do Motor</td><td>12V com motor em funcionamento</td></tr>
-          <tr><td><strong>1</strong></td><td><span class="fio"><span class="fio-cor" style="background:#00f;"></span>Azul/Branco</span></td><td>Sinal de Funcionamento do Motor (condicionado)</td><td>11,5 - 12,5V com motor girando</td></tr>
-          <tr><td><strong>2</strong></td><td><span class="fio"><span class="fio-cor" style="background:#f00;"></span>Vermelho</span></td><td>Voltagem da Bateria (saída)</td><td>12V com chave ligada</td></tr>
-        </tbody>
-      </table>
-    </div>
+<h3>20.5 Torques adicionais da rabeta e montagem</h3>
+<p>Além dos valores da apostila, a pesquisa em procedimentos independentes para o Verado 200 acrescenta:</p>
+<ul>
+<li><strong>Porcas de montagem da rabeta (4 porcas de 19 mm) e parafuso de montagem:</strong> 55 lb·ft (≈74,6 Nm).[reference:37]</li>
+<li><strong>Parafuso do ânodo:</strong> 40 lb·ft (≈54,2 Nm).[reference:38]</li>
+<li><strong>Parafusos da carcaça da bomba d’água:</strong> referência genérica de 30–40 in·lb (≈3,4–4,5 Nm), com ressalva de que o valor deve ser confirmado por número de série.[reference:39]</li>
+</ul>
+<div class="danger">Esses valores são <strong>referências de fonte secundária</strong>. A EMEGD-2021 não os apresenta. Use-os apenas como ponto de partida e confirme no manual de serviço oficial antes de aplicar.</div>
 
-    <div class="destaque">
-      <strong style="color:#f9e2af;">Procedimento de Teste do Módulo Impulsor:</strong>
-      <table>
-        <thead><tr><th>Condição</th><th>Conector A</th><th>Conector B</th><th>Conector C</th><th>Saída 1</th><th>Saída 2</th></tr></thead>
-        <tbody>
-          <tr><td><strong>Chave Desligada</strong></td><td>Terra</td><td>0V</td><td>Aberto</td><td>0V</td><td>0V</td></tr>
-          <tr><td><strong>Chave Ligada (motor parado)</strong></td><td>Terra</td><td>12V</td><td>Aberto</td><td>0V</td><td>12V</td></tr>
-          <tr><td><strong>Motor em Funcionamento</strong></td><td>Terra</td><td>12V</td><td>Terra</td><td>11,5-12,5V</td><td>12V</td></tr>
-        </tbody>
-      </table>
-    </div>
+<h3>20.6 Correia do supercharger</h3>
+<p>Em muitos Verado, a correia de acionamento do supercharger utiliza <strong>tensionador automático</strong> e não requer ajuste manual de tensão.[reference:40] A inspeção deve focar no estado da correia (rachaduras, desgaste, contaminação por óleo), no tensionador e no rolamento guia (idler pulley).[reference:41] Ruídos anormais ou perda de performance podem estar relacionados ao sistema de correia, mas o diagnóstico deve ser feito com o motor desligado e seguindo o procedimento de segurança.</p>
 
-    <div class="descricao-acao">
-      <strong>Diagnóstico:</strong><br>
-      • Se o módulo não passar nas especificações de teste ou apresentar defeitos materiais, deve ser descartado (não é reparável).<br>
-      • Se as tensões estiverem corretas, mas o sistema não funcionar, o problema está no módulo da D.E.H.<br>
-      • Se o fusível (90A) estiver fundido, verificar conexões da bateria e substituir o fusível.
-    </div>
-  </div>
+<h3>20.7 Observações sobre a estratégia Guardian</h3>
+<p>O sistema Engine Guardian é uma estratégia de proteção que limita a potência do motor quando o PCM detecta condições críticas (superaquecimento, baixa pressão de óleo, excesso de rotação, água no combustível, entre outras).[reference:42] A ativação do Guardian não é, por si só, um diagnóstico definitivo: é uma <strong>resposta</strong> a uma falha primária. O código 9 da tabela da apostila (“Estratégia Guardian”) deve levar à busca da causa raiz, não à substituição de componentes aleatórios.</p>
+<div class="good">Ao encontrar o código 9, priorize a leitura de <strong>todos</strong> os códigos ativos e armazenados, a inspeção dos sistemas de arrefecimento, lubrificação, combustível e admissão, e a verificação de boletins de serviço aplicáveis ao seu número de série.</div>
+</section>
 
-  <!-- ============ PURGAR DIREÇÃO ============ -->
-  <div class="componente" id="purgar-direcao">
-    <h2>🔄 Purgar o Sistema de Direção Hidráulica</h2>
-    <span class="ref">📄 Documento "sistema de direção.docx" | Páginas 6-7</span>
+<section id="fontes">
+<h2>21. Fonte e limites</h2>
+<p>Este manual foi organizado a partir da apostila <strong>EMEGD-2021</strong> (Estágio de Manutenção de Embarcações Guardian) e complementado com pesquisa em:</p>
+<ul>
+<li>Documentação técnica Mercury Marine (manuais de operação/manutenção e serviço Verado 200–275 HP, documento 90-896580).</li>
+<li>Catálogos de peças e capacidades de fluidos (Sierra, Mercury).</li>
+<li>Procedimentos ilustrados independentes (Boats.net, JLM Marine) para bomba d’água e rabeta.</li>
+<li>Fichas técnicas públicas do casco Boston Whaler Guardian 25.</li>
+</ul>
+<p>As informações de fontes secundárias foram incluídas para ampliar o contexto de oficina, mas <strong>não substituem</strong> a confirmação pelo número de série, pela placa de capacidade da embarcação e pelo manual de serviço oficial do motor. Valores de torque, capacidade, resistência e tensão variam por geração e configuração. Em caso de dúvida, prevalece o documento oficial aplicável ao equipamento específico.</p>
+<p class="ref">Última atualização: pesquisa complementar incorporada em 2026. Consulte sempre a revisão mais recente dos manuais Mercury para o seu número de série.</p>
+</section>
 
-    <div class="descricao-acao">
-      <strong>Procedimento com Motor Funcionando:</strong><br><br>
-      <strong>1.</strong> Retirar a tampa de enchimento da bomba de direção assistida.<br>
-      <strong>2.</strong> Encher o depósito da bomba com óleo SAE 0W-30 sintético.<br>
-      <strong>3.</strong> Ligar o motor e deixar funcionando até que o líquido da bomba diminua até a metade. Desligar o motor e voltar a encher a bomba. Repetir a operação até que a bomba permaneça cheia.<br>
-      <strong>4.</strong> Ligar o motor e deixar funcionando enquanto gira o volante lentamente até o limite de giro. Inspecionar o nível da bomba até que baixe pela metade. Parar de girar o timão, desligar o motor e completar o nível. Repetir esta operação umas 10 vezes até que o reservatório permaneça cheio.<br>
-      <strong>5.</strong> Para purgar o ar residual, ligar o motor e deixar funcionando, girar o volante até o limite de giro.<br>
-      <strong>6.</strong> Acoplar uma mangueira transparente de 8mm de diâmetro interior na válvula de purga no extremo do cilindro de direção mais afastado do motor. Colocar a mangueira de purga e introduzir no depósito da bomba.<br>
-      <strong>7.</strong> Abrir a válvula de purga para liberar o ar que fica no sistema de direção. Deixar transcorrer um intervalo de tempo para que o ar escape. Apertar firmemente a válvula de purga e retirar a mangueira.<br>
-      <strong>8.</strong> Girar o timão para a posição completamente oposta e repetir a operação de purga.<br>
-      <strong>9.</strong> Repetir o processo anterior até que o ar saia completamente.
-    </div>
-
-    <div class="destaque">
-      <strong style="color:#89b4fa;">⚠️ Óleo Utilizado:</strong> SAE 0W-30 sintético para direção assistida. Em emergência, pode-se usar temporariamente qualquer óleo de motor completamente sintético, substituindo pelo recomendado assim que possível.
-    </div>
-  </div>
-
-  <!-- ============ TIRANTE DE DIREÇÃO ============ -->
-  <div class="componente" id="tirante-direcao">
-    <h2>🔗 Tirante de Ligação da Direção — Peças de Fixação</h2>
-    <span class="ref">📄 Documento "sistema de direção.docx" | Página 8</span>
-
-    <div class="tabela-wrapper">
-      <table class="tabela-pinagem">
-        <thead>
-          <tr><th>Peça</th><th>Descrição</th><th>Nº de Peça</th><th>Torque</th></tr>
-        </thead>
-        <tbody>
-          <tr class="conexao-critica"><td><strong>a</strong></td><td>Parafuso especial de cabeça com arruela</td><td>10-849838</td><td>27 Nm (20 lb. ft.)</td></tr>
-          <tr><td><strong>b</strong></td><td>Arruela chata (2)</td><td>-</td><td>-</td></tr>
-          <tr><td><strong>c</strong></td><td>Contracoroa de náilon (auto-travamento)</td><td>11-826709113</td><td>Apertar até o limite, depois 1/4 volta</td></tr>
-          <tr><td><strong>d</strong></td><td>Contracoroa de náilon (auto-travamento)</td><td>11-826709113</td><td>27 Nm (20 lb. ft.)</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="descricao-acao">
-      <strong>⚠️ ADVERTÊNCIA:</strong> O tirante de ligação da direção deve ser fixado com parafusos especiais e contra porcas de auto-travamento de náilon. <strong>NUNCA</strong> substituir por porcas normais, pois podem ficar soltas e causar vibração, soltando o tirante e causando desengate — resultando em perda de controle do barco, ferimentos graves ou morte.
-    </div>
-  </div>
-
-  <!-- ============ SISTEMA ELÉTRICO E BATERIAS ============ -->
-  <div class="componente" id="sistema-eletrico">
-    <h2>🔌 Sistema Elétrico e Baterias</h2>
-    <span class="ref">📄 Nota de Aula EMEGD 2021 | Páginas 61-63</span>
-
-    <div class="tabela-wrapper">
-      <table class="tabela-pinagem">
-        <thead>
-          <tr><th>Componente</th><th>Especificação</th><th>Observação</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>Baterias</strong></td><td>12V náutica para uso pesado</td><td>4 baterias (1 por motor + 2 para componentes elétricos)</td></tr>
-          <tr><td><strong>Amperagem de Arranque Marítimo</strong></td><td>1000 MCA (Marine Cranking Amp)</td><td>Mínimo</td></tr>
-          <tr><td><strong>Amperagem de Arranque a Frio</strong></td><td>800 CCA</td><td>Mínimo</td></tr>
-          <tr><td><strong>Amperes Hora</strong></td><td>180 Ah</td><td>Mínimo</td></tr>
-          <tr><td><strong>Fusível do Alternador</strong></td><td>150 A</td><td>Acoplamento de fusíveis</td></tr>
-          <tr><td><strong>Alternador</strong></td><td>70 A</td><td>Regulado</td></tr>
-          <tr><td><strong>Voltagem de Carga</strong></td><td>14,5 V ± 0,25 V</td><td>Medir com motor a 1300 RPM</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="descricao-acao">
-      <strong>⚠️ Cuidados com as Baterias:</strong><br>
-      • Nunca deixar as baterias completamente descarregadas<br>
-      • Funcionar o motor a cada 15 dias por pelo menos 1 hora acima da velocidade lenta<br>
-      • Manter os terminais limpos e apertados<br>
-      • Verificar nível de água destilada periodicamente<br>
-      • Usar porcas sextavadas para fixação dos cabos (não usar porcas borboleta)
-    </div>
-  </div>
-
-  <!-- ============ ALTERNADOR ============ -->
-  <div class="componente" id="alternador">
-    <h2>⚡ Alternador — Verificação e Diagnóstico</h2>
-    <span class="ref">📄 Nota de Aula EMEGD 2021 | Páginas 62-63</span>
-
-    <div class="tabela-wrapper">
-      <table class="tabela-pinagem">
-        <thead>
-          <tr><th>Teste</th><th>Procedimento</th><th>Resultado Esperado</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>Circuito de Saída</strong></td><td>Medir voltagem entre borne positivo e negativo da bateria com motor a 1300 RPM</td><td>13,5 V a 14,8 V DC</td></tr>
-          <tr><td><strong>Diodos</strong></td><td>Mudar multímetro para CA (VCA)</td><td>≤ 0,25 VCA (diodos OK)</td></tr>
-          <tr><td><strong>Circuito de Detecção</strong></td><td>Medir voltagem no conector vermelho/vermelho-branco com motor parado</td><td>Voltagem da bateria</td></tr>
-          <tr><td><strong>Circuito de Excitação</strong></td><td>Medir voltagem no conector vermelho/branco com chave ligada e motor parado</td><td>Voltagem da bateria por ~5 segundos</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="descricao-acao">
-      <strong>⚠️ Precauções:</strong><br>
-      • Não polarizar o alternador<br>
-      • Não provocar curtos no alternador<br>
-      • Não desconectar o cabo de saída com o motor funcionando<br>
-      • Extrair sempre o cabo negativo da bateria antes de trabalhar no sistema<br>
-      • Se a voltagem for maior que 15 V, o alternador está sobrecarregado e deve ser trocado
-    </div>
-  </div>
-
-  <!-- ============ SISTEMA SMARTCRAFT ============ -->
-  <div class="componente" id="sistema-smartcraft">
-    <h2>📊 Sistema SmartCraft — Tacômetro e Velocímetro</h2>
-    <span class="ref">📄 Nota de Aula EMEGD 2021 | Páginas 79-108</span>
-
-    <div class="tabela-wrapper">
-      <table class="tabela-pinagem">
-        <thead>
-          <tr><th>Função</th><th>Descrição</th><th>Aplicação</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>Tacômetro</strong></td><td>Exibe RPM, pressão do óleo, voltagem, horas do motor, fluxo de combustível</td><td>Monitoramento do motor</td></tr>
-          <tr><td><strong>Velocímetro</strong></td><td>Exibe velocidade, consumo, nível de combustível, temperatura, profundidade</td><td>Monitoramento da embarcação</td></tr>
-          <tr><td><strong>Controle de Marcha Lenta de Pesca</strong></td><td>Permite definir e controlar a velocidade de marcha lenta sem usar o acelerador</td><td>Pesca em baixa velocidade</td></tr>
-          <tr><td><strong>Sistema de Proteção Guardian</strong></td><td>Monitora sensores críticos e reduz potência se detectar problemas</td><td>Proteção do motor</td></tr>
-          <tr><td><strong>Sistema de Advertência</strong></td><td>Aciona alarme sonoro e exibe mensagens de advertência</td><td>Alerta ao operador</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="destaque">
-      <strong style="color:#f9e2af;">Telas de Advertência do Sistema:</strong>
-      <table>
-        <thead><tr><th>Mensagem</th><th>Significado</th><th>Ação</th></tr></thead>
-        <tbody>
-          <tr><td><strong>OVERHEAT</strong></td><td>Motor superaqueceu</td><td>Reduzir aceleração, verificar sistema de refrigeração</td></tr>
-          <tr><td><strong>PRESSURE</strong></td><td>Pressão de água insuficiente</td><td>Verificar entrada de água e bomba</td></tr>
-          <tr><td><strong>OVERSPEED</strong></td><td>RPM ultrapassou o máximo</td><td>Reduzir aceleração</td></tr>
-          <tr><td><strong>WATER IN FUEL</strong></td><td>Água no filtro de combustível</td><td>Drenar filtro imediatamente</td></tr>
-          <tr><td><strong>LOW OIL</strong></td><td>Nível de óleo baixo</td><td>Verificar nível e completar</td></tr>
-          <tr><td><strong>FAULT - SENSOR</strong></td><td>Sensor com falha</td><td>Verificar conexões e substituir sensor</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- ============ SISTEMA CDS ============ -->
-  <div class="componente" id="sistema-cds">
-    <h2>💻 CDS G3 — Sistema de Diagnóstico Computadorizado</h2>
-    <span class="ref">📄 Nota de Aula EMEGD 2021 | Páginas 123-134</span>
-
-    <div class="tabela-wrapper">
-      <table class="tabela-pinagem">
-        <thead>
-          <tr><th>Função</th><th>Descrição</th><th>Procedimento</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>Live Data</strong></td><td>Monitoramento em tempo real dos sensores do motor</td><td>Selecionar módulo → "Live Data"</td></tr>
-          <tr><td><strong>View Faults</strong></td><td>Visualizar códigos de falha ativos e históricos</td><td>Selecionar módulo → "View Faults"</td></tr>
-          <tr><td><strong>Record Data</strong></td><td>Gravar dados de funcionamento para análise posterior</td><td>Selecionar módulo → "Record Data"</td></tr>
-          <tr><td><strong>Print Full Report</strong></td><td>Gerar relatório completo com todas as falhas e dados</td><td>Menu File → "Print Full Report" (F12)</td></tr>
-          <tr><td><strong>Export to PDF</strong></td><td>Exportar relatório em PDF</td><td>Clicar em "Export to PDF" no relatório</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="descricao-acao">
-      <strong>Configuração de Idioma:</strong><br>
-      1. Acessar menu "Tools" → "Options" → "Language"<br>
-      2. Selecionar "Português (Brasil)"<br>
-      3. Clicar em "Save" e reiniciar o programa<br><br>
-      <strong>Unidades:</strong> Acessar "Units" e selecionar "Custom" para configurar unidades individuais (ex: velocidade em mph, pressão em psi).
-    </div>
-  </div>
-
-  <!-- ============ CÓDIGOS DE FALHA ============ -->
-  <div class="componente" id="codigos-falha">
-    <h2>⚠️ Códigos de Falha PCM — Principais Ocorrências</h2>
-    <span class="ref">📄 Nota de Aula EMEGD 2021 | Páginas 109-124</span>
-
-    <div class="tabela-wrapper">
-      <table class="tabela-pinagem">
-        <thead>
-          <tr><th>Código</th><th>Descrição</th><th>Causa Provável</th><th>Ação</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><span class="pino">1</span></td><td>Bateria com tensão elevada</td><td>Alternador ou fio sensor com problemas</td><td>Verificar sistema de carga</td></tr>
-          <tr><td><span class="pino">2</span></td><td>Bateria com tensão baixa</td><td>Correia frouxa, defeito na bateria ou alternador</td><td>Verificar conexões e carga</td></tr>
-          <tr><td><span class="pino">3</span></td><td>Pressão de água do bloco baixa</td><td>Entupimento na entrada de água ou defeito na bomba</td><td>Verificar sistema de refrigeração</td></tr>
-          <tr><td><span class="pino">5</span></td><td>Perda de controle do ETC</td><td>Falha no corpo de borboleta ou TPS</td><td>Verificar conexões do ETC</td></tr>
-          <tr><td><span class="pino">12</span></td><td>Pressão do óleo baixa</td><td>Nível baixo ou captação bloqueada</td><td>Verificar nível de óleo</td></tr>
-          <tr><td><span class="pino">15</span></td><td>MAP indica pressão alta</td><td>Problema no sensor MAP ou chicote</td><td>Verificar sensor e conexões</td></tr>
-          <tr><td><span class="pino">20</span></td><td>Superaquecimento bombordo</td><td>Entupimento na captação ou rotor da bomba</td><td>Verificar sistema de refrigeração</td></tr>
-          <tr><td><span class="pino">21</span></td><td>Superaquecimento estibordo</td><td>Entupimento na captação ou rotor da bomba</td><td>Verificar sistema de refrigeração</td></tr>
-          <tr><td><span class="pino">23</span></td><td>Água no combustível</td><td>Combustível contaminado</td><td>Substituir combustível e filtro</td></tr>
-          <tr><td><span class="pino">77</span></td><td>Falha sensor eixo comando</td><td>Problema no chicote ou sensor</td><td>Verificar sensor de fase</td></tr>
-          <tr><td><span class="pino">132</span></td><td>Falha sensor posição virabrequim</td><td>Problema no sensor ou chicote</td><td>Motor não funciona — verificar CPS</td></tr>
-          <tr><td><span class="pino">199</span></td><td>Superaquecimento supercharger</td><td>Excesso de temperatura</td><td>Reduzir carga e aceleração</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- ============ MANUTENÇÃO DO REBOQUE ============ -->
-  <div class="componente" id="manutencao-reboque">
-    <h2>🚛 Manutenção do Reboque</h2>
-    <span class="ref">📄 Nota de Aula EMEGD 2021 | Páginas 135-136</span>
-
-    <div class="tabela-wrapper">
-      <table class="tabela-pinagem">
-        <thead>
-          <tr><th>Componente</th><th>Procedimento</th><th>Periodicidade</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>Pneus</strong></td><td>Verificar calibragem, desgaste e medidas iguais</td><td>Antes de cada missão</td></tr>
-          <tr><td><strong>Cubo e Rolamentos</strong></td><td>Troca de graxa, retentor do cubo e verificar rolamentos</td><td>A cada 10.000 km ou semestral</td></tr>
-          <tr><td><strong>Folga do Cubo</strong></td><td>Regular com relógio comparador (0,03 a 0,05 mm)</td><td>Na montagem</td></tr>
-          <tr><td><strong>Pastilhas e Discos de Freio</strong></td><td>Verificar desgaste; trocar se necessário (evitar retífica)</td><td>A cada 5.000 km</td></tr>
-          <tr><td><strong>Fluido de Freio (DOT 4)</strong></td><td>Verificar nível e vazamentos; trocar fluido</td><td>A cada 2 anos</td></tr>
-          <tr><td><strong>Sistema Elétrico</strong></td><td>Verificar acionamento do freio, luz de freio e chicote</td><td>Sempre que atracado</td></tr>
-          <tr><td><strong>Lavagem</strong></td><td>Lavar após uso, especialmente em água salgada</td><td>Após cada uso</td></tr>
-          <tr><td><strong>Lubrificação</strong></td><td>Lubrificar rolamentos e partes móveis</td><td>Conforme previsto</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="descricao-acao">
-      <strong>⚠️ Atenção:</strong> O reboque é um componente de suma importância para a operacionalidade da embarcação, mas não consta dos manuais. Seguir as normas e prescrições previstas para qualquer viatura tipo reboque.
-    </div>
-  </div>
-
-  <!-- ============ RESOLUÇÃO DE PROBLEMAS ============ -->
-  <div class="componente" id="resolucao-problemas">
-    <h2>🔍 Resolução de Problemas — Motor Não Liga</h2>
-    <span class="ref">📄 Nota de Aula EMEGD 2021 | Páginas 77-78</span>
-
-    <div class="tabela-wrapper">
-      <table class="tabela-pinagem">
-        <thead>
-          <tr><th>Problema</th><th>Causa Possível</th><th>Solução</th></tr>
-        </thead>
-        <tbody>
-          <tr><td rowspan="5"><strong>Motor de arranque não liga o motor</strong></td><td>Interruptor de desligamento por corda não está em "RUN"</td><td>Posicionar corretamente</td></tr>
-          <tr><td>Fusível de 5A queimado</td><td>Verificar fusível do circuito DTS</td></tr>
-          <tr><td>Câmbio não está em ponto morto</td><td>Colocar em neutro</td></tr>
-          <tr><td>Bateria fraca ou conexões soltas/corroidas</td><td>Carregar/substituir bateria; limpar conexões</td></tr>
-          <tr><td>Falha no solenoide do motor de arranque</td><td>Substituir solenoide</td></tr>
-          <tr><td rowspan="6"><strong>Motor não liga</strong></td><td>Procedimento de partida incorreto</td><td>Consultar manual de operação</td></tr>
-          <tr><td>Gasolina velha ou contaminada</td><td>Drenar e substituir combustível</td></tr>
-          <tr><td>Combustível não chega ao motor</td><td>Verificar bomba, filtros e linhas</td></tr>
-          <tr><td>Filtro de combustível obstruído</td><td>Substituir filtro</td></tr>
-          <tr><td>Velas de ignição sujas ou com defeito</td><td>Limpar ou substituir velas</td></tr>
-          <tr><td>Falha no sistema de ignição</td><td>Verificar bobinas e módulo</td></tr>
-          <tr><td rowspan="4"><strong>Motor funciona erraticamente</strong></td><td>Superaquecimento</td><td>Verificar sistema de refrigeração</td></tr>
-          <tr><td>Baixa pressão de óleo</td><td>Verificar nível de óleo</td></tr>
-          <tr><td>Velas sujas ou defeituosas</td><td>Substituir velas</td></tr>
-          <tr><td>Combustível restringido</td><td>Verificar filtros e linhas</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- ============ REFERÊNCIAS ============ -->
-  <div class="componente" id="referencias">
-    <h2>📚 Referências Bibliográficas</h2>
-    <span class="ref">📄 Nota de Aula EMEGD 2021 | Página 137</span>
-
-    <div class="descricao-acao">
-      • Manual de Operação e Manutenção Boston Whaler da Série Guardian 25. Brunswick Commercial & Government Products, 2011, EUA.<br>
-      • Manual de Operação, Manutenção e Garantia do Motor de 135, 150, 175 e 200 HP, modelo Verado. Mercury, 2010, Brasil.<br>
-      • Manual de Operação, Manutenção e Garantia do Motor de 200, 225 e 250 HP, modelo Optimax. Mercury, 2010, Brasil.<br>
-      • Manual de Serviço para Motores 200, 225, 250, 275 e 300 HP, 4 Tempos, modelo Verado. Mercury, 2005, EUA.<br>
-      • Manual de utilização do CDS G3 para motores Mercury.<br>
-      • Manutenção das Embarcações Guardian 25 - orientações do Nu DME - DIEx n° 538-NuDME/DEC - CIRCULAR, 8 de setembro de 2016.<br>
-      • Boletim Técnico DME n° 24 - Material de Engenharia - Notícias e Normatização - Edição 2018 (EB50-BT-06.024) - Portaria N° 084-DEC, de 22 de novembro de 2018 - CAPÍTULO IV - EMBARCAÇÃO GUARDIAN.<br>
-      • Nota de Aula EMBARCAÇÃO TÁTICA GUARDIAN 25 do Estágio de Operadores. Elaborada pela Divisão de Instrução de Embarcações (Div Instr Emb) do Centro de Embarcações do Comando Militar da Amazônia (CECMA).<br>
-      • Nota de Aula MANUTENÇÃO DE EMBARCAÇÃO TÁTICA DE GRUPO GUARDIAN 25', elaborada pela equipe de instrução do Estágio de Manutenção de Embarcação Guardian (EMEGD/2018), realizado entre 15 e 19 de outubro de 2018, no 9° B Mnt, Campo Grande-MS, a cargo do 3° Gpt E.
-    </div>
-  </div>
-
+<div class="footer">Manual de consulta técnica — Guardian 25 / Mercury Verado 200 HP. Uso interno de oficina.</div>
 </main>
-
-<button class="btn-topo" id="btnTopo" onclick="rolarParaTopo()" title="Voltar ao Topo">⬆️</button>
-
+</div>
 <script>
-  const menu = document.getElementById('menuLateral');
-  const overlay = document.getElementById('overlay');
-  const body = document.body;
-  const btnMenu = document.getElementById('btnMenu');
-
-  const btnTopo = document.getElementById('btnTopo');
-  
-  function rolarParaTopo() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-  
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 300) {
-      btnTopo.classList.add('visivel');
-    } else {
-      btnTopo.classList.remove('visivel');
-    }
-  });
-
-  function isMobile() { return window.innerWidth < 1024; }
-
-  function initMenu() {
-    if (isMobile()) {
-      menu.classList.add('fechado');
-      body.classList.remove('menu-aberto');
-    } else {
-      menu.classList.remove('fechado');
-      body.classList.add('menu-aberto');
-    }
-  }
-
-  function toggleMenu() {
-    if (isMobile()) {
-      const fechado = menu.classList.toggle('fechado');
-      overlay.classList.toggle('ativo', !fechado);
-      body.classList.toggle('menu-aberto', !fechado);
-    } else {
-      const aberto = body.classList.toggle('menu-aberto');
-      menu.classList.toggle('fechado', !aberto);
-    }
-  }
-
-  document.querySelectorAll('nav a').forEach(link => {
-    link.addEventListener('click', () => {
-      if (isMobile()) {
-        menu.classList.add('fechado');
-        overlay.classList.remove('ativo');
-        body.classList.remove('menu-aberto');
+(function(){
+  const input=document.getElementById('busca');
+  const resultados=document.getElementById('resultados');
+  const limpar=document.getElementById('limpar');
+  const secoes=[...document.querySelectorAll('main section')];
+  function normalizar(t){return t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+  function buscar(){
+    const termo=normalizar(input.value.trim());
+    resultados.innerHTML='';
+    if(termo.length<2){resultados.classList.add('hidden');return}
+    const achados=[];
+    secoes.forEach(sec=>{
+      const texto=normalizar(sec.textContent);
+      if(texto.includes(termo)){
+        const h2=sec.querySelector('h2');
+        achados.push({id:sec.id,titulo:h2?h2.textContent:sec.id});
       }
     });
-  });
-
-  overlay.addEventListener('click', () => {
-    menu.classList.add('fechado');
-    overlay.classList.remove('ativo');
-    body.classList.remove('menu-aberto');
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && isMobile()) {
-      menu.classList.add('fechado');
-      overlay.classList.remove('ativo');
-      body.classList.remove('menu-aberto');
+    if(!achados.length){
+      resultados.innerHTML='<p>Nenhum trecho encontrado para <strong>'+input.value+'</strong>.</p>';
+    }else{
+      resultados.innerHTML='<p><strong>'+achados.length+' seção(ões) encontrada(s):</strong></p>'+achados.map(a=>'<div class="result"><a href="#'+a.id+'">'+a.titulo+'</a></div>').join('');
     }
-  });
-
-  let ultimoEstadoMobile = isMobile();
-  window.addEventListener('resize', () => {
-    const atualMobile = isMobile();
-    if (atualMobile !== ultimoEstadoMobile) {
-      initMenu();
-      ultimoEstadoMobile = atualMobile;
-    }
-  });
-
-  initMenu();
+    resultados.classList.remove('hidden');
+  }
+  input.addEventListener('input',buscar);
+  limpar.addEventListener('click',()=>{input.value='';resultados.classList.add('hidden');input.focus()});
+})();
 </script>
-
 </body>
 </html>
